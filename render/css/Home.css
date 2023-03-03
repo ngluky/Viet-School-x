@@ -1,0 +1,244 @@
+* {
+    padding: 0;
+    margin: 0;
+}
+
+body {
+    height: 100vh;
+    overflow: hidden;
+}
+
+#root,
+.render {
+    height: 100%;
+}
+
+:root {
+    --scrollbar-with: 7px;
+}
+
+::-webkit-scrollbar {
+    width: var(--scrollbar-with);
+    border-radius: 2.5px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+    background: transparent;
+    border-radius: 2.5px;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 2.5px;
+
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    background: #555;
+    width: 10px;
+    border-radius: 2.5px;
+
+}
+
+.title-bar {
+    background-color: #ECECEC;
+}
+
+.contert {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    background: linear-gradient(20deg, rgb(143, 0, 172), rgb(0, 75, 160));
+
+}
+
+.contert-center {
+    height: 300px;
+    width: 400px;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 5px;
+    box-shadow: 0px 0px 5px 1px black;
+}
+
+.contert-logo {
+    text-align: center;
+    margin: 20px 10px 10px;
+    font-weight: 700;
+    font-size: 30px;
+    color: black;
+
+    border-bottom: 1px solid black;
+}
+
+.contert-body {
+    display: flex;
+    justify-content: center;
+}
+
+.input-custom {
+    margin: 20px 30px;
+    height: 35px;
+    width: 75%;
+    position: relative;
+}
+
+.input-custom label {
+    position: absolute;
+    top: 50%;
+    left: 10px;
+    transform: translateY(-50%);
+    transition: all 0.2s;
+    background: transparent;
+    border-radius: 5px;
+}
+
+.input-custom input {
+    background-color: transparent;
+    border: none;
+    outline: none;
+    box-shadow: 0px 0px 3px 0px black;
+    height: 100%;
+    padding: 0px 3px;
+    width: 100%;
+    border-radius: 5px;
+    animation: 0.2s;
+    color: white;
+}
+
+.input-custom input:focus~label {
+    top: -10px;
+    left: 15px;
+    color: rgb(39, 150, 255);
+}
+
+.input-custom input:focus {
+    box-shadow: 0px 0px 5px 0px rgb(39, 150, 255);
+}
+
+.list-sub {
+    margin: 0px 6px 6px;
+    height: calc(100% - 6px);
+    border-radius: 5px;
+}
+
+.list-sub .sub-view {
+    background-color: #F5F5F5;
+    border-radius: 5px;
+    overflow-y: scroll;
+    height: calc(100% - 60px);
+    margin: 5px 0px 0px 0px;
+    padding-bottom: 10px;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    flex-wrap: wrap;
+    align-content: flex-start;
+}
+
+.list-sub .sub {
+    cursor: pointer;
+    position: relative;
+    height: fit-content;
+    padding-bottom: 5px;
+    background: #F5F5F5;
+    border-radius: 5px;
+    box-shadow: 0px 0px 3px 0px rgba(0, 0, 0, 0.5);
+    margin: 10px;
+}
+
+.sub .sub-sta {
+    position: absolute;
+    z-index: 2;
+    background: #88ff81;
+    padding: 5px;
+    margin: 10px;
+    border-radius: 5px;
+    box-shadow: 0px 0px 3px 0px rgba(0, 0, 0, 0.5);
+}
+
+.sub .sub-img {
+    margin: 5px;
+    border-radius: 5px;
+    position: relative;
+    height: 150px;
+    overflow: hidden;
+}
+
+.sub .sub-img img {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translateX(-50%) translateY(-50%);
+    height: 100%;
+    min-width: 100%;
+}
+
+.sub .sub-title .title {
+    font-weight: bold;
+    font-size: 19px;
+    text-overflow: ellipsis;
+    max-height: 100%;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    display: -webkit-box;
+}
+
+.sub .sub-title {
+    height: 40px;
+    overflow: hidden;
+    padding: 5px;
+}
+
+.sub .li {
+    display: -webkit-box;
+    margin-left: 10px;
+    color: gray;
+    text-overflow: ellipsis;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+
+}
+
+.filter {
+    padding: 5px 10px 5px;
+    margin: 0px 0px 2px 0px;
+    height: 30px;
+    display: flex;
+    background-color: #F5F5F5;
+    border-radius: 5px;
+}
+
+.filter .filter-button {
+    width: fit-content;
+    padding: 0px 10px;
+    height: 100%;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #C7C7C7;
+    margin: 0px 0px 0px 10px;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.filter .filter-button.sel {
+    background-color: #555;
+    color: white;
+}
+
+@media (width < 900px) {
+    .list-sub .sub-view {
+        grid-template-columns: 1fr 1fr 1fr;
+    }
+
+}
+
+@media (width < 680px) {
+    .list-sub .sub-view {
+        grid-template-columns: 1fr 1fr;
+    }
+}

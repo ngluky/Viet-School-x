@@ -1,0 +1,116 @@
+
+.title-bar {
+    width: 100%;
+    height: 25px;
+    /* -webkit-app-region: drag;
+    background-color: #ECECEC;
+    display: flex;
+    justify-content: space-between;
+    align-items: center; */
+    display: grid;
+    grid-template-columns: 1fr 60px;
+}
+
+.title-r {
+    display: flex;
+}
+
+.title-r .div-svg {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
+.title-r .div-svg:hover {
+    background: rgba(0, 0, 0, 0.4);
+}
+
+.title-r .div-svg.red:active {
+    background: rgb(255, 122, 69);
+}
+
+
+.title-l {
+    font-size: 16px;
+    padding-left: 10px;
+    -webkit-app-region: drag;
+}
+
+.conten {
+    border-radius: 5px;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.conten .conten-center {
+    height: 300px;
+    width: 400px;
+    background: #FFFFFF;
+    box-shadow: inset 0px 0px 4px 2px white;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.conten .conten-center .conten-logo {
+    text-align: center;
+    font-weight: 600;
+    font-size: 30px;
+    padding: 10px 4px 5px;
+}
+
+.conten-from {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
+.conten-from .from {
+    position: relative;
+    width: 75%;
+    height: 40px;
+    margin: 20px;
+}
+.conten-from .from label {
+    position: absolute;
+    top: -60%;
+    left: 10px;
+    font-weight: 500;
+    font-size: 17px;
+}
+
+.conten-from .from input {
+    width: 100%;
+    height: 100%;
+    border-radius: 5px;
+    background: transparent;
+    border: none;
+    color: black;
+    outline: none;
+    box-shadow: 0px 0px 3px 0px black;
+    font-size: 17px;
+    padding-left: 5px;
+}
+
+.conten-from .remender {
+    font-size: 16px;
+}
+
+.conten .conten-center .content-button {
+    cursor: pointer;
+    width: 50%;
+    background: rgb(0, 173, 101);
+    text-align: center;
+    padding: 10px;
+    margin-top: 10px;
+    border-radius: 5px;
+}
+
+.conten .conten-center .content-button:active {
+    background: rgb(0, 122, 71);
+}
