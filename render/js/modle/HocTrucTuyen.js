@@ -28,6 +28,7 @@ function HocTrucTuyen() {
     this.BaiHocLopID = null;
     this.LoaiPhongHoc = 0;
     this.LinkHopTrucTuyen = null;
+    this.editortuluanid = '#editor-bailam-tuluan' + Math.random().toString().substring(2);
     this.StoreMode = "0"; //0: bài học mới, 1: Bài học cũ
     this.ChoHSChamDiem = false;
     this.CountCheckGioClient = 0;
@@ -50,6 +51,7 @@ function HocTrucTuyen() {
     this.classGiamSatWeb;
     this.rootContent = null;
     this.rootChat = null;
+    this.dataTab = {}
 
     this.getBaiHoc = (callback) => {
         WSGet(function (result) {
@@ -108,14 +110,159 @@ function HocTrucTuyen() {
         },
 
         baiTap: () => {
+            if (!this.rootContent) {
+                this.rootContent = ReactDOM.createRoot(document.getElementById('content'))
+            }
 
+            if (this.dataTab.baiTap) {
+
+            }
+            else {
+                this.getBaiTap(() => {
+                    this.rootContent.render(React.createElement(BaiTap))
+                })
+            }
+
+        },
+
+        chatOnOff : (on) => {
+            const ele = document.getElementById('side-bar')
+            if (!on) {
+                ele.classList.remove('off');
+                ele.style = {}
+            }
+
+            else {
+                ele.classList.add('off');
+                ele.style.width = "0px"
+                ele.style.margin = "0"
+            }
         }
 
     }
 
-    this.getBaiTap = () => {
+    this.getBaiTap = (callback) => {
         WSGet(function (result) {
+            // df_HideLoading();
+            try {
+                if (CheckResult(result)) {
+                    if (result.Data.getTable('HoanVi'))
+                        classttn.arr_HoanVi = result.Data.getTable('HoanVi').toJson();
+                    if (classttn.arr_HoanVi == undefined || classttn.arr_HoanVi.length == 0) {
+                        classttn.errorChangeCauHoi = 'Không tải được bảng hoán vị, vui lòng liên hệ giáo viên dạy bạn.';
+                        // showMsg('Thông báo lỗi', classttn.errorChangeCauHoi);
+                        return false;
+                    }
+                    if (result.Data.getTable('DoanVan'))
+                        classttn.arr_DoanVan = result.Data.getTable('DoanVan').toJson();
+                    var arr_DapAn = [];
+                    if (result.Data.getTable('DapAn'))
+                        arr_DapAn = result.Data.getTable('DapAn').toJson();
+                    var arr_DapAn_CauHoiID = convertJson2Array(arr_DapAn, 'CauHoiID');
+                    if (result.Data.getTable('CauHoi')) {
+                        var arr_Cauhoi_temp = result.Data.getTable('CauHoi').toJson();
+                        var arr_Cauhoi = [];
+                        if (arr_Cauhoi_temp.length > 0) {
+                            for (var ch = 0; ch < arr_Cauhoi_temp.length; ch++) {
+                                var value = arr_Cauhoi_temp[ch];
+        
+                                var item = {};
+                                item.SoDapAn = value.SoDapAn;
+                                item['cauhoiid'] = value.CauHoiID;
+                                item['cauhoi'] = value.NoiDungCauHoi;
+                                item['doanvan'] = value.DoanVanID;
+                                item['dapan'] = [];
+                                item['tracnghiem'] = value.TracNghiem;
+                                if (value.TracNghiem) {
+                                    var pos = arr_DapAn_CauHoiID.indexOf(item['cauhoiid']);
+                                    if (pos == -1) {
+                                        arr_Cauhoi = [];
+                                        classttn.errorChangeCauHoi = 'Giáo viên đã thay đổi dữ liệu câu hỏi. Vui lòng liên hệ giáo viên để làm mới bài tập! Nội dung câu hỏi có thay đổi: ' + item['cauhoi'];
+                                        // showMsg('Thông báo lỗi', classttn.errorChangeCauHoi);
+                                        return false;
+                                    }
+                                    var arr_HoanViID = convertJson2Array(classttn.arr_HoanVi, 'HoanViID');
+                                    var poshv = arr_HoanViID.indexOf(value.HoanViID);
+                                    var arr_HoanVi_CH = [];
+                                    if (poshv != -1) {
+                                        for (var i = 0; i < 4; i++) {
+                                            arr_HoanVi_CH.push(classttn.arr_HoanVi[poshv + i]);
+                                        }
+                                    }
+                                    var arr_DapAn_Temp = [];
+                                    for (var i = pos; i < pos + item.SoDapAn; i++) {
+                                        if (arr_DapAn_CauHoiID[i] == item['cauhoiid'])
+                                            arr_DapAn_Temp.push(arr_DapAn[i]);
+                                    }
+        
+                                    if (arr_HoanVi_CH.length >= item.SoDapAn && arr_DapAn_Temp.length == item.SoDapAn) {
+                                        for (var j = 0; j < arr_HoanVi_CH.length; j++) {
+                                            for (var i = 0; i < arr_DapAn_Temp.length; i++) {
+                                                if (arr_DapAn_Temp[i].STTDapAn == arr_HoanVi_CH[j].STTDapAn) {
+                                                    item['dapan'].push({ 'stt': j, 'noidung': arr_DapAn_Temp[i].NoiDung });
+                                                }
+                                            }
+                                        }
+                                    }
+                                    else {
+                                        classttn.errorChangeCauHoi = 'HTT: Câu hỏi không đủ số lượng đáp án, vui lòng liên hệ giáo viên để kiểm tra lại. Nội dung câu hỏi:' + item['cauhoi'];
+                                        // showMsg('Thông báo lỗi', classttn.errorChangeCauHoi);
+                                        return false;
+                                    }
+                                }
+                                item['hoanvi'] = value.HoanViID;
+                                arr_Cauhoi.push(item);
+                            }
+                        }
+                        classttn.arr_Data = arr_Cauhoi;
+                        
+                    }
+                    if (result.Data.getTable('BaiLam')) {
+                        classttn.arr_Bailam = result.Data.getTable('BaiLam').toJson();
+                    }
+                    if (result.Data.getTable('BHHS')) {
+                        var BHHS = result.Data.getTable('BHHS');
+                        if (BHHS) {
+                            var datas = BHHS.toJson();
+                            if (datas.length > 0) {
+                                classhtt.arr_BHHS = datas[0];
+                                classttn.GioHienHanh = classhtt.arr_BHHS['GioHienHanh'].replace(" ", "T");
+                            }
+                        }
+                        else
+                            classhtt.arr_BHHS = [];
+                        // không có BHHS
+                    }
+                    if (classhtt.arr_Data_BaiHoc['TGKT'] == undefined) {
+                        // showMsg('Thông báo lỗi', "Không thể lấy được thời gian kết thúc bài học, Hãy vào phòng lại hoặc làm tươi (F5) trang web.", 'OK', 'error', function () { return; });
+                    }
+                    else {
+                        // classhtt.tinhThoiGianLamBai();
+                        if (callback)
+                            callback(result);
+                    }
 
+                    
+                }
+                else {
+                    if (!classhtt.isGV) {
+                        if (result.ErrorMessage == "ElearningInitCauHoi_Upgade : Bài này không có bài tập.") {
+                            classttn.arr_Data = [];
+                            if (callback)
+                                callback(result);
+                        }
+                        else {
+                            // window.location.href = '/#/HocSinhChonPhong/' + classhtt.LoaiPhongHoc;
+                            // loadpage('#/HocSinhChonPhong/' + classhtt.LoaiPhongHoc);
+                            // clearInterval(_Htt_Timer);
+                            // clearInterval(_Ttn_Timer);
+                        }
+                    }
+                }
+            }
+            catch (error) {
+                // showMsg('Thông báo lỗi', error, 'OK', 'error', function () { return; });
+            }
         }.bind(this), classhtt.DLL_LearningRoom, 'ElearningInitCauHoi_Upgade', classhtt.BaiHocGiaoVienID, classhtt.BaiHocLopID, this.StoreMode);
     }
 

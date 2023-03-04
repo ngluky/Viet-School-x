@@ -53,6 +53,7 @@ function handleLogin(user , pass , remender) {
                                 classhscp.init();
 
                                 classhtt = new HocTrucTuyen();
+                                classttn = new ThiTracNghiem();
                             }
                         
                             
@@ -88,21 +89,6 @@ function checkloggin(callback)  {
         if (callback) callback()
 
     }, "Elearning.Core.Login", "CheckLogged");
-}
-
-function df_unnu(obj) {
-    return (typeof obj === 'undefined') || obj == null;
-}
-
-function df_addZero(i) {
-    if (i < 10) {
-        i = "0" + i;
-    }
-    return i;
-}
-
-function df_DateTime_SQL(d) {
-    return d.getFullYear() + "-" + df_addZero(d.getMonth() + 1) + "-" + df_addZero(d.getDate()) + " " + df_addZero(d.getHours()) + ":" + df_addZero(d.getMinutes()) + ":" + df_addZero(d.getSeconds());
 }
 
 function getTNTokenID(url , callback)
@@ -178,6 +164,7 @@ $(document).ready(() => {
                         classhscp.init();
 
                         classhtt = new HocTrucTuyen();
+                        classttn = new ThiTracNghiem();
                     }
 
                     else {
