@@ -133,14 +133,15 @@ function SideBarButton(props) {
 
 }
 
-function BaiTap() {
+function BaiTap(props) {
+    const classttn = props.classttn;
     return (
         <React.Fragment>
             <div className="div-cauhoi">
 
                 <div className="cauhoi">
                     <span className="stt">Câu 1</span>
-                    <span></span>
+                    <span id="noidungcauhoi"></span>
                 </div>
 
                 <div className="dapan">
@@ -148,18 +149,15 @@ function BaiTap() {
                         <input type="radio" name="gr-dapan" id="dapan-A" />
                         <label htmlFor="dapan-A">
                             <div className="hed">A</div>
-                            <div className="noidung">
-                                hello
+                            <div className="noidung" id="noidung-da-A">
                             </div>
-
                         </label>
                     </div>
                     <div className="dapan-B dp">
                         <input type="radio" name="gr-dapan" id="dapan-B" />
                         <label htmlFor="dapan-B">
                             <div className="hed">B</div>
-                            <div className="noidung">
-                                hello
+                            <div className="noidung" id="noidung-da-B">
                             </div>
                         </label>
                     </div>
@@ -167,8 +165,7 @@ function BaiTap() {
                         <input type="radio" name="gr-dapan" id="dapan-C" />
                         <label htmlFor="dapan-C">
                             <div className="hed">C</div>
-                            <div className="noidung">
-                                hello
+                            <div className="noidung" id="noidung-da-C">
                             </div>
                         </label>
                     </div>
@@ -176,8 +173,7 @@ function BaiTap() {
                         <input type="radio" name="gr-dapan" id="dapan-D" />
                         <label htmlFor="dapan-D">
                             <div className="hed">D</div>
-                            <div className="noidung">
-                                hello
+                            <div className="noidung" id="noidung-da-D">
                             </div>
                         </label>
                     </div>
@@ -185,8 +181,26 @@ function BaiTap() {
                 </div>
             </div>
 
-            <div className="control-key">
-                
+            <div className="bottom-key">
+                <div className="bottom-key-timer">
+                    <ion-icon name="hourglass-outline"></ion-icon>
+                    <p id='bottom-timer'>20p 30s</p>
+                </div>
+                <div className="bottom-key-contro-key">
+                    <div className="bottom-button" onClick={ () => classttn.backSlide()}>
+                        <ion-icon name="arrow-back-outline"></ion-icon>
+                    </div>
+                    <div className="bottom-button">
+                        <ion-icon name="help-outline"></ion-icon>
+                    </div>
+                    <div className="bottom-button" onClick={ () => classttn.nextSlide()}>
+                        <ion-icon name="arrow-forward-outline"></ion-icon>
+                    </div>
+                </div>
+                <div className="bottom-key-dalam">
+                    <ion-icon name="checkmark-outline"></ion-icon>
+                    <p id='bottom-dalam'>20/30</p>
+                </div>
             </div>
 
         </React.Fragment>

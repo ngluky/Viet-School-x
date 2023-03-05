@@ -55,8 +55,40 @@ function ThiTracNghiem() {
             classhtt.rootContent = ReactDOM.createRoot(document.getElementById('content'))
         }
 
-        classhtt.rootContent.render(React.createElement(BaiTap))
+        this.updateCauHoi(this.now_slide - 1)
 
+    }
+
+    this.backSlide = function() {
+        this.now_slide -= 1;
+        if (this.now_slide <= 0) 
+        {
+            this.now_slide = this.arr_Data.length;
+        }
+
+        this.updateCauHoi(this.now_slide - 1)
+    }
+
+    this.nextSlide = function() {
+        this.now_slide += 1;
+        if (this.now_slide >= this.arr_Data) 
+        {
+            this.now_slide = 1;
+        }
+
+        this.updateCauHoi(this.now_slide - 1)
+
+    }
+
+    this.updateCauHoi = function(index) {
+        const cau = this.arr_Data[index]
+
+        document.querySelector('div.cauhoi > span.stt').innerHTML = `Câu ${index + 1}: `
+        document.getElementById('noidungcauhoi').innerHTML = cau.cauhoi;
+        document.getElementById('noidung-da-A').innerHTML = cau.dapan[0].noidung
+        document.getElementById('noidung-da-B').innerHTML = cau.dapan[1].noidung
+        document.getElementById('noidung-da-C').innerHTML = cau.dapan[2].noidung
+        document.getElementById('noidung-da-D').innerHTML = cau.dapan[3].noidung
     }
 
 	this.updateBaiLam = function(cau , dapan) {

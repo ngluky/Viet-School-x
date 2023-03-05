@@ -271,9 +271,60 @@ div.cauhoi .stt {
 }
 
 
-.control-key {
+.bottom-key {
   background-color: #f5f5f5;
   height: 35px;
   margin: 6px 0 0 0;
   border-radius: 5px;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.bottom-key p {
+  font-family: sans-serif;
+
+}
+
+.bottom-key ion-icon {
+  height: 20px;
+  width: 20px;
+  margin: 0px 5px;
+}
+
+.bottom-key > div {
+  display: flex;
+  align-items: center;
+}
+
+.bottom-key-contro-key {
+  height: calc(100% - 8px);
+}
+.bottom-key-contro-key .bottom-button {
+  width: 40px;
+  height: 100%;
+  border-radius: 5px;
+  background: #D4D5D7;
+  margin: 0px 5px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.bottom-key-contro-key .bottom-button:hover {
+  color: gray;
+}
+
+.bottom-key-timer {
+  margin-left: 10px;
+}
+
+.bottom-key-dalam {
+  margin-right: 10px;
+}
+
+.bottom-key-timer ion-icon {
+  margin-bottom: 2px;
 }

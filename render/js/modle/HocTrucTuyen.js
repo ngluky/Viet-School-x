@@ -139,7 +139,9 @@ function HocTrucTuyen() {
             }
 
             document.querySelector(".phonghoc-content-top").classList.add('baitap')
-
+            classhtt.rootContent.render(React.createElement(BaiTap , {
+                classttn : classttn
+            }))
         },
 
         chatOnOff : (on) => {
