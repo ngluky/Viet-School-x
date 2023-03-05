@@ -245,6 +245,8 @@ div.cauhoi .stt {
 
 .div-cauhoi .dapan .dp label .noidung {
   width: calc(100% - 70px);
+  height: max-content;
+  margin-right: 10px;
 }
 
 .div-cauhoi .dapan .dp input[type="radio"] {

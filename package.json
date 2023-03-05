@@ -9,7 +9,10 @@
     "package": "electron-forge package",
     "make": "electron-forge make"
   },
-  "author": "",
+  "author": {
+    "name": "nguyLuky",
+    "email": "nguyenkhachieu117@gmail.com"
+  },
   "license": "ISC",
   "devDependencies": {
     "@electron-forge/cli": "^6.0.5",

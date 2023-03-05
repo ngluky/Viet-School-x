@@ -2,7 +2,7 @@ const { app, BrowserWindow , ipcMain} = require('electron')
 const path = require('path');
 const fs = require('fs');
 
-const path_ = path.join(process.env.Home , "AppData/Local/LopHocApp/cookie.json");
+const path_ = path.join(app.getPath('home') , "AppData/Local/LopHocApp/cookie.json");
 
 
 var Cookie = {}
