@@ -52,6 +52,8 @@ function HocTrucTuyen() {
     this.rootContent = null;
     this.rootChat = null;
     this.dataTab = {}
+    this.isSideBar = true
+
 
     this.getBaiHoc = (callback) => {
         WSGet(function (result) {
@@ -105,8 +107,21 @@ function HocTrucTuyen() {
     }
 
     this.handlSideBar = {
+        isSideBar : () => this.isSideBar, 
+
         out: () => {
+            this.rootChat = null
+            this.rootContent = null
             this.outRoom()
+        },
+
+        baiHoc: () => {
+            if (!this.rootContent) {
+                this.rootContent = ReactDOM.createRoot(document.getElementById('content'))
+            }
+            document.querySelector(".phonghoc-content-top").classList.remove('baitap')
+            this.rootContent.render(React.createElement(BaiHoc))
+
         },
 
         baiTap: () => {
@@ -119,13 +134,16 @@ function HocTrucTuyen() {
             }
             else {
                 this.getBaiTap(() => {
-                    this.rootContent.render(React.createElement(BaiTap))
+                    classttn.readerCauhoi()
                 })
             }
+
+            document.querySelector(".phonghoc-content-top").classList.add('baitap')
 
         },
 
         chatOnOff : (on) => {
+            this.isSideBar = !on;
             const ele = document.getElementById('side-bar')
             if (!on) {
                 ele.classList.remove('off');

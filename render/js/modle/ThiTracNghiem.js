@@ -49,12 +49,13 @@ function ThiTracNghiem() {
     this.LastTimeViPham;
     this.SoLanViPham_NopBaiWeb = 0;
     this.LyDoNopBai = '';
-    this.rootConten = null;
 
     this.readerCauhoi = function () {
+        if (!classhtt.rootContent) {
+            classhtt.rootContent = ReactDOM.createRoot(document.getElementById('content'))
+        }
 
-    }
-    this.updateCauHoi = function(data) {
+        classhtt.rootContent.render(React.createElement(BaiTap))
 
     }
 
@@ -173,10 +174,6 @@ function ThiTracNghiem() {
             console.log("Ghi log " + rs.ErrorNumber)
             //}
         }.bind(this), "HS.TTN.WriteLog", "BaiHocHSID", this.BaiHocHSID.toString(), "ThoiGianLamBai_Client", ThoiGianLamBai_Client.toString(), "second_Bailam", this.second_Bailam_TruocDongBo.toString(), "GioHienHanh_Server", df_DateTime_SQL(new Date(this.GioHienHanh)), "GioHienHanh_Client", df_DateTime_SQL(classttn.GioBatDauLamBai_Client), "limit_minute", this.limit_minute.toFixed(2), "SoGiayLamBai", (df_unnu(classhtt.arr_BHHS.SoGiayLamBai) ? "0" : classhtt.arr_BHHS.SoGiayLamBai.toString()), "GioClient_LucLayCauHoi", df_DateTime_SQL(classhtt.GioClient_LucLayCauHoi), "GioClient_LucGoiHamLuu", df_DateTime_SQL(new Date()), "IsKiemTra", classhtt.isKiemTra, "LyDoNopBai", LyDoNopBai);
-
-    }
-
-    this.init = function(data) {
 
     }
 

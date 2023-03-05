@@ -5,9 +5,15 @@ function SideBarButton(props) {
     }
     switch (type) {
         case "button":
+            var on = props.on
+            if (!props.on)
+                on =''
+            else 
+                on ='on'
+
             if (props.title) {
                 return (
-                    <div className={"action-button " + props.on} onClick={() => { props.onClick() }}>
+                    <div className={"action-button"} onClick={() => { props.onClick() }}>
                         <div className='action-button-svg'>
                             <ion-icon name={props.nameIcon}></ion-icon>
                         </div>
@@ -20,7 +26,72 @@ function SideBarButton(props) {
         
             else {
                 return (
-                    <div className={"action-button " + props.on} onClick={() => { props.onClick() }}>
+                    <div className={"action-button"} onClick={() => { props.onClick() }}>
+                        <div className='action-button-svg'>
+                            <ion-icon name={props.nameIcon}></ion-icon>
+                        </div>
+                    </div>
+                )
+            }
+        
+        case "radio":
+
+            var buttonSeleStyleTemplay = {
+              'border-left': '3px solid rgb(98, 0, 255)'
+            }
+            var on = props.on
+            if (!props.on)
+                on =''
+            else 
+                on ='on'
+
+            if (props.onStyle)
+                buttonSeleStyleTemplay = props.onStyle;
+
+            var buttonSeleStyle = {}
+
+            Object.keys(buttonSeleStyleTemplay).forEach(e => {
+                var str = e
+                var index = e.indexOf('-')
+                if (e.indexOf('-') != -1) {
+                    var newRp = str.charAt(index + 1).toUpperCase()
+                    str = str.replace(`-${str.charAt(index + 1)}` , newRp)
+                }
+                buttonSeleStyle[str] = buttonSeleStyleTemplay[e]
+            })
+
+            const clasId = makeid(6)
+            const handlOnClick = function() {
+                const ele = document.querySelector('.action-button.radio.' + clasId)
+                const parent = ele.parentElement;
+                parent.querySelectorAll(".radio").forEach(e => {
+                    e.classList.remove("on")
+                    e.style = {}
+                })
+
+                ele.classList.add('on')
+
+                Object.keys(buttonSeleStyle).forEach(e => {
+                    ele.style[e] = buttonSeleStyle[e]
+                })
+            }
+
+            if (props.title) {
+                return (
+                    <div className={"action-button radio " + on + ' ' + clasId} style={props.on ? buttonSeleStyle : {}} onClick={() => {handlOnClick();props.onClick()}}>
+                        <div className='action-button-svg'>
+                            <ion-icon name={props.nameIcon}></ion-icon>
+                        </div>
+                        <div className='action-button-text'>
+                            <p>{props.title}</p>
+                        </div>
+                    </div>
+                )
+            }
+        
+            else {
+                return (
+                    <div className={"action-button radio" + on + ' ' + clasId} onClick={() => {handlOnClick();props.onClick()}}>
                         <div className='action-button-svg'>
                             <ion-icon name={props.nameIcon}></ion-icon>
                         </div>
@@ -29,19 +100,21 @@ function SideBarButton(props) {
             }
         
         case "check":
-            const styleOnCheck = props.onCheckStyle;
+            var on = props.on ;
+            const styleOnCheck = props.onStyle;
+            console.log(on)
             const id = makeid(6);
             return (
-                <div className="action-button " id={id} onClick={() => {
+                <div className="action-button " style={on ? {} : styleOnCheck} id={id} onClick={() => {
                     const ele = document.getElementById(id)
-                    if (ele.classList.contains("check-on")) {
-                        ele.classList.remove('check-on')
+                    if (!on) {
+                        on = !on
                         ele.style = {}
                         props.onClick(false)
 
                     }
                     else {
-                        ele.classList.add('check-on')
+                        on = !on
                         Object.keys(styleOnCheck).forEach(e => {
                             ele.style[e] = styleOnCheck[e]
                         })
@@ -112,6 +185,10 @@ function BaiTap() {
                 </div>
             </div>
 
+            <div className="control-key">
+                
+            </div>
+
         </React.Fragment>
     )
 }
@@ -129,32 +206,15 @@ function SideBar(props) {
     return (
         <div className="action">
             <div className="action-top">
-                <SideBarButton on="on" nameIcon="book-outline" title="Lý thuyết" />
-                <SideBarButton nameIcon="videocam-outline" title="Live" />
-                <SideBarButton nameIcon="create-outline" title="Bài tập" onClick={eventSideBar.baiTap}/>
+                <SideBarButton type="radio" on="on" nameIcon="book-outline" title="Lý thuyết" onClick={eventSideBar.baiHoc}/>
+                <SideBarButton type="radio" nameIcon="videocam-outline" title="Live" />
+                <SideBarButton type="radio" nameIcon="create-outline" title="Bài tập" onClick={eventSideBar.baiTap}/>
 
             </div>
             <div className="action-botton">
-                <SideBarButton nameIcon="chevron-forward-outline" type="check" onCheckStyle={{transform:"rotate(180deg)"}} onClick={eventSideBar.chatOnOff}/>
+                <SideBarButton nameIcon="chevron-forward-outline" type="check" on={eventSideBar.isSideBar()} onStyle={{transform:"rotate(180deg)"}} onClick={eventSideBar.chatOnOff}/>
                 <SideBarButton nameIcon="log-out-outline" onClick={eventSideBar.out} />
             </div>
-        </div>
-    )
-}
-
-function Header(props) {
-    const tenMon = props.tenMon;
-    const title = props.title;
-
-    return (
-        <div className="header">
-            <div className="header-name">
-                Môn: {tenMon}
-            </div>
-            <div className="header-title">
-                Bài: {title}
-            </div>
-            <div className="header-info"></div>
         </div>
     )
 }
@@ -168,6 +228,7 @@ function ChatTab() {
 function PhongHoc(props) {
     const classhtt = props.classhtt;
     const item = classhtt.arr_Data_BaiHoc;
+    console.log(classhtt.isSideBar)
     return (
         <React.Fragment>
             <div className="phonghoc">
@@ -175,12 +236,14 @@ function PhongHoc(props) {
                     <SideBar eventHandl={classhtt.handlSideBar} />
 
                     <div className='phonghoc-chat-conter'>
-                        <div className='phonghoc-chat' id="side-bar">
+                        <div className='phonghoc-chat' id="side-bar" style={classhtt.isSideBar ? {} : {width : "0px" , margin : '0'}}>
                             <ChatTab />
                         </div>
                         <div className='phonghoc-content'>
                             <div className="phonghoc-content-top">
-                                {item.TenBaiHoc}
+                                <p>
+                                    {item.TenMon} - {item.TenBaiHoc}
+                                </p>
                             </div>
 
                             <div className="phonghoc-content-bottom" id="content">
