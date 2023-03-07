@@ -61,7 +61,7 @@ function HocSinhChonPhong() {
         this.root.render(newListSub)
     }
 
-    this.renderInit= () => {
+    this.renderInit = () => {
         checkloggin(() => {
             this.root = null
             Root.render(React.createElement(ListSub , {
@@ -87,6 +87,7 @@ function HocSinhChonPhong() {
     }
 
     this.JoinRoom = (data) => {
+        classttn = new ThiTracNghiem();
         console.log(data)
         classhtt.joinRoom(data)
     }

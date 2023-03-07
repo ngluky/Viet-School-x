@@ -293,8 +293,8 @@ div.cauhoi .stt {
   margin: 6px 0 0 0;
   border-radius: 5px;
 
+  position: relative;
   display: flex;
-  justify-content: space-between;
   align-items: center;
 }
 
@@ -316,6 +316,9 @@ div.cauhoi .stt {
 
 .bottom-key-contro-key {
   height: calc(100% - 8px);
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
 }
 .bottom-key-contro-key .bottom-button {
   width: 40px;
@@ -335,10 +338,14 @@ div.cauhoi .stt {
 
 .bottom-key-timer {
   margin-left: 10px;
+  position: absolute;
+  left: 0;
 }
 
 .bottom-key-dalam {
   margin-right: 10px;
+  position: absolute;
+  right: 0;
 }
 
 .bottom-key-timer ion-icon {

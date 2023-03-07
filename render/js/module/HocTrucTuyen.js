@@ -104,34 +104,37 @@ function HocTrucTuyen() {
     this.setContent = (data) => {
 
         document.getElementById("noidungbaihoc").innerHTML = data;
-        
+
     }
 
     this.slideBarTool = [
         {
-            title : 'Thành viên',
-            iconName : 'people-outline',
-            onClick: () => {console.log('tv')}
+            title: 'Thành viên',
+            iconName: 'people-outline',
+            onClick: () => { console.log('tv') }
         },
         {
-            title : 'chat',
-            iconName : 'chatbox-outline',
-            onClick: () => {console.log('chat')}
+            title: 'chat',
+            iconName: 'chatbox-outline',
+            onClick: () => { console.log('chat') }
         },
         {
-            title : 'Câu hỏi',
-            iconName : 'checkbox-outline',
-            onClick: () => {console.log('chat')}
+            title: 'Câu hỏi',
+            iconName: 'checkbox-outline',
+            onClick: () => { console.log('chat') }
         }
-    
+
     ]
 
     this.handlSideBar = {
-        isSideBar : () => this.isSideBar, 
+        isSideBar: () => this.isSideBar,
 
         out: () => {
             this.rootChat = null
             this.rootContent = null
+            this.arr_Data = []
+            classttn.resetFieldTracNghiem()
+            clearInterval(_Ttn_Timer);
             this.outRoom()
         },
 
@@ -151,8 +154,8 @@ function HocTrucTuyen() {
                 this.rootContent = ReactDOM.createRoot(document.getElementById('content'))
             }
 
-            classhtt.rootContent.render(React.createElement(BaiTap , {
-                classttn : classttn
+            classhtt.rootContent.render(React.createElement(BaiTap, {
+                classttn: classttn
             }))
 
             if (classttn.arr_Data.length > 0) {
@@ -162,14 +165,14 @@ function HocTrucTuyen() {
                         this.second_Bailam++;
                         var ThoiGianLamBai_Client = parseInt((new Date() - this.GioBatDauLamBai_Client) / 1000); // giay
                         this.second_Bailam_TruocDongBo = this.second_Bailam;
-                    
+
                         if (this.second_Bailam >= this.limit_minute * 60) {/*classhtt.isKiemTra && */
                             this.isConThoiGianLamBai = false;
                             // clearInterval(_Ttn_Timer);
-        
+
                             console.log("time end")
                         }
-        
+
                         this.isConThoiGianLamBai = true;
                         var thoigianconlai = this.limit_minute * 60 - this.second_Bailam;
                         var str = formatTime(Math.floor(thoigianconlai))
@@ -191,10 +194,10 @@ function HocTrucTuyen() {
             }
 
             document.querySelector(".phonghoc-content-top").classList.add('baitap')
-            document.querySelector('#side-bar div.chat-top').classList.add('baitap')  
+            document.querySelector('#side-bar div.chat-top').classList.add('baitap')
         },
 
-        chatOnOff : (on) => {
+        chatOnOff: (on) => {
             this.isSideBar = !on;
             const ele = document.getElementById('side-bar')
             if (!on) {
@@ -218,8 +221,8 @@ function HocTrucTuyen() {
             try {
                 if (CheckResult(result)) {
                     let arrGio = result.Data.getTable('GioHienHanh').toJson();
-                        this.GioHienHanh = arrGio[0].GioHienHanh.replace(" ", "T");
-                        this.GioHienHanhClient = new Date();
+                    this.GioHienHanh = arrGio[0].GioHienHanh.replace(" ", "T");
+                    this.GioHienHanhClient = new Date();
                     if (result.Data.getTable('HoanVi'))
                         classttn.arr_HoanVi = result.Data.getTable('HoanVi').toJson();
                     if (classttn.arr_HoanVi == undefined || classttn.arr_HoanVi.length == 0) {
@@ -239,7 +242,7 @@ function HocTrucTuyen() {
                         if (arr_Cauhoi_temp.length > 0) {
                             for (var ch = 0; ch < arr_Cauhoi_temp.length; ch++) {
                                 var value = arr_Cauhoi_temp[ch];
-        
+
                                 var item = {};
                                 item.SoDapAn = value.SoDapAn;
                                 item['cauhoiid'] = value.CauHoiID;
@@ -268,7 +271,7 @@ function HocTrucTuyen() {
                                         if (arr_DapAn_CauHoiID[i] == item['cauhoiid'])
                                             arr_DapAn_Temp.push(arr_DapAn[i]);
                                     }
-        
+
                                     if (arr_HoanVi_CH.length >= item.SoDapAn && arr_DapAn_Temp.length == item.SoDapAn) {
                                         for (var j = 0; j < arr_HoanVi_CH.length; j++) {
                                             for (var i = 0; i < arr_DapAn_Temp.length; i++) {
@@ -289,7 +292,7 @@ function HocTrucTuyen() {
                             }
                         }
                         classttn.arr_Data = arr_Cauhoi;
-                        
+
                     }
                     if (result.Data.getTable('BaiLam')) {
                         classttn.arr_Bailam = result.Data.getTable('BaiLam').toJson();
@@ -316,7 +319,7 @@ function HocTrucTuyen() {
                             callback(result);
                     }
 
-                    
+
                 }
                 else {
                     if (!classhtt.isGV) {
@@ -345,12 +348,12 @@ function HocTrucTuyen() {
         WSGet(function () {
             console.log('ok')
             classhscp.renderInit()
-        }.bind(this) , "Elearning.Core.RoomManager", "OutRoom", this.BaiHocGiaoVienID.toString())
+        }.bind(this), "Elearning.Core.RoomManager", "OutRoom", this.BaiHocGiaoVienID.toString())
     }
 
     this.renderInit = () => {
         checkloggin()
-        Root.render(React.createElement(PhongHoc , {
+        Root.render(React.createElement(PhongHoc, {
             classhtt: this
         }))
     }
@@ -360,13 +363,13 @@ function HocTrucTuyen() {
             console.log(rs1)
             if (callback)
                 callback()
-        }.bind(this), 
-        this.DLL_LearningRoom, 
-        'ElearningCheckRoom', this.BaiHocGiaoVienID.toString(), 
-        (df_unnu(this.BaiHocLopID) ? "" : this.BaiHocLopID.toString()), 
-        (this.isKiemTra ? "1" : "0"), 
-        this.StoreMode, 
-        df_DateTime_SQL(new Date))
+        }.bind(this),
+            this.DLL_LearningRoom,
+            'ElearningCheckRoom', this.BaiHocGiaoVienID.toString(),
+            (df_unnu(this.BaiHocLopID) ? "" : this.BaiHocLopID.toString()),
+            (this.isKiemTra ? "1" : "0"),
+            this.StoreMode,
+            df_DateTime_SQL(new Date))
     }
 
     this.socketMessage = (ms) => {
@@ -382,14 +385,14 @@ function HocTrucTuyen() {
         this.renderInit()
         this.joinRoomIfYes(() => {
             this.getBaiHoc(() => {
-    
+
             })
         })
 
 
     }
 
-    this.tinhThoiGianLamBai = function() {
+    this.tinhThoiGianLamBai = function () {
         this.GioClient_LucLayCauHoi = new Date();
         classttn.GioBatDauLamBai_Client = this.GioClient_LucLayCauHoi;
         classttn.second_Bailam = 0;
@@ -423,8 +426,10 @@ function HocTrucTuyen() {
                 classttn.limit_minute = 0;// Hết giờ
             }
         }
-
+        var GioVao = moment(this.arr_BHHS.GioVao, 'DD/MM/yyyy HH:mm:ss');
+        var HienHanh = new Date(this.arr_BHHS.GioHienHanh);
+        this.Log_SoGiayBatDau = parseInt((HienHanh - GioVao) / 1000);
         classttn.LSLamBai = ''
-    
+
     }
 }

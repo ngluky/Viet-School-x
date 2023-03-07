@@ -15,6 +15,33 @@ function makeid(length) {
     return result;
 }
 
+function tranSTTtoString(now_cauhoi, dapan) {
+    var arr_HoanViID = convertJson2Array(classttn.arr_HoanVi, 'HoanViID');
+    var poshv = arr_HoanViID.indexOf(now_cauhoi.hoanvi);
+    var arr_HoanVi_CH = [];
+    if (poshv != -1) {
+        for (var i = 0; i < 4; i++) {
+            arr_HoanVi_CH.push(classttn.arr_HoanVi[poshv + i]);
+        }
+    }
+
+    var arr_HoanViID_fill = convertJson2Array(arr_HoanVi_CH, 'STTDapAn');
+    var pos1 = arr_HoanViID_fill.indexOf(dapan);
+    if (pos1 != -1) {
+        dapan = arr_HoanVi_CH[pos1]['STT'];
+    }
+
+    if (dapan == 0)
+        dapan = 'A';
+    else if (dapan == 1)
+        dapan = 'B';
+    else if (dapan == 2)
+        dapan = 'C';
+    else
+        dapan = 'D';
+    return dapan;
+}
+
 function formatTime(sec_num) {
     var hours   = Math.floor(sec_num / 3600);
     var minutes = Math.floor((sec_num - (hours * 3600)) / 60);
