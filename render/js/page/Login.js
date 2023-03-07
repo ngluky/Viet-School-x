@@ -42,3 +42,25 @@ function LoginPage(props) {
     )
 
 }
+
+function ToastMessage(props) {
+    return (
+        <div className="toast">
+            <div className="toast-top">
+                <div className='toast-icon'>
+                    <ion-icon name="close-circle"></ion-icon>
+                </div>
+
+                <div className="toast-title">
+                    Login
+                </div>
+            </div>
+
+            <div className="toast-body">
+                <p>
+                Tài khoản bị đăng nhập ở thiết bị khác
+                </p>
+            </div>
+        </div>
+    )
+}

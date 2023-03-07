@@ -125,14 +125,19 @@ body {
     border-radius: 5px;
 }
 
+.lis-sub-bottom {
+    height: calc(100% - 46px);
+    margin: 5px 0px 0px 0px;
+    padding-bottom: 6px;
+    overflow-y: hidden;
+}
+
 .list-sub .sub-view {
     background-color: #F5F5F5;
     border-radius: 5px;
-    overflow-y: scroll;
-    height: calc(100% - 60px);
-    margin: 5px 0px 0px 0px;
-    padding-bottom: 10px;
     display: grid;
+    overflow-y: auto;
+    height: 100%;
     grid-template-columns: 1fr 1fr 1fr 1fr;
     flex-wrap: wrap;
     align-content: flex-start;

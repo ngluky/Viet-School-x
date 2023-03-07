@@ -1,6 +1,9 @@
 var _Home_BaiHocGiaoVienID = null;
 var _Home_BaiHocID = null;
 var _Home_LopID = null;
+var _Ttn_Timer;
+var _Htt_Timer;
+var _Web_Check_Timer;
 var User;
 let classhscp, classQLBaiHoc, classhtt, classttn, classChamBaiKTTT;
 var Cookie = {}

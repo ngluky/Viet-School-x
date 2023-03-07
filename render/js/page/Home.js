@@ -1,3 +1,19 @@
+const name2url = {
+    "Toán" : "./img/Toan.jpg",
+    "Vật lí" : "./img/VatLy.jpg",
+    "Hóa học" : "./img/HoaHoc.jpg",
+    "Sinh học" : "./img/SinhHoc.jpg",
+    "Tin học" : "./img/TinHoc.jpg",
+    "GD QP-AN" : "./img/GDCP.jpg",
+    "Công nghệ" : "./img/CongNghe.jpg",
+    "Ngữ văn" : "./img/Van.jpg",
+    "Lịch Sử" : "./img/LinhSu.jpg",
+    "Địa Lí" : "./img/DiaLy.jpg",
+    "GDCD" : "./img/GDCD.jpg",
+    "Thể dục" : "",
+    "Ngoại ngữ" : "./img/TienAnh.jpg",
+    "Tin học" : "./img/TinHoc.jpg"
+}
 
 function Filter(props) {
     const data = Array.from(new Set(props.data));
@@ -26,7 +42,7 @@ function Sub(props) {
                 {data.TrangThai}
             </div>
             <div className="sub-img">
-                <img src="" alt="" />
+                <img src={name2url[data.TenMon]} alt="" />
             </div>
             <div className="sub-title">
                 <p className="title">
@@ -43,6 +59,11 @@ function Sub(props) {
     )
 }
 
+function SlideBar() {
+    return (
+        <div></div>
+    )
+}
 
 function ListSub(props) {
     const Classhscp = props.Classhscp;
@@ -51,8 +72,14 @@ function ListSub(props) {
         <React.Fragment>
             <div className="list-sub">
                 <Filter onClick={Classhscp.handleFilter} data={children.map((e) => e.TenMon)} />
-                <div className="sub-view">
-                    {children.map((e, index) => <Sub key={index} data={e} onClick={Classhscp.JoinRoom}/>)}
+                <div className="lis-sub-bottom">
+                    <div className="sub-view">
+                        {children.map((e, index) => <Sub key={index} data={e} onClick={Classhscp.JoinRoom}/>)}
+                    </div>
+
+                    <div className="slide-bar">
+
+                    </div>
                 </div>
             </div>
         </React.Fragment>

@@ -62,6 +62,7 @@ function HocTrucTuyen() {
 
                 let arrGio = result.Data.getTable('GioHienHanh').toJson();
                 this.GioHienHanh = arrGio[0].GioHienHanh.replace(" ", "T");
+                console.log(arrGio[0].GioHienHanh.replace(" ", "T"))
                 this.GioHienHanhClient = new Date();
                 if (result.Data.getTable('BaiHoc'))
                     this.arr_Data_BaiHoc = result.Data.getTable('BaiHoc').toJson();
@@ -106,6 +107,25 @@ function HocTrucTuyen() {
         
     }
 
+    this.slideBarTool = [
+        {
+            title : 'Thành viên',
+            iconName : 'people-outline',
+            onClick: () => {console.log('tv')}
+        },
+        {
+            title : 'chat',
+            iconName : 'chatbox-outline',
+            onClick: () => {console.log('chat')}
+        },
+        {
+            title : 'Câu hỏi',
+            iconName : 'checkbox-outline',
+            onClick: () => {console.log('chat')}
+        }
+    
+    ]
+
     this.handlSideBar = {
         isSideBar : () => this.isSideBar, 
 
@@ -119,7 +139,9 @@ function HocTrucTuyen() {
             if (!this.rootContent) {
                 this.rootContent = ReactDOM.createRoot(document.getElementById('content'))
             }
+            clearInterval(_Ttn_Timer);
             document.querySelector(".phonghoc-content-top").classList.remove('baitap')
+            document.querySelector('#side-bar div.chat-top').classList.remove('baitap')
             this.rootContent.render(React.createElement(BaiHoc))
 
         },
@@ -129,19 +151,47 @@ function HocTrucTuyen() {
                 this.rootContent = ReactDOM.createRoot(document.getElementById('content'))
             }
 
-            if (this.dataTab.baiTap) {
+            classhtt.rootContent.render(React.createElement(BaiTap , {
+                classttn : classttn
+            }))
 
+            if (classttn.arr_Data.length > 0) {
+                console.log("no dow")
+                setTimeout(() => {
+                    _Ttn_Timer = setInterval(function () {
+                        this.second_Bailam++;
+                        var ThoiGianLamBai_Client = parseInt((new Date() - this.GioBatDauLamBai_Client) / 1000); // giay
+                        this.second_Bailam_TruocDongBo = this.second_Bailam;
+                    
+                        if (this.second_Bailam >= this.limit_minute * 60) {/*classhtt.isKiemTra && */
+                            this.isConThoiGianLamBai = false;
+                            // clearInterval(_Ttn_Timer);
+        
+                            console.log("time end")
+                        }
+        
+                        this.isConThoiGianLamBai = true;
+                        var thoigianconlai = this.limit_minute * 60 - this.second_Bailam;
+                        var str = formatTime(Math.floor(thoigianconlai))
+                        console.log(str)
+                        document.getElementById('bottom-timer').textContent = str;
+                    }.bind(classttn), 1000)
+                    classttn.readerCauhoi()
+                    var thoigianconlai = classttn.limit_minute * 60 - classttn.second_Bailam;
+                    var str = formatTime(Math.floor(thoigianconlai))
+                    // console.log(str)
+                    document.getElementById('bottom-timer').textContent = str;
+                }, 10)
             }
             else {
                 this.getBaiTap(() => {
+                    classttn.initTimer()
                     classttn.readerCauhoi()
                 })
             }
 
             document.querySelector(".phonghoc-content-top").classList.add('baitap')
-            classhtt.rootContent.render(React.createElement(BaiTap , {
-                classttn : classttn
-            }))
+            document.querySelector('#side-bar div.chat-top').classList.add('baitap')  
         },
 
         chatOnOff : (on) => {
@@ -156,6 +206,7 @@ function HocTrucTuyen() {
                 ele.classList.add('off');
                 ele.style.width = "0px"
                 ele.style.margin = "0"
+                ele.style.opacity = "0";
             }
         }
 
@@ -166,6 +217,9 @@ function HocTrucTuyen() {
             // df_HideLoading();
             try {
                 if (CheckResult(result)) {
+                    let arrGio = result.Data.getTable('GioHienHanh').toJson();
+                        this.GioHienHanh = arrGio[0].GioHienHanh.replace(" ", "T");
+                        this.GioHienHanhClient = new Date();
                     if (result.Data.getTable('HoanVi'))
                         classttn.arr_HoanVi = result.Data.getTable('HoanVi').toJson();
                     if (classttn.arr_HoanVi == undefined || classttn.arr_HoanVi.length == 0) {
@@ -257,7 +311,7 @@ function HocTrucTuyen() {
                         // showMsg('Thông báo lỗi', "Không thể lấy được thời gian kết thúc bài học, Hãy vào phòng lại hoặc làm tươi (F5) trang web.", 'OK', 'error', function () { return; });
                     }
                     else {
-                        // classhtt.tinhThoiGianLamBai();
+                        classhtt.tinhThoiGianLamBai();
                         if (callback)
                             callback(result);
                     }
@@ -333,5 +387,44 @@ function HocTrucTuyen() {
         })
 
 
+    }
+
+    this.tinhThoiGianLamBai = function() {
+        this.GioClient_LucLayCauHoi = new Date();
+        classttn.GioBatDauLamBai_Client = this.GioClient_LucLayCauHoi;
+        classttn.second_Bailam = 0;
+        var t_TGKT = new Date(this.arr_Data_BaiHoc['TGKT'].replace(" ", "T"));
+        var t_TGHH = new Date(this.GioHienHanh);
+        var timespan = (t_TGKT - t_TGHH) / 60000; //phut
+
+        // Nếu là kiểm tra thì bước này load Bài kiểm tra lên để lấy SoGiayLamBai
+        if (!this.arr_BHHS['SoGiayLamBai'] || this.arr_BHHS['SoGiayLamBai'] == 0
+            || !this.arr_Data_BaiHoc.SoPhutLamBai || this.arr_Data_BaiHoc.SoPhutLamBai == 0) { // chưa làm bài
+            if (this.arr_Data_BaiHoc.SoPhutLamBai && this.arr_Data_BaiHoc.SoPhutLamBai != 0) {
+                if (this.arr_Data_BaiHoc.SoPhutLamBai < timespan)
+                    classttn.limit_minute = this.arr_Data_BaiHoc.SoPhutLamBai;
+                else
+                    classttn.limit_minute = timespan;
+            }
+            else {
+                if (timespan > 0)
+                    classttn.limit_minute = timespan;// SV_TGKT- SV_TGHH
+            }
+        }
+        else {//xet neu co gio vao roi, thì lấy sophutlambai(neu co) tru di so giay da lam => ra duoc so giay quy dinh
+            var sophutquydinh = this.arr_Data_BaiHoc.SoPhutLamBai - this.arr_BHHS['SoGiayLamBai'] / 60;
+            if (sophutquydinh > 0) {
+                if (sophutquydinh < timespan)
+                    classttn.limit_minute = sophutquydinh;
+                else
+                    classttn.limit_minute = timespan;
+            }
+            else {
+                classttn.limit_minute = 0;// Hết giờ
+            }
+        }
+
+        classttn.LSLamBai = ''
+    
     }
 }
