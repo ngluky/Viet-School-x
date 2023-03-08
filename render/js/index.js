@@ -12,7 +12,7 @@ this.DLL_Login = "Elearning.Core.Login"
 const Root = ReactDOM.createRoot(document.getElementById("root"))
 function handleLogin(user , pass , remender) {
     if (!(user && pass)) {
-        return
+        showMsg("Login" , "Bạn chưa nhập đầy đủ thông tin" , '' , 'war')
     }
 
     Cookie['Remenber'] = remender
@@ -21,20 +21,22 @@ function handleLogin(user , pass , remender) {
         if (!(result.Error == '' || result.Error)) {
             console.log(result.Error)
 
+            showMsg("Login" , result.Error)
+
         }
         else 
         {
             let data = result.Data;
-            console.log(result); 
             if (data instanceof DataTable){
                 if (data.Columns.exist('ID_Parent')){
-                    alert("cảm ơn đã thử dùng ứng dụng, do sự hạn chế bở quền hạn nê tôi(con) chỉ tối ưu hóa cho học sinh mà thôi")
+                    alert("cảm ơn đã thử dùng ứng dụng, do sự hạn chế bở quền hạn nê chỉ tối ưu hóa cho học sinh mà thôi")
                 }
 
             }
             else {
                 if (data.Error != undefined){
                     console.log(data.Error)
+                    showMsg("Login" , result.data)
                     return ;
                 }
                 else if (data.get('location') != undefined)
@@ -66,10 +68,11 @@ function handleLogin(user , pass , remender) {
                 }
                 else if (data.get('Error') != undefined)
                 {
+                    showMsg("Login" , data.get('Error'))
                     console.log(data.get('Error'))
                 }
                 else {
-                    console.log('err')
+                    showMsg("Login" , "Lỗi đăng nhập không sác định")
                 }
             }
             

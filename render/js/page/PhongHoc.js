@@ -115,7 +115,6 @@ function SideBarButton(props) {
         case "check":
             var on = props.on;
             const styleOnCheck = props.onStyle;
-            console.log(on);
             const id = makeid(6);
             return (
                 <div

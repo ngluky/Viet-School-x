@@ -126,6 +126,7 @@ body {
 }
 
 .lis-sub-bottom {
+    display: flex;
     height: calc(100% - 46px);
     margin: 5px 0px 0px 0px;
     padding-bottom: 6px;
@@ -133,6 +134,7 @@ body {
 }
 
 .list-sub .sub-view {
+    width: 100%;
     background-color: #F5F5F5;
     border-radius: 5px;
     display: grid;
@@ -157,7 +159,7 @@ body {
 .sub .sub-sta {
     position: absolute;
     z-index: 2;
-    background: #88ff81;
+    /* background:tomato; */
     padding: 5px;
     margin: 10px;
     border-radius: 5px;

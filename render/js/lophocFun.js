@@ -244,8 +244,6 @@ var df_AlertEnum = {
     light: "modal-body alert alert-light",
     dark: "modal-body alert alert-dark"
 }
-
-
 var df_RowState = {
     Added: 0,
     Edited: 1,
@@ -263,29 +261,7 @@ function df_HideLoading() {
 }
 
 function df_FlashControl(selector, Isflash) {
-    if (Isflash && !$('#' + selector).hasClass("tvflash")) {
-        $('#' + selector).addClass('tvflash');
-    }
-    if (!Isflash && $('#' + selector).hasClass("tvflash"))
-        $('#' + selector).removeClass('tvflash');
-}
-
-function df_openPage(pageName, elmnt, color) {
-    var i, tabcontent, tablinks;
-    tabcontent = document.getElementsByClassName("tabcontent");
-    for (i = 0; i < tabcontent.length; i++) {
-        tabcontent[i].style.display = "none";
-    }
-    tablinks = document.getElementsByClassName("tablink");
-    for (i = 0; i < tablinks.length; i++) {
-        tablinks[i].style.backgroundColor = "";
-        tablinks[i].style.border = "0px solid black";
-        tablinks[i].style.borderBottomWidth = "1px";
-    }
-    document.getElementById(pageName).style.display = "grid";
-    elmnt.style.backgroundColor = color;
-    elmnt.style.border = "1px solid black";
-    elmnt.style.borderBottomWidth = "0px";
+    console.log('df_FlashControl')
 }
 
 /**
@@ -638,4 +614,125 @@ function df_string2Bin(str) {
 
 function df_bin2String(array) {
     return String.fromCharCode.apply(String, array);
+}
+
+function StringToDOMEle(string) {
+    const div = document.createElement('div')
+
+    div.innerHTML = string;
+    
+    return div.firstElementChild;
+}
+
+function showMsg(title, msg, labelyes = '<i class="fa-solid fa-check" aria-hidden="true"></i> Đồng ý', type = "error", callback = function () { return; }) {
+
+    const color = {
+        'ok': 'yellowgreen',
+        'error': 'tomato',
+        'war': 'orange',
+        'info' : "#FFFFFF"   
+    }
+
+    var ele = StringToDOMEle(`
+    <div class="toast">
+        <div class="toast-top" style="background: ${color[type]}">
+            <div class='toast-icon'>
+                <ion-icon name="close-circle"></ion-icon>
+            </div>
+
+            <div class="toast-title">
+                ${title}
+            </div>
+
+            <div class="toast-close">
+                <button>
+                    <ion-icon name="close-outline"></ion-icon>
+                </button>
+            </div>
+        </div>
+
+        <div class="toast-body">
+            <p>
+                ${msg}
+            </p>
+        </div>
+    </div>`)
+
+    ele.querySelector('div.toast-close > button').addEventListener('click', () => {
+        ele.style.transform = "translateX(120%)"
+        callback()
+        setTimeout(() => {
+            ele.remove()
+        }, 300)
+    })
+
+    document.getElementById('message').prepend(ele)
+
+    
+}
+
+function showConfirm(title, msg, labelyes, labelno, okCallback, cancelCallback) {
+    var ele = StringToDOMEle(`
+    <div class="toast">
+        <div class="toast-top">
+            <div class='toast-icon'>
+                <ion-icon name="cube"></ion-icon>
+            </div>
+
+            <div class="toast-title">
+                ${title}
+            </div>
+
+            <div class="toast-close">
+                <button>
+                    <ion-icon name="close-outline"></ion-icon>
+                </button>
+            </div>
+        </div>
+
+        <div class="toast-body">
+            <p>
+                ${msg}
+            </p>
+
+            <div class="toast-button">
+                <div class="toast-button">
+                    <button>${labelyes}</button>
+                    <button>${labelno}</button>
+
+                </div>
+            </div>
+        </div>
+    </div>`)
+
+    ele.querySelector('div.toast-close > button').addEventListener('click', () => {
+        ele.style.transform = "translateX(120%)"
+        setTimeout(() => {
+            ele.remove()
+        }, 300)
+    })
+
+
+    ele.querySelector("div.toast-body > div > div > button:nth-child(2)").addEventListener('click' , () => {
+        ele.style.transform = "translateX(120%)"
+        if (cancelCallback) cancelCallback()
+        setTimeout(() => {
+            ele.remove()
+        }, 300)
+    })
+
+    ele.querySelector("div.toast-body > div > div > button:nth-child(1)").addEventListener('click' , () => {
+        ele.style.transform = "translateX(120%)"
+        if (okCallback) okCallback()
+        setTimeout(() => {
+            ele.remove()
+        }, 300)
+    })
+
+
+    
+    document.getElementById('message').prepend(ele)
+
+    
+    
 }

@@ -62,7 +62,6 @@ function HocTrucTuyen() {
 
                 let arrGio = result.Data.getTable('GioHienHanh').toJson();
                 this.GioHienHanh = arrGio[0].GioHienHanh.replace(" ", "T");
-                console.log(arrGio[0].GioHienHanh.replace(" ", "T"))
                 this.GioHienHanhClient = new Date();
                 if (result.Data.getTable('BaiHoc'))
                     this.arr_Data_BaiHoc = result.Data.getTable('BaiHoc').toJson();

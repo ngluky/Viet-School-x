@@ -34,11 +34,21 @@ function Filter(props) {
 }
 
 function Sub(props) {
+
+    const backgrounds = [
+        'yellowgreen',
+        "orange",
+        "tomato"
+    ]
+    
     var data = props.data;
+    // console.log(data)
     var onJoinRoom = props.onClick
     return (
         <div className="sub" onClick={() => {onJoinRoom(data)}}>
-            <div className="sub-sta">
+            <div className="sub-sta" style={{
+                background: backgrounds[data.TrangThaiID]
+            }}>
                 {data.TrangThai}
             </div>
             <div className="sub-img">

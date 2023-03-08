@@ -58,8 +58,14 @@ function ToastMessage(props) {
 
             <div className="toast-body">
                 <p>
-                Tài khoản bị đăng nhập ở thiết bị khác
+                    Tài khoản bị đăng nhập ở thiết bị khác
                 </p>
+
+                <div className="toast-button">
+                    <button>ok</button>
+                    <button>cancel</button>
+
+                </div>
             </div>
         </div>
     )

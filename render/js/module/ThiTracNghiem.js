@@ -112,6 +112,7 @@ function ThiTracNghiem() {
 
             if (classhtt.arr_BHHS.ThoiGianNopBai && classhtt.arr_BHHS.ThoiGianNopBai != null && classhtt.arr_BHHS.ThoiGianNopBai.trim() != "") {
                 this.isNopBai = true;
+                this.checkLuuBai()
                 console.log("đã nộp bài")
             }
 
@@ -196,7 +197,7 @@ function ThiTracNghiem() {
 
     this.updateBaiLam = function (cau, dapan) {
         if (!this.isConThoiGianLamBai || this.isNopBai) {
-            // showMsg('Thông báo', (this.isNopBai ? 'Bạn đã nộp bài' : 'Đã qua thời gian cho phép làm bài') + '. Không thể chọn đáp án hoặc lưu bài!', 'OK', 'error', function () { return; });
+            showMsg('Thông báo', (this.isNopBai ? 'Bạn đã nộp bài' : 'Đã qua thời gian cho phép làm bài') + '. Không thể chọn đáp án hoặc lưu bài!', 'OK', 'error', function () { return; });
             return false;
         }
 
@@ -382,14 +383,20 @@ function ThiTracNghiem() {
             }
         }
     }
-    this.writeLog = function () {
+
+    this.checkLuuBai = function() {
+        document.getElementById('bottom-timer').textContent = "0000"
+    }
+
+    this.WriteLog = function (ThoiGianLamBai_Client, LyDoNopBai) {
         WSDBGet(function (rs) {
-            //df_HideLoading();
-            //if (CheckResult(rs)) {
-            //
-            console.log("Ghi log " + rs.ErrorNumber)
-            //}
-        }.bind(this), "HS.TTN.WriteLog", "BaiHocHSID", this.BaiHocHSID.toString(), "ThoiGianLamBai_Client", ThoiGianLamBai_Client.toString(), "second_Bailam", this.second_Bailam_TruocDongBo.toString(), "GioHienHanh_Server", df_DateTime_SQL(new Date(this.GioHienHanh)), "GioHienHanh_Client", df_DateTime_SQL(classttn.GioBatDauLamBai_Client), "limit_minute", this.limit_minute.toFixed(2), "SoGiayLamBai", (df_unnu(classhtt.arr_BHHS.SoGiayLamBai) ? "0" : classhtt.arr_BHHS.SoGiayLamBai.toString()), "GioClient_LucLayCauHoi", df_DateTime_SQL(classhtt.GioClient_LucLayCauHoi), "GioClient_LucGoiHamLuu", df_DateTime_SQL(new Date()), "IsKiemTra", classhtt.isKiemTra, "LyDoNopBai", LyDoNopBai);
+                //df_HideLoading();
+                //if (CheckResult(rs)) {
+                //
+                console.log("Ghi log " + rs.ErrorNumber)
+                //}
+            }.bind(this), "HS.TTN.WriteLog", "BaiHocHSID", this.BaiHocHSID.toString(), "ThoiGianLamBai_Client", ThoiGianLamBai_Client.toString(), "second_Bailam", this.second_Bailam_TruocDongBo.toString(), "GioHienHanh_Server", df_DateTime_SQL(new Date(this.GioHienHanh)), "GioHienHanh_Client", df_DateTime_SQL(classttn.GioBatDauLamBai_Client), "limit_minute", this.limit_minute.toFixed(2), "SoGiayLamBai", (df_unnu(classhtt.arr_BHHS.SoGiayLamBai) ? "0" : classhtt.arr_BHHS.SoGiayLamBai.toString()), "GioClient_LucLayCauHoi", df_DateTime_SQL(classhtt.GioClient_LucLayCauHoi), "GioClient_LucGoiHamLuu", df_DateTime_SQL(new Date()), "IsKiemTra", classhtt.isKiemTra, "LyDoNopBai", LyDoNopBai
+        );
 
     }
 
@@ -415,7 +422,7 @@ function ThiTracNghiem() {
         this.LyDoNopBai = '';
     }
 
-    this.lamBaiLai = function () {
+    this.lamBaiLai = function (isLamLai) {
         if (isLamLai) {
             showConfirm("Làm bài lại - bảo lưu", "Khi làm bài lại:<br/>- Các câu hỏi,đáp án, vị trí câu hỏi và đáp án vẫn được bảo lưu.<br/>- Thời gian sẽ được bắt đầu lại.", 'Đồng ý', 'Bỏ qua', function () {
                 df_ShowLoading();
@@ -426,7 +433,7 @@ function ThiTracNghiem() {
                         var KetQua = rs.Data.Tables[0].Rows[0].getCell('KetQua');
                         if (code == true || code == 1) {
                             showMsg("Thông báo", KetQua, undefined, 'success', function () {
-                                location.reload();
+                                // location.reload();
                             });
                         }
                         else {
@@ -444,17 +451,17 @@ function ThiTracNghiem() {
                     var code = rs.Data.Tables[0].Rows[0].getCell('Code');
                     var KetQua = rs.Data.Tables[0].Rows[0].getCell('KetQua');
                     if (code == true || code == 1) {
-                        // showMsg("Thông báo", KetQua, undefined, 'success', function () {
+                        showMsg("Thông báo", KetQua, undefined, 'success', function () {
+                        });
                         //     location.reload();
-                        // });
                     }
                     else {
                         showMsg('Thông báo lỗi', KetQua);
                     }
                 }
             }.bind(this), 'HS.LamLaiBaiLuyenTap', 'BaiHocGiaoVienID', classhtt.BaiHocGiaoVienID, "BaiHocLopID", classttn.BaiHocLopID, "BaiHocHSID", classhtt.arr_BHHS.BaiHocHSID, "IsLamLai", isLamLai, "Type", "HSLamBaiLai", "Store", classhtt.StoreMode)
-            // showConfirm("Làm bài mới - không bảo lưu", "Khi làm bài mới:<br/>- Các câu hỏi,đáp án, vị trí câu hỏi và đáp án sẽ được làm mới.<br/>- Thời gian sẽ được bắt đầu lại.", 'Đồng ý', 'Bỏ qua', function () {
-            // }.bind(this), function () { return; })
+            showConfirm("Làm bài mới - không bảo lưu", "Khi làm bài mới:<br/>- Các câu hỏi,đáp án, vị trí câu hỏi và đáp án sẽ được làm mới.<br/>- Thời gian sẽ được bắt đầu lại.", 'Đồng ý', 'Bỏ qua', function () {
+            }.bind(this), function () { return; })
         }
     }
 
@@ -506,5 +513,16 @@ function ThiTracNghiem() {
         else if (dapan == 'D')
             stt = arr[3].stt.toString();
         return stt;
+    }
+
+    this.saveBailamAll = function() {
+        this.timeOut = true;
+        this.doSave(false)
+    }
+
+    this.handlNopBai = function() {
+        var ThoiGianLamBai_Client = parseInt((new Date() - this.GioBatDauLamBai_Client) / 1000); // giay
+        this.saveBailamAll();
+        this.WriteLog(ThoiGianLamBai_Client, 'Web: Học sinh nhấn nút lưu bài.');
     }
 }
