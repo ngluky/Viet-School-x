@@ -279,6 +279,25 @@ function Menu(props) {
 function ChatTab(props) {
     const classhtt = props.classhtt;
 
+    const handlOff = function() {
+        const ele = document.querySelector('.chat-bottom-button.lamlai .chat-bottom-button-list');
+        console.log('ok')
+        ele.classList.remove('on')
+        document.getElementById('root').removeEventListener('click', handlOff , false)
+    }
+
+    const handlOnOff = function() {
+        const ele = document.querySelector('.chat-bottom-button.lamlai .chat-bottom-button-list');
+        if (ele.classList.contains('on')) {
+            ele.classList.remove('on')
+        }
+        else {
+            ele.classList.add('on')
+
+            document.getElementById('root').addEventListener('click', handlOff)
+        }
+    }
+
     return (
         <React.Fragment>
             <div className="chat-top"></div>
@@ -288,7 +307,21 @@ function ChatTab(props) {
             </div>
 
             <div className="chat-bottom">
-                <button className="chat-bottom-button">
+                <button className="chat-bottom-button lamlai" style={classhtt.isOnTap ? {} : {'display': 'none'}} onClick={() => {
+                    handlOnOff()
+                }}>
+                    <ion-icon name="caret-up-outline"></ion-icon>
+
+                    <div className="chat-bottom-button-list">
+                        <div onClick={() => {classttn.lamBaiLai()}}>Làm bài lại</div>
+                        <div onClick={() => {classttn.lamBaiLai(true)}}>Làm lại bài mới</div>
+                    </div>
+
+                </button>
+
+                <button className="chat-bottom-button" onClick={() => {
+                    classttn.handlNopBai()
+                }}>
                     nopbai
                 </button>
             </div>

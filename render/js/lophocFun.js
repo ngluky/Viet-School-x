@@ -627,7 +627,7 @@ function StringToDOMEle(string) {
 function showMsg(title, msg, labelyes = '<i class="fa-solid fa-check" aria-hidden="true"></i> Đồng ý', type = "error", callback = function () { return; }) {
 
     const color = {
-        'ok': 'yellowgreen',
+        'success': 'yellowgreen',
         'error': 'tomato',
         'war': 'orange',
         'info' : "#FFFFFF"   
@@ -697,9 +697,10 @@ function showConfirm(title, msg, labelyes, labelno, okCallback, cancelCallback) 
 
             <div class="toast-button">
                 <div class="toast-button">
-                    <button>${labelyes}</button>
-                    <button>${labelno}</button>
 
+                    ${labelyes ? `<button>${labelyes}</button>` : ''}
+                    
+                    ${labelno ? `<button>${labelno}</button>` : ''}
                 </div>
             </div>
         </div>
@@ -728,8 +729,6 @@ function showConfirm(title, msg, labelyes, labelno, okCallback, cancelCallback) 
             ele.remove()
         }, 300)
     })
-
-
     
     document.getElementById('message').prepend(ele)
 

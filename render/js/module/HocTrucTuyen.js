@@ -53,6 +53,7 @@ function HocTrucTuyen() {
     this.rootChat = null;
     this.dataTab = {}
     this.isSideBar = true
+    this.isOnTap = false
 
 
     this.getBaiHoc = (callback) => {
@@ -138,8 +139,8 @@ function HocTrucTuyen() {
         },
 
         baiHoc: () => {
-            if (!this.rootContent) {
-                this.rootContent = ReactDOM.createRoot(document.getElementById('content'))
+            if (!classhtt.rootContent) {
+                classhtt.rootContent = ReactDOM.createRoot(document.getElementById('content'))
             }
             clearInterval(_Ttn_Timer);
             document.querySelector(".phonghoc-content-top").classList.remove('baitap')
@@ -380,6 +381,7 @@ function HocTrucTuyen() {
         this.BaiHocLopID = data.BaiHocLopID.toString();
         this.LoaiPhongHoc = data.TrangThaiID;
         this.arr_Data_BaiHoc = data
+        this.isOnTap = data.VaoPhong == "Ôn Tập" ? true : false
         ws.registerOnMessageFunction(this, this.socketMessage);
         this.renderInit()
         this.joinRoomIfYes(() => {

@@ -61,6 +61,8 @@ function ThiTracNghiem() {
 
     this.initTimer = function () {
 
+        this.isBaiOnTap = classhtt.isOnTap;
+
         this.arr_Bailam.forEach(e => {
             var value = this.arr_Data[e.cau - 1];
             var dapan = tranSTTtoString(value, e.dapan);
@@ -104,6 +106,7 @@ function ThiTracNghiem() {
                 }
                 console.log('Đã làm: ' + this.arr_Bailam.length + '/' + this.arr_Data.length);
             }
+            document.getElementById('bottom-dalam').textContent = this.arr_Bailam.length + '/' + this.arr_Data.length
 
             if (this.GioBatDauLamBai_Client == undefined) {// lúc chuyển tab qua lại sẽ không reset thời gian
                 this.GioBatDauLamBai_Client = new Date();
@@ -156,10 +159,11 @@ function ThiTracNghiem() {
         }
 
         this.updateCauHoi(this.now_slide - 1)
+        document.getElementById('bottom-dalam').textContent = this.arr_Bailam.length + '/' + this.arr_Data.length
+
     }
 
     this.nextSlide = function () {
-
         var cauChon = Array.from(document.querySelectorAll('div.dapan > div.dp')).map(e => e.querySelector('input').checked).indexOf(true)
         if (cauChon != -1) {
             this.updateBaiLam(this.now_slide , classhtt.MappingID2Char[cauChon])
@@ -172,6 +176,7 @@ function ThiTracNghiem() {
         }
 
         this.updateCauHoi(this.now_slide - 1)
+        document.getElementById('bottom-dalam').textContent = this.arr_Bailam.length + '/' + this.arr_Data.length
 
     }
 
@@ -348,7 +353,7 @@ function ThiTracNghiem() {
                             this.checkLuuBai();
                             if ((!this.isBaiGiai && !classhtt.isKiemTra) || classhtt.isKiemTra || classhtt.arr_Data_BaiHoc['ChoXemLaiBaiLam'] == false)
                                 clearInterval(_Ttn_Timer);
-                            //showMsg("Thông báo nộp bài", 'Bạn đã nộp bài', 'Đồng ý', 'success', function () { return;})
+                            showMsg("Thông báo nộp bài", 'Bạn đã nộp bài', 'Đồng ý', 'success', function () { return;})
                             console.log("Thông báo nộp bài", '<p><b>Bạn đã nộp bài!</b></br>' + this.LyDoNopBaiHienThi + '</br>- Bấm vào nút tải kết quả để lưu trữ lại kết quả đã nộp. Sử dụng kết quả này để đối chiếu khi cần thiết.</p>', 'Tải kết quả', 'Không tải', function () { classttn.LuuMinhChung(true); }, function () { return; })
                         }
                         this.LSLamBai = "";
@@ -425,7 +430,7 @@ function ThiTracNghiem() {
     this.lamBaiLai = function (isLamLai) {
         if (isLamLai) {
             showConfirm("Làm bài lại - bảo lưu", "Khi làm bài lại:<br/>- Các câu hỏi,đáp án, vị trí câu hỏi và đáp án vẫn được bảo lưu.<br/>- Thời gian sẽ được bắt đầu lại.", 'Đồng ý', 'Bỏ qua', function () {
-                df_ShowLoading();
+                console.log("continu")
                 WSDBGet(function (rs) {
                     df_HideLoading();
                     if (CheckResult(rs)) {
@@ -433,7 +438,10 @@ function ThiTracNghiem() {
                         var KetQua = rs.Data.Tables[0].Rows[0].getCell('KetQua');
                         if (code == true || code == 1) {
                             showMsg("Thông báo", KetQua, undefined, 'success', function () {
-                                // location.reload();
+                                classttn = new ThiTracNghiem();
+                                checkloggin(() => {
+                                    document.querySelector('.action-button').click()
+                                })
                             });
                         }
                         else {
@@ -445,22 +453,27 @@ function ThiTracNghiem() {
             }.bind(this), function () { return; })
         }
         else {
-            WSDBGet(function (rs) {
-                df_HideLoading();
-                if (CheckResult(rs)) {
-                    var code = rs.Data.Tables[0].Rows[0].getCell('Code');
-                    var KetQua = rs.Data.Tables[0].Rows[0].getCell('KetQua');
-                    if (code == true || code == 1) {
-                        showMsg("Thông báo", KetQua, undefined, 'success', function () {
-                        });
-                        //     location.reload();
+            showConfirm("Làm bài lại - bảo lưu", "Khi làm bài lại:<br/>- Các câu hỏi,đáp án, vị trí câu hỏi và đáp án vẫn được bảo lưu.<br/>- Thời gian sẽ được bắt đầu lại.", 'Đồng ý', 'Bỏ qua', function () {
+                console.log("continu")
+                WSDBGet(function (rs) {
+                    df_HideLoading();
+                    if (CheckResult(rs)) {
+                        var code = rs.Data.Tables[0].Rows[0].getCell('Code');
+                        var KetQua = rs.Data.Tables[0].Rows[0].getCell('KetQua');
+                        if (code == true || code == 1) {
+                            showMsg("Thông báo", KetQua, undefined, 'success', function () {
+                                classttn = new ThiTracNghiem();
+                                checkloggin(() => {
+                                    document.querySelector('.action-button').click()
+                                })
+                            });
+                        }
+                        else {
+                            showMsg('Thông báo lỗi', KetQua);
+                        }
+
                     }
-                    else {
-                        showMsg('Thông báo lỗi', KetQua);
-                    }
-                }
-            }.bind(this), 'HS.LamLaiBaiLuyenTap', 'BaiHocGiaoVienID', classhtt.BaiHocGiaoVienID, "BaiHocLopID", classttn.BaiHocLopID, "BaiHocHSID", classhtt.arr_BHHS.BaiHocHSID, "IsLamLai", isLamLai, "Type", "HSLamBaiLai", "Store", classhtt.StoreMode)
-            showConfirm("Làm bài mới - không bảo lưu", "Khi làm bài mới:<br/>- Các câu hỏi,đáp án, vị trí câu hỏi và đáp án sẽ được làm mới.<br/>- Thời gian sẽ được bắt đầu lại.", 'Đồng ý', 'Bỏ qua', function () {
+                }.bind(this), 'HS.LamLaiBaiLuyenTap', 'BaiHocGiaoVienID', classhtt.BaiHocGiaoVienID, "BaiHocLopID", classttn.BaiHocLopID, "BaiHocHSID", classhtt.arr_BHHS.BaiHocHSID, "IsLamLai", isLamLai, "Type", "HSLamBaiLai", "Store", classhtt.StoreMode)
             }.bind(this), function () { return; })
         }
     }
@@ -521,8 +534,106 @@ function ThiTracNghiem() {
     }
 
     this.handlNopBai = function() {
+
+        if (!this.isNopBai) {
+            console.log('nopbai')
+            if (!this.isConThoiGianLamBai) {
+                showMsg('Thông báo', 'Đã hết thời gian nộp bài!', 'OK', 'error', function () { return; });
+                return false;
+            }
+            var arr_Dapan = convertJson2Array(this.arr_Bailam, 'dapan');
+            var count_dapan = 0;
+            var count_noidungTLChuaLam = 0;
+            for (var i = 0; i < arr_Dapan.length; i++) {
+                if (arr_Dapan[i])
+                    count_dapan++;
+                if (!this.arr_Data[i].tracnghiem)// tự luận
+                {
+                    count_dapan++;
+                    if (df_unde(this.arr_Bailam[i].noidung) || this.arr_Bailam[i].noidung == '') {
+                        count_noidungTLChuaLam++;
+                    }
+                }
+            }
+            var smg = '';
+            var isThongBao = true;
+            if (count_dapan < this.arr_Data.length) {
+                isThongBao = true;
+                smg = 'Bạn chưa hoàn thành hết các câu hỏi.';
+            }
+            if (count_noidungTLChuaLam > 0) {
+                isThongBao = true;
+                smg += ' Bạn chưa hoàn thành hết các câu tự luận';
+            }
+            var arr_Xemlai = convertJson2Array(this.arr_Bailam, 'xemlai');
+            var count_xemlai = 0;
+            for (var i = 0; i < arr_Dapan.length; i++) {
+                if (arr_Xemlai[i] && arr_Xemlai[i] == 1)
+                    count_xemlai++;
+            }
+
+            if (count_xemlai > 0) {
+                isThongBao = true;
+                if (smg != '')
+                    smg += ' và Bạn còn câu hỏi cần xem lại';
+                else
+                    smg = 'Bạn còn câu hỏi cần xem lại';
+            }
+            if (this.now_slide - 1 > 0 && this.now_slide - 1 < this.arr_Data.length) {// co now_slide
+                var now_cauhoi = this.arr_Data[this.now_slide - 1];
+                var checkdiff = false;
+                if (!now_cauhoi.tracnghiem) {
+                    var arr_Cau_dalam = convertJson2Array(this.arr_Bailam, 'cau');
+                    var pos = arr_Cau_dalam.indexOf(this.now_slide);
+                    var content = this.getBaiLam_TuLuan();
+                    if (content == null) checkdiff = true;
+                    else {
+                        if (pos != -1) {
+                            var noidung = this.arr_Bailam[pos]['noidung'];
+                            if (noidung != content)
+                                checkdiff = true;
+                        }
+                        else if (content != '') {
+                            checkdiff = true;
+                        }
+                    }
+
+                    console.log(checkdiff)
+                    if (checkdiff == true) {
+                        showConfirm('Thông báo', 'Bạn chưa chọn <b>"Lưu bài"</b>.<br/> Vui lòng lưu bài tự luận trước khi nộp bài. Quay lại để lưu bài tự luận <b>[Quay lại]</b> hoặc tiếp tục nộp bài <b>[Nộp bài không lưu tự luận]</b> nhưng không lưu tự luận?', 'Nộp bài không lưu tự luận', 'Quay lại',
+                            function () { this.LuuBaiCoThongBao(isThongBao, smg); }.bind(this),
+                            function () {
+                                return;
+                            }.bind(this));
+                    }
+                    else {
+                        this.LuuBaiCoThongBao(isThongBao, smg);
+                    }
+                }
+                else
+                    this.LuuBaiCoThongBao(isThongBao, smg);
+            }
+            else {
+                this.LuuBaiCoThongBao(isThongBao, smg);
+            }
+        }
+    }
+
+    this.LuuBaiCoThongBao = function(isThongBao, smg) {
         var ThoiGianLamBai_Client = parseInt((new Date() - this.GioBatDauLamBai_Client) / 1000); // giay
-        this.saveBailamAll();
-        this.WriteLog(ThoiGianLamBai_Client, 'Web: Học sinh nhấn nút lưu bài.');
+        if (isThongBao) {
+            smg = '<b style="color:red">' + smg + '</b><p>Đã nộp bài là kết thúc bài làm, không còn làm bài được nữa. Bạn có chắc chắn muốn nộp bài?</p>';
+            showConfirm('Thông báo', smg, 'Có, nộp bài', 'Không, về làm bài', function () {
+                this.saveBailamAll();
+                this.WriteLog(ThoiGianLamBai_Client, 'Web: Học sinh nhấn nút lưu bài.');
+            }.bind(this), function () { return });
+        }
+        else {
+            smg = '<p style="color:red">Đã nộp bài là kết thúc bài làm, không còn làm bài được nữa. Bạn có chắc chắn muốn nộp bài?</p>';
+            showConfirm('Thông báo', smg, 'Có, nộp bài', 'Không, về làm bài', function () {
+                this.saveBailamAll();
+                this.WriteLog(ThoiGianLamBai_Client, 'Web: Học sinh nhấn nút lưu bài.');
+            }.bind(this), function () { return });
+        }
     }
 }
