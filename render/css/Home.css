@@ -42,11 +42,6 @@ body {
     border-radius: 2.5px;
 
 }
-
-.title-bar {
-    background-color: #ECECEC;
-}
-
 .contert {
     display: flex;
     justify-content: center;
@@ -135,7 +130,7 @@ body {
 
 .list-sub .sub-view {
     width: 100%;
-    background-color: #F5F5F5;
+    background-color: var(--background-content);
     border-radius: 5px;
     display: grid;
     overflow-y: auto;
@@ -150,7 +145,7 @@ body {
     position: relative;
     height: fit-content;
     padding-bottom: 5px;
-    background: #F5F5F5;
+    background: var(--background-content);
     border-radius: 5px;
     box-shadow: 0px 0px 3px 0px rgba(0, 0, 0, 0.5);
     margin: 10px;
@@ -159,6 +154,7 @@ body {
 .sub .sub-sta {
     position: absolute;
     z-index: 2;
+    color: black;
     /* background:tomato; */
     padding: 5px;
     margin: 10px;
@@ -214,7 +210,7 @@ body {
     margin: 0px 0px 2px 0px;
     height: 30px;
     display: flex;
-    background-color: #F5F5F5;
+    background-color: var(--background-content);
     border-radius: 5px;
     justify-content: space-between;
 }
@@ -247,7 +243,7 @@ body {
 .slide-bar-connet {
     margin: 0px 0px 0px 6px;
     border-radius: 5px;
-    background: #F5F5F5;
+    background: var(--background-content);
     width: calc(100% - 6px);
     height: 100%;
 }
@@ -265,7 +261,6 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: #C7C7C7;
     margin: 0px 0px 0px 10px;
     cursor: pointer;
     font-weight: 600;

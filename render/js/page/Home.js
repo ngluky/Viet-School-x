@@ -80,6 +80,11 @@ function Sub(props) {
 }
 
 function SlideBar(props) {
+
+    const themeChange = function(event) {
+
+    }
+
     return (
         <div className="slide-bar-connet">
             <div className="slide-bar-top">
@@ -140,13 +145,13 @@ function SlideBar(props) {
                     </div>
 
                     <div className="slide-bar-li-chill">
-                        <li>
+                        <li onClick={() => {setTheme('light')}} className={Cookie.theme == 'light' ? 'on' : ''}>
                             <p>Light mod</p>
                         </li>
-                        <li>
+                        <li onClick={() => {setTheme('dark')}} className={Cookie.theme == 'dark' ? 'on' : ''}>
                             <p>Dark mod</p>
                         </li>
-                        <li>
+                        <li onClick={() => {setTheme('system')}} className={Cookie.theme == 'system' ? 'on' : ''}>
                             <p>System mod</p>
                         </li>
                     </div>

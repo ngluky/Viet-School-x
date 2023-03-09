@@ -8,6 +8,27 @@ var User;
 let classhscp, classQLBaiHoc, classhtt, classttn, classChamBaiKTTT;
 var Cookie = {}
 
+
+const colorTheme = {
+    dark : {
+        '--background-main': '#1E1F22',
+        '--background-content': '#313338',
+        '--background-slide-bar': '#2B2D31',
+        '--font-color': '#D2D3D7',
+        '--color-button': '#5865F2',
+        '--color-check': '#23A55A'
+    },
+
+    light : {
+        '--background-main': ' #D9D9D9',
+        '--background-content': ' #F5F5F5',
+        '--background-slide-bar': ' #ECECEC',
+        '--font-color': ' #202020',
+        '--color-button': ' #5865F2',
+        '--color-check': ' #00692c'
+    }
+}
+
 this.DLL_Login = "Elearning.Core.Login"
 const Root = ReactDOM.createRoot(document.getElementById("root"))
 
@@ -20,6 +41,7 @@ function logOut() {
 function handleLogin(user , pass , remender) {
     if (!(user && pass)) {
         showMsg("Login" , "Bạn chưa nhập đầy đủ thông tin" , '' , 'war')
+        return;
     }
 
     Cookie['Remenber'] = remender
@@ -152,7 +174,68 @@ function getTNTokenID(url , callback)
     //     console.log(result) 
     // }, "Elearning.Core.Login", "CheckLogged");
     
-}   
+}
+Cookie_ipc.all().then(e => {
+    Cookie = e;
+
+    if (!Cookie.theme) {
+        Cookie.theme = 'dark'
+    }
+    console.log(Cookie.theme)
+})
+
+function getSystemMod() {
+    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        Cookie_ipc.set('theme' , 'dark')
+        Object.keys(colorTheme.dark).forEach(e => {
+            document.documentElement.style.setProperty(e, colorTheme.dark[e]);
+        })
+        return;
+    }
+
+    Cookie_ipc.set('theme' , 'light')
+        Object.keys(colorTheme.light).forEach(e => {
+        document.documentElement.style.setProperty(e, colorTheme.light[e]);
+    })
+
+    return;
+
+}
+
+function setTheme(mode) {
+
+    var ele = document.querySelectorAll('div.slide-bar-li-chill.on > li')
+    ele.forEach(e => {
+        e.classList.remove('on')
+    })
+    if (ele.length == 0)
+        ele = null
+    if (mode == "light") 
+    {
+        if (ele)
+            ele[0].classList.add('on')
+        Cookie_ipc.set('theme' , 'light')
+        Object.keys(colorTheme.light).forEach(e => {
+            document.documentElement.style.setProperty(e, colorTheme.light[e]);
+        })
+    }
+    else if (mode == "dark") {
+        if (ele)
+            ele[1].classList.add('on')
+        Cookie_ipc.set('theme' , 'dark')
+        Object.keys(colorTheme.dark).forEach(e => {
+            document.documentElement.style.setProperty(e, colorTheme.dark[e]);
+        })
+    }
+
+    else if (mode == 'system') {
+        if (ele)
+            ele[2].classList.add('on')
+        Cookie_ipc.set('theme' , 'system')
+        getSystemMod()
+    }
+}
+
 $(document).ready(() => {
         document.getElementById('close').addEventListener("click" , () => {
             App.close()
@@ -162,9 +245,10 @@ $(document).ready(() => {
         })
         console.log("ok")
         connect(() => {})
-        Cookie_ipc.all().then(e => {
-            Cookie = e;
-            console.log(e)
+        setTheme(Cookie.theme)
+        
+
+        setTimeout(() => {
             if (!Cookie.LoginOTP) {
                 Root.render(React.createElement(LoginPage , {onClick: handleLogin}))
             }
@@ -175,11 +259,11 @@ $(document).ready(() => {
                         User = jsonResult
                         classhscp = new HocSinhChonPhong();
                         classhscp.init();
-
+    
                         classhtt = new HocTrucTuyen();
                         classttn = new ThiTracNghiem();
                     }
-
+    
                     else {
                         Root.render(React.createElement(LoginPage , {onClick: handleLogin}))
                     }
@@ -187,7 +271,7 @@ $(document).ready(() => {
                     
                 }, "Elearning.Core.Login", "CheckLogged");
             }
-        })
+        }, 100)
         
     }
 
