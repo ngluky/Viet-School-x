@@ -236,6 +236,14 @@ body {
     background: transparent;
 }
 
+.slide-bar-connet .slide-bar-top {
+    height: calc(100% - 30px);
+}
+
+.slide-bar-connet .slide-bar-bottom .slide-bar-li {
+    cursor: pointer;
+}
+
 .slide-bar-connet {
     margin: 0px 0px 0px 6px;
     border-radius: 5px;
@@ -292,8 +300,12 @@ body {
     cursor: pointer;
 }
 
-.slide-bar-li li:hover {
+.slide-bar-li li.on {
     background: yellowgreen;
+}
+
+.slide-bar-li li:hover {
+    background: rgb(132, 175, 45);
 }
 
 .slide-bar-li > .slide-bar-li-title > ion-icon {
@@ -308,6 +320,7 @@ body {
     margin: 0px 3px 0px 3px;
     border-radius: 5px;
     background: rgba(0, 0, 0, 0.1);
+    overflow: hidden;
 }
 
 .slide-bar-li > .slide-bar-li-chill.on {
@@ -324,16 +337,47 @@ body {
     
 }
 
-.slide-bar-li .slide-bar-end {
+.slide-bar-li .slide-bar-tar {
+    display: flex;
+    align-items: center;
+    height: 100%;
+    width: calc(100% - 30px);
+    cursor: pointer;
+}
+
+.slide-bar-li .slide-bar-tar > ion-icon {
+    margin-right: 5px;
+    height: 100%;
+    width: 30px;
+}
+
+.slide-bar-li .slide-bar-tar:hover {
+    color: #888;
+}
+
+
+.slide-bar-li .slide-bar-end ,
+.slide-bar-li .slide-bar-setting {
     height: 100%;
     aspect-ratio: 1/1;
     display: flex;
     align-items: center;
     justify-content: center;
-
+    cursor: pointer;
 }
 
-.slide-bar-li .slide-bar-end > ion-icon {
+
+
+.slide-bar-li .slide-bar-end:hover {
+    color:  #888;
+}
+
+.slide-bar-li .slide-bar-setting:hover {
+    color:  #888;
+}
+
+.slide-bar-li .slide-bar-end > ion-icon,
+.slide-bar-li .slide-bar-setting > ion-icon {
     font-size: 20px;
 }
 

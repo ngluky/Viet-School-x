@@ -10,6 +10,13 @@ var Cookie = {}
 
 this.DLL_Login = "Elearning.Core.Login"
 const Root = ReactDOM.createRoot(document.getElementById("root"))
+
+function logOut() {
+    Cookie = {}
+    Cookie_ipc.clear()
+    checkloggin()
+}
+
 function handleLogin(user , pass , remender) {
     if (!(user && pass)) {
         showMsg("Login" , "Bạn chưa nhập đầy đủ thông tin" , '' , 'war')

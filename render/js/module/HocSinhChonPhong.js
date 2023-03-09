@@ -16,20 +16,42 @@ function HocSinhChonPhong() {
 
     this.handleChangePhongSel = {
         add : (e) => {
+            if (this.LoaiPhongSelected.includes(e)) return this.LoaiPhongSelected.length
             var va = this.LoaiPhongSelected.push(e);
             this.Get_DsPhongHocServer()
             return va;
         },
-        remove : (index) => {
-            var va = this.LoaiPhongSelected.splice(index , 1);
-            this.Get_DsPhongHocServer()
-            return va;
+        remove : (e) => {
+            if (this.LoaiPhongSelected.includes(e)) {
+                var va = this.LoaiPhongSelected.splice(this.LoaiPhongSelected.indexOf(e) , 1);
+                this.Get_DsPhongHocServer()
+                return va;
+            }
         },
 
         contains : (e) => {
             return this.LoaiPhongSelected.includes(e);
         }
     }
+
+    this.ListSubChange = function(id) {
+        console.log(id)
+        const ele = document.querySelectorAll('div.slide-bar-li-chill.on > li')[id]
+        if (ele.classList.contains('on')) {
+            ele.classList.remove('on')
+        }
+        else {
+            ele.classList.add('on')
+        }
+
+        if (this.handleChangePhongSel.contains(id)) {
+            this.handleChangePhongSel.remove(id)
+        }
+        else {
+            this.handleChangePhongSel.add(id)
+        }
+    }
+
 
     this.handlReSize = function(e) {
         console.log(e)
@@ -98,6 +120,7 @@ function HocSinhChonPhong() {
 
     this.Get_DsPhongHocServer = () => {
         this.arrListPhongHoc = []
+        this.LoaiPhongSelected.reverse()
         this.LoaiPhongSelected.forEach(e => {
             WSGet(function (result) {
                 var Data = result.Data.getTable("Data").toJson();

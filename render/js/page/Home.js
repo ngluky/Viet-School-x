@@ -79,7 +79,7 @@ function Sub(props) {
     );
 }
 
-function SlideBar() {
+function SlideBar(props) {
     return (
         <div className="slide-bar-connet">
             <div className="slide-bar-top">
@@ -93,13 +93,19 @@ function SlideBar() {
                     </div>
 
                     <div className="slide-bar-li-chill">
-                        <li>
+                        <li className={classhscp.handleChangePhongSel.contains(0) ? 'on' : ''} onClick={() => {
+                            classhscp.ListSubChange(0)
+                        }}>
                             <p>Đang diễn ra</p>
                         </li>
-                        <li>
+                        <li className={classhscp.handleChangePhongSel.contains(1) ? 'on' : ''} onClick={() => {
+                            classhscp.ListSubChange(1)
+                        }}>
                             <p>Chưa bắt đầu</p>
                         </li>
-                        <li>
+                        <li className={classhscp.handleChangePhongSel.contains(2) ? 'on' : ''} onClick={() => {
+                            classhscp.ListSubChange(2)
+                        }}>
                             <p>Đã kết thúc</p>
                         </li>
                     </div>
@@ -146,7 +152,21 @@ function SlideBar() {
                     </div>
                 </div>
             </div>
-            <div className="slide-bar-bottom"></div>
+            <div className="slide-bar-bottom">
+                <div className="slide-bar-li">
+                    <div className="slide-bar-li-title" >
+                        {/* <ion-icon name="bar-chart"></ion-icon> */}
+                        <div className="slide-bar-tar" onClick={() => {logOut()}}>
+                            <ion-icon name="log-out-outline"></ion-icon>
+                            <p>Đăng xuất</p>
+                        </div>
+                        <div className="slide-bar-setting" onClick={() => {console.log('setting')}}>
+                            <ion-icon name="settings-sharp"></ion-icon>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
         </div>
     );
 }
