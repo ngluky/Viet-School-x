@@ -31,6 +31,25 @@ function HocSinhChonPhong() {
         }
     }
 
+    this.handlReSize = function(e) {
+        console.log(e)
+    }
+
+    this.handlslideBar = function() {
+        const ele = document.getElementById('listPhongSlideBar');
+        if (ele.classList.contains('on')) {
+            ele.classList.remove('on')
+            ele.style.width = "0px"
+            ele.style.opacity = '0'
+            // display: none;
+        }
+        else {
+            ele.classList.add('on')
+            ele.style.width = "200px"
+            ele.style.opacity = '1'
+        }
+    }
+
     this.handleFilter = (sub , event) => {
         console.log(sub)
         var newArray = this.arrListPhongHoc.filter((e) => e.TenMon == sub)
@@ -67,6 +86,13 @@ function HocSinhChonPhong() {
             Root.render(React.createElement(ListSub , {
                 Classhscp: this
             }))
+
+            
+
+            setTimeout(() => {
+                console.log('ok')
+                SlideBarHome()
+            }, 100)
         })
     }
 
@@ -82,6 +108,13 @@ function HocSinhChonPhong() {
                 Root.render(React.createElement(ListSub , {
                     Classhscp: this
                 }))
+
+                
+
+                setTimeout(() => {
+                    console.log('ok')
+                    SlideBarHome()
+                }, 100)
             }.bind(this), this.DLL, "GetHSPhongHoc", e.toString());
         })
     }

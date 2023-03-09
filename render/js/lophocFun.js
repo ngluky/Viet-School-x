@@ -735,3 +735,30 @@ function showConfirm(title, msg, labelyes, labelno, okCallback, cancelCallback) 
     
     
 }
+
+function SlideBarHome() {
+    document.querySelectorAll("div.slide-bar-li-title div.slide-bar-end").forEach(e => {
+        e.addEventListener('click', (e) => {
+            const ele = e.target;
+            
+            var par = ele.parentElement;
+            try {
+                while (!par.classList.contains('slide-bar-li')) {
+                    var par = par.parentElement;
+                }
+
+                var ele_1 = par.querySelector(".slide-bar-li-chill")
+                if (ele_1.classList.contains('on')) {
+                    ele_1.classList.remove('on')
+                }
+                else {
+                    ele_1.classList.add('on')
+                }
+
+            }
+            catch (e) {
+                console.log(e)
+            }
+        })
+    })
+}

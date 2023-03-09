@@ -130,7 +130,7 @@ body {
     height: calc(100% - 46px);
     margin: 5px 0px 0px 0px;
     padding-bottom: 6px;
-    overflow-y: hidden;
+    overflow: hidden;
 }
 
 .list-sub .sub-view {
@@ -216,6 +216,37 @@ body {
     display: flex;
     background-color: #F5F5F5;
     border-radius: 5px;
+    justify-content: space-between;
+}
+
+.filter-list-button {
+    display: flex;
+}
+
+.slide-bar-button ion-icon {
+    height: 100%;
+    width: 100%;
+}
+
+.slide-bar-button {
+    cursor: pointer;
+
+    height: 100%;
+    aspect-ratio: 1/1;
+    background: transparent;
+}
+
+.slide-bar-connet {
+    margin: 0px 0px 0px 6px;
+    border-radius: 5px;
+    background: #F5F5F5;
+    width: calc(100% - 6px);
+    height: 100%;
+}
+
+.slide-bar {
+    width: 0px;
+    transition: all 0.3s;
 }
 
 .filter .filter-button {
@@ -235,6 +266,75 @@ body {
 .filter .filter-button.sel {
     background-color: #555;
     color: white;
+}
+
+.slide-bar-connet {
+    font-family: Tahoma;
+    overflow: hidden;
+}
+
+.slide-bar-li {
+    transition: 0.2s;
+}
+
+.slide-bar-li p {
+    width: 200px;
+    height: 25px;
+    display: flex;
+    align-items: center;
+}
+
+.slide-bar-li li {
+    display: block;
+    height: 25px;
+    border-radius: 5px;
+    padding-left: 20px;
+    cursor: pointer;
+}
+
+.slide-bar-li li:hover {
+    background: yellowgreen;
+}
+
+.slide-bar-li > .slide-bar-li-title > ion-icon {
+    margin-right: 5px;
+    height: 100%;
+    width: 30px;
+}
+
+.slide-bar-li > .slide-bar-li-chill {
+    height: 0px;
+    opacity: 0;
+    margin: 0px 3px 0px 3px;
+    border-radius: 5px;
+    background: rgba(0, 0, 0, 0.1);
+}
+
+.slide-bar-li > .slide-bar-li-chill.on {
+    height: fit-content;
+    opacity: 1;
+}
+
+.slide-bar-li > .slide-bar-li-title {
+    height: 30px;
+    width: calc(100% - 10px);
+    padding: 0 5px;
+    display: flex;
+    align-items: center;
+    
+}
+
+.slide-bar-li .slide-bar-end {
+    height: 100%;
+    aspect-ratio: 1/1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+}
+
+.slide-bar-li .slide-bar-end > ion-icon {
+    font-size: 20px;
 }
 
 @media (width < 900px) {
