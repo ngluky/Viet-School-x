@@ -48,7 +48,7 @@ function handleLogin(user , pass , remender) {
     Cookie['Remenber'] = remender
 
     Service.call((result) => {
-        if (!(result.Error == '' || result.Error)) {
+        if (!result.Data) {
             console.log(result.Error)
 
             showMsg("Login" , result.Error)

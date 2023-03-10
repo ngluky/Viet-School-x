@@ -254,12 +254,7 @@ function SideBar(props) {
 
 function MenuButton(props) {
     return (
-        <div
-            className="list-menu-button"
-            onClick={() => {
-                props.onClick();
-            }}
-        >
+        <div className="list-menu-button" onClick={() => { props.onClick(); }}>
             <ion-icon name={props.iconName}></ion-icon>
             <p className="list-menu-title">{props.title}</p>
         </div>
@@ -274,6 +269,58 @@ function Menu(props) {
             ))}
         </div>
     );
+}
+
+function SideBarLoading() {
+    return (
+        <div className="list-lop-center">
+            <div className="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
+        </div>
+    )
+}
+
+function ListLop(props) {
+
+    var data = props.data;
+
+    const countOnline = data[1].filter(e => e.Online).length
+
+    return (
+        <div className="list-lop">
+            <div className="list-lop-title">
+                <p className="list-lop-name">
+                    {data[0]} - {countOnline}\{data[1].length}
+                </p>
+
+                <div className="list-lop-icon">
+                    <ion-icon name="chevron-down-outline"></ion-icon>
+                </div>
+
+            </div>
+
+            <div className="list-lop-view">
+                {data[1].map((e , index) => (
+                    <div key={index} className={`list-hocsinh ${e.Online ? 'online' : ''}`}>
+                        <p className="hocsinh-stt-name">{index + 1} - {e.HoTen}</p>
+                        <div className="hocsinh-status"></div>
+                    </div>
+                ))}
+            </div>
+        </div>
+    )
+    
+}
+
+function ListHocSinh(props) {
+    var data = props.data;
+
+    data = Object.entries(data)
+
+    return (
+        <div className="list-hoc-sinh">
+            {data.map((e, index) => <ListLop key={index} data={e}/>)}
+        </div>
+    )
 }
 
 function ChatTab(props) {
@@ -300,9 +347,11 @@ function ChatTab(props) {
 
     return (
         <React.Fragment>
-            <div className="chat-top"></div>
+            <div className="chat-top">
+                
+            </div>
 
-            <div className="chat-content">
+            <div className="chat-content" id="slideBarContent">
                 <Menu data={classhtt.slideBarTool} />
             </div>
 

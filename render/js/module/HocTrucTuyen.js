@@ -54,6 +54,8 @@ function HocTrucTuyen() {
     this.dataTab = {}
     this.isSideBar = true
     this.isOnTap = false
+    this.isLoadThanhVien = false
+    this.LopID = null
 
 
     this.getBaiHoc = (callback) => {
@@ -111,7 +113,27 @@ function HocTrucTuyen() {
         {
             title: 'Thành viên',
             iconName: 'people-outline',
-            onClick: () => { console.log('tv') }
+            onClick: () => {
+
+                document.querySelector('#side-bar > div.chat-top').innerHTML = `<div onclick="classhtt.rootChat.render(React.createElement(Menu , {data: classhtt.slideBarTool}));document.querySelector('#side-bar > div.chat-top').innerHTML = ''" class="chat-button">
+                <ion-icon name="backspace-outline"></ion-icon>
+                <p>Thành viên</p>
+            </div>`
+
+                this.slideBarShowLoading()
+                this.getThanhVien(() => {
+                    var cou = this.arr_Lop_Online.length
+                    this.arr_Lop_Online.forEach(e => {
+                        this.getHocSinhOnline(e , () => {
+                            cou = cou - 1
+                            if (cou == 0) {
+                                console.log("get hoc sinh do")
+                                this.rootChat.render(React.createElement(ListHocSinh , {data: this.DsLop_ThanhVien}))
+                            }
+                        })
+                    })
+                })
+            }
         },
         {
             title: 'chat',
@@ -146,6 +168,11 @@ function HocTrucTuyen() {
             document.querySelector(".phonghoc-content-top").classList.remove('baitap')
             document.querySelector('#side-bar div.chat-top').classList.remove('baitap')
             this.rootContent.render(React.createElement(BaiHoc))
+            setTimeout(() => {
+                this.setContent(
+                    this.arr_Data_BaiHoc.NoiDungBaiHoc
+                )
+            }, 10)
 
         },
 
@@ -382,7 +409,9 @@ function HocTrucTuyen() {
         this.BaiHocLopID = data.BaiHocLopID.toString();
         this.LoaiPhongHoc = data.TrangThaiID;
         this.arr_Data_BaiHoc = data
+        this.LopID = data.LopID;
         this.isOnTap = data.VaoPhong == "Ôn Tập" ? true : false
+        this.arr_Lop_Online = null
         ws.registerOnMessageFunction(this, this.socketMessage);
         this.renderInit()
         this.joinRoomIfYes(() => {
@@ -433,5 +462,40 @@ function HocTrucTuyen() {
         this.Log_SoGiayBatDau = parseInt((HienHanh - GioVao) / 1000);
         classttn.LSLamBai = ''
 
+    }
+
+    this.slideBarShowLoading = function() {        
+        if (!this.rootChat) 
+            this.rootChat = ReactDOM.createRoot(document.getElementById('slideBarContent'))
+
+        this.rootChat.render(React.createElement(SideBarLoading))
+    }
+
+    this.getThanhVien = function(callback) {
+        WSGet(function (result) {
+            if (CheckResult(result)) {
+                // this.dtThanhVien_Lop = result.Data.Tables[0];
+                this.arr_Lop_Online = result.Data.Tables[0].toJson();
+                console.log('get thanh vien')
+
+                if (callback) 
+                    callback()
+                // this.generateDockOnline('LOP', 'div-online-content');
+                // this.generateDockOnline('LOP', 'div-online-content-desk');
+            }
+        }.bind(this), this.DLL_LearningRoom, 'ElearningInitThanhVien', this.BaiHocGiaoVienID.toString(), this.LopID.toString(), this.StoreMode);
+    }
+
+    this.getHocSinhOnline = function(lopid, callback) {
+        WSGet(function (rs) {
+            df_HideLoading();
+            if (CheckResult(rs)) {
+                if (rs.Data.getTable('Online'))
+                    this.DsLop_ThanhVien[lopid.TenLop] = rs.Data.getTable('Online').toJson();
+
+                if (callback) 
+                    callback()
+            }
+        }.bind(this), this.DLL_LearningRoom, 'ElearningGetOnline', this.BaiHocGiaoVienID, lopid.LopID.toString(), this.StoreMode);
     }
 }
