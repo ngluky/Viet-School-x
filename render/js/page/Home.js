@@ -81,15 +81,34 @@ function Sub(props) {
 
 function SlideBar(props) {
 
-    const themeChange = function(event) {
+    const tabOnOff = (e) => {
+        const ele = e.target;
+        
+        var par = ele.parentElement;
+        try {
+            while (!par.classList.contains('slide-bar-li')) {
+                var par = par.parentElement;
+            }
 
+            var ele_1 = par.querySelector(".slide-bar-li-chill")
+            if (ele_1.classList.contains('on')) {
+                ele_1.classList.remove('on')
+            }
+            else {
+                ele_1.classList.add('on')
+            }
+
+        }
+        catch (e) {
+            console.log(e)
+        }
     }
 
     return (
         <div className="slide-bar-connet">
             <div className="slide-bar-top">
                 <div className="slide-bar-li">
-                    <div className="slide-bar-li-title">
+                    <div className="slide-bar-li-title" onClick={tabOnOff}>
                         <ion-icon name="home"></ion-icon>
                         <p>Phòng học</p>
                         <div className="slide-bar-end">
@@ -117,7 +136,7 @@ function SlideBar(props) {
                 </div>
 
                 <div className="slide-bar-li">
-                    <div className="slide-bar-li-title">
+                    <div className="slide-bar-li-title" onClick={tabOnOff}>
                         <ion-icon name="bar-chart"></ion-icon>
                         <p>Điểm</p>
                         <div className="slide-bar-end">
@@ -136,7 +155,7 @@ function SlideBar(props) {
                 </div>
 
                 <div className="slide-bar-li">
-                    <div className="slide-bar-li-title">
+                    <div className="slide-bar-li-title" onClick={tabOnOff}>
                         <ion-icon name="contrast"></ion-icon>
                         <p>Theme</p>
                         <div className="slide-bar-end">
@@ -145,13 +164,13 @@ function SlideBar(props) {
                     </div>
 
                     <div className="slide-bar-li-chill">
-                        <li onClick={() => {setTheme('light')}} className={Cookie.theme == 'light' ? 'on' : ''}>
+                        <li onClick={() => {setTheme('light')}} className={Setting.theme == 'light' ? 'on' : ''}>
                             <p>Light mod</p>
                         </li>
-                        <li onClick={() => {setTheme('dark')}} className={Cookie.theme == 'dark' ? 'on' : ''}>
+                        <li onClick={() => {setTheme('dark')}} className={Setting.theme == 'dark' ? 'on' : ''}>
                             <p>Dark mod</p>
                         </li>
-                        <li onClick={() => {setTheme('system')}} className={Cookie.theme == 'system' ? 'on' : ''}>
+                        <li onClick={() => {setTheme('system')}} className={Setting.theme == 'system' ? 'on' : ''}>
                             <p>System mod</p>
                         </li>
                     </div>

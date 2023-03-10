@@ -2,10 +2,11 @@ const { app, BrowserWindow , ipcMain} = require('electron')
 const path = require('path');
 const fs = require('fs');
 
-const path_ = path.join(app.getPath('home') , "AppData/Local/LopHocApp/cookie.json");
-
+const pathCooke = path.join(app.getPath('home') , "AppData/Local/LopHocApp/cookie.json");
+const pathSetting = path.join(app.getPath('home') , "AppData/Local/LopHocApp/setting.json");
 
 var Cookie = {}
+var Setting = {}
 
 const createWindow = () => {
     const win = new BrowserWindow({
@@ -23,15 +24,9 @@ const createWindow = () => {
         },
     })
 
+    
+    // window_ipc ============================
     ipcMain.on("closeApp" , () => {
-        if (Cookie.Remenber) {
-            const strCooke = JSON.stringify(Cookie);
-            fs.writeFileSync(path_, strCooke);
-        }
-        else {
-            const strCooke = JSON.stringify({});
-            fs.writeFileSync(path_, strCooke);
-        }
         win.close()
     })
 
@@ -39,39 +34,24 @@ const createWindow = () => {
         win.minimize()
     })
 
-    ipcMain.on("set_cookie", (sender, data) => {    
-        Cookie[data.key] = data.value;
-    })
-
-    ipcMain.on("set_allCookie", (sender, data) => {
-        Cookie = data;
-        console.log(data)
-        const strCooke = JSON.stringify(Cookie);
-        fs.writeFileSync(path_, strCooke);
-    })
-
-    ipcMain.handle("logout", (sender) => {
-        Cookie = {};
-        const strCooke = JSON.stringify({});
-        fs.writeFileSync(path_, strCooke);
-        return Cookie;
-    })
-
-    ipcMain.handle("get_cookie", (event, key) => {
-        return Cookie[key];
-    })
-
-    ipcMain.handle("get_all_cookie", (event) => {
-        return Cookie;
-    })
+    ipcInit()
 
     win.loadFile('./render/index.html')
 }
 
 app.whenReady().then(() => {
-    createWindow()
 
-    Cookie = JSON.parse(fs.readFileSync(path_))
+    if (fs.existsSync(pathCooke))
+        Cookie = JSON.parse(fs.readFileSync(pathCooke))
+    else 
+        fs.writeFileSync(pathCooke, '{}')
+
+    if (fs.existsSync(pathSetting)) 
+        Setting = JSON.parse(fs.readFileSync(pathSetting))
+    else
+        fs.writeFileSync(pathSetting, '{}')
+
+    createWindow()
 
     app.on('activate', () => {
         if (BrowserWindow.getAllWindows().length === 0) createWindow()
@@ -79,7 +59,61 @@ app.whenReady().then(() => {
 })
 
 app.on('window-all-closed', () => {
-    console.log(Cookie.Remenber)
-    
+    if (Cookie.Remenber) {
+        const strCooke = JSON.stringify(Cookie);
+        fs.writeFileSync(pathCooke, strCooke);
+    }
+    else {
+        const strCooke = JSON.stringify({});
+        fs.writeFileSync(pathCooke, strCooke);
+    }
+
+    fs.writeFileSync(pathSetting , JSON.stringify(Setting))
     if (process.platform !== 'darwin') app.quit()
 })
+
+function ipcInit() {
+    // Cookie ipc ============================
+    ipcMain.on("setCookie", (sender, data) => {    
+        Cookie[data.key] = data.value;
+    })
+
+    ipcMain.on("setAllCookie", (sender, data) => {
+        Cookie = data;
+        console.log(data)
+        const strCooke = JSON.stringify(Cookie);
+        fs.writeFileSync(pathCooke, strCooke);
+    })
+
+    ipcMain.handle("logout", (sender) => {
+        Cookie = {};
+        const strCooke = JSON.stringify({});
+        fs.writeFileSync(pathCooke, strCooke);
+        return Cookie;
+    })
+
+    ipcMain.handle("getCookie", (event, key) => {
+        return Cookie[key];
+    })
+
+    ipcMain.handle("getAllCookie", (event) => {
+        return Cookie;
+    })
+
+    // setting ipc =============================
+    ipcMain.on('setSetting', (sender, data) => {
+        Setting[data.key] = data.value;
+    }) 
+    ipcMain.handle('getSetting' , (sender , key) => {
+        return Setting[key]
+    })
+    ipcMain.handle('getAllSetting', (sender) => {
+        return Setting
+    })
+
+    ipcMain.on('setAllSetting', (sender, data) => {
+        Setting = data
+        const str = JSON.stringify(Setting)
+        fs.writeFileSync(pathSetting, str)
+    })
+}

@@ -377,6 +377,7 @@ function HocTrucTuyen() {
     }
 
     this.joinRoom = (data) => {
+        df_ShowLoading('đang tải dữ liệu')
         this.BaiHocGiaoVienID = data.BaiHocGiaoVienID.toString();
         this.BaiHocLopID = data.BaiHocLopID.toString();
         this.LoaiPhongHoc = data.TrangThaiID;
@@ -386,7 +387,7 @@ function HocTrucTuyen() {
         this.renderInit()
         this.joinRoomIfYes(() => {
             this.getBaiHoc(() => {
-
+                df_HideLoading()
             })
         })
 

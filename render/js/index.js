@@ -7,6 +7,7 @@ var _Web_Check_Timer;
 var User;
 let classhscp, classQLBaiHoc, classhtt, classttn, classChamBaiKTTT;
 var Cookie = {}
+var Setting = {}
 
 
 const colorTheme = {
@@ -34,7 +35,7 @@ const Root = ReactDOM.createRoot(document.getElementById("root"))
 
 function logOut() {
     Cookie = {}
-    Cookie_ipc.clear()
+    CookieIpc.clear()
     checkloggin()
 }
 
@@ -70,15 +71,14 @@ function handleLogin(user , pass , remender) {
                 }
                 else if (data.get('location') != undefined)
                 {
-
+                    df_ShowLoading()
                     getTNTokenID(data.get('location') , (e) => {
 
                         if (remender) {
-                            Cookie_ipc.setAll(Cookie)
+                            CookieIpc.setAll(Cookie)
                         }
-
                         WSGet(function (result) {
-                            
+                            df_HideLoading()
                             var jsonResult = JSON.parse(result.Data);
 
                             if (jsonResult) {
@@ -126,74 +126,108 @@ function checkloggin(callback)  {
     }, "Elearning.Core.Login", "CheckLogged");
 }
 
+async function fetchAsync (url) {
+    let response = await fetch(url);
+    let result = await response.text();
+
+    Cookie['LoginOTP'] = 1
+    let line = result.split('\n');
+    line.forEach(element => {
+        if (element.includes("var sessionid")){
+            var sessionid = element.split('=')[1].replaceAll("'" , "");
+            sessionid = sessionid.trim()
+            sessionid = sessionid.replace(";" , "");
+            Cookie['Net_SessionId'] = sessionid
+        }
+        else if (element.includes("var token"))
+        {
+            var token = element.split('=')[1].replaceAll("'" , "");
+            token = token.trim()
+            token = token.replace(";" , "");
+            console.log(token);
+            Cookie['TNTokenID'] = token
+        }
+        else if (element.includes("var error")){
+            var error = element.split('=')[1].replaceAll("'" , "");
+            error = error.substr(1 , error.length - 2);
+            return;
+        }
+    });
+    return ;
+  }
+
 function getTNTokenID(url , callback)
 {
     console.log(url)
-    $.ajax({
-        url: url,
-        type: 'GET',
-        dataType: 'text',
-        success: function(result){
-            // console.log(result);
-            Cookie['LoginOTP'] = 1
-            let line = result.split('\n');
-            line.forEach(element => {
-                if (element.includes("var sessionid")){
-                    var sessionid = element.split('=')[1].replaceAll("'" , "");
-                    sessionid = sessionid.trim()
-                    sessionid = sessionid.replace(";" , "");
-                    Cookie['Net_SessionId'] = sessionid
-                }
-                else if (element.includes("var token"))
-                {
-                    var token = element.split('=')[1].replaceAll("'" , "");
-                    token = token.trim()
-                    token = token.replace(";" , "");
-                    console.log(token);
-                    Cookie['TNTokenID'] = token
-                }
-                else if (element.includes("var error")){
-                    var error = element.split('=')[1].replaceAll("'" , "");
-                    error = error.substr(1 , error.length - 2);
-                    return;
-                }
-            });
 
-            // connect();
-            // document.location.href
-            if (callback) callback()
-        },
-
-        error: function(error) {
-            loaderOff();
-            setErr("lỗi lấy Token");
-        }
+    fetchAsync(url).then(() => {
+        if (callback) callback()
     })
+    // $.ajax({
+    //     url: url,
+    //     type: 'GET',
+    //     dataType: 'text',
+    //     success: function(result){
+    //         // console.log(result);
+    //         Cookie['LoginOTP'] = 1
+    //         let line = result.split('\n');
+    //         line.forEach(element => {
+    //             if (element.includes("var sessionid")){
+    //                 var sessionid = element.split('=')[1].replaceAll("'" , "");
+    //                 sessionid = sessionid.trim()
+    //                 sessionid = sessionid.replace(";" , "");
+    //                 Cookie['Net_SessionId'] = sessionid
+    //             }
+    //             else if (element.includes("var token"))
+    //             {
+    //                 var token = element.split('=')[1].replaceAll("'" , "");
+    //                 token = token.trim()
+    //                 token = token.replace(";" , "");
+    //                 console.log(token);
+    //                 Cookie['TNTokenID'] = token
+    //             }
+    //             else if (element.includes("var error")){
+    //                 var error = element.split('=')[1].replaceAll("'" , "");
+    //                 error = error.substr(1 , error.length - 2);
+    //                 return;
+    //             }
+    //         });
+
+    //         // connect();
+    //         // document.location.href
+    //         if (callback) callback()
+    //     },
+
+    //     error: function(error) {
+    //         df_HideLoading()
+    //         showMsg('login', "lỗi lấy Token");
+    //     }
+    // })
 
     // WSGet(function (result) {
     //     console.log(result) 
     // }, "Elearning.Core.Login", "CheckLogged");
     
 }
-Cookie_ipc.all().then(e => {
-    Cookie = e;
 
-    if (!Cookie.theme) {
-        Cookie.theme = 'dark'
-    }
-    console.log(Cookie.theme)
+SettingIpc.getAll().then(e => {
+    Setting = e;
+})
+
+CookieIpc.all().then(e => {
+    Cookie = e;
 })
 
 function getSystemMod() {
     if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-        Cookie_ipc.set('theme' , 'dark')
+        SettingIpc.set('theme' , 'dark')
         Object.keys(colorTheme.dark).forEach(e => {
             document.documentElement.style.setProperty(e, colorTheme.dark[e]);
         })
         return;
     }
 
-    Cookie_ipc.set('theme' , 'light')
+    SettingIpc.set('theme' , 'light')
         Object.keys(colorTheme.light).forEach(e => {
         document.documentElement.style.setProperty(e, colorTheme.light[e]);
     })
@@ -203,7 +237,6 @@ function getSystemMod() {
 }
 
 function setTheme(mode) {
-
     var ele = document.querySelectorAll('div.slide-bar-li-chill.on > li')
     ele.forEach(e => {
         e.classList.remove('on')
@@ -214,7 +247,7 @@ function setTheme(mode) {
     {
         if (ele)
             ele[0].classList.add('on')
-        Cookie_ipc.set('theme' , 'light')
+        SettingIpc.set('theme' , 'light')
         Object.keys(colorTheme.light).forEach(e => {
             document.documentElement.style.setProperty(e, colorTheme.light[e]);
         })
@@ -222,7 +255,7 @@ function setTheme(mode) {
     else if (mode == "dark") {
         if (ele)
             ele[1].classList.add('on')
-        Cookie_ipc.set('theme' , 'dark')
+        SettingIpc.set('theme' , 'dark')
         Object.keys(colorTheme.dark).forEach(e => {
             document.documentElement.style.setProperty(e, colorTheme.dark[e]);
         })
@@ -231,10 +264,12 @@ function setTheme(mode) {
     else if (mode == 'system') {
         if (ele)
             ele[2].classList.add('on')
-        Cookie_ipc.set('theme' , 'system')
+        SettingIpc.set('theme' , 'system')
         getSystemMod()
     }
 }
+
+df_ShowLoading()
 
 $(document).ready(() => {
         document.getElementById('close').addEventListener("click" , () => {
@@ -245,7 +280,7 @@ $(document).ready(() => {
         })
         console.log("ok")
         connect(() => {})
-        setTheme(Cookie.theme)
+        setTheme(Setting.theme)
         
 
         setTimeout(() => {
@@ -267,10 +302,11 @@ $(document).ready(() => {
                     else {
                         Root.render(React.createElement(LoginPage , {onClick: handleLogin}))
                     }
-                
+                    
                     
                 }, "Elearning.Core.Login", "CheckLogged");
             }
+            df_HideLoading()
         }, 100)
         
     }

@@ -252,12 +252,12 @@ var df_RowState = {
 }
 
 function df_ShowLoading(text = 'Vui lòng đợi trong giây lát.') {
-    $('#divLoading').fadeIn("fast");
-    $('#divMessage').html(text);
+    document.getElementById('loading').style.display = "flex"
+    document.querySelector('#loading > div.loading-mess > p').textContent = text
 }
 
 function df_HideLoading() {
-    $('#divLoading').fadeOut("fast");
+    document.getElementById('loading').style.display = "none"
 }
 
 function df_FlashControl(selector, Isflash) {
@@ -737,28 +737,7 @@ function showConfirm(title, msg, labelyes, labelno, okCallback, cancelCallback) 
 }
 
 function SlideBarHome() {
-    document.querySelectorAll("div.slide-bar-li-title div.slide-bar-end").forEach(e => {
-        e.addEventListener('click', (e) => {
-            const ele = e.target;
-            
-            var par = ele.parentElement;
-            try {
-                while (!par.classList.contains('slide-bar-li')) {
-                    var par = par.parentElement;
-                }
-
-                var ele_1 = par.querySelector(".slide-bar-li-chill")
-                if (ele_1.classList.contains('on')) {
-                    ele_1.classList.remove('on')
-                }
-                else {
-                    ele_1.classList.add('on')
-                }
-
-            }
-            catch (e) {
-                console.log(e)
-            }
-        })
-    })
+    // document.querySelectorAll("div.slide-bar-li-title div.slide-bar-end").forEach(e => {
+    //     e.addEventListener('click', )
+    // })
 }
