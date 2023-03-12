@@ -219,24 +219,13 @@ function BaiHoc() {
 
 function SideBar(props) {
     const eventSideBar = props.eventHandl;
-    console.log(eventSideBar);
     return (
         <div className="action">
             <div className="action-top">
-                <SideBarButton
-                    type="radio"
-                    on="on"
-                    nameIcon="book-outline"
-                    title="Lý thuyết"
-                    onClick={eventSideBar.baiHoc}
-                />
+                <SideBarButton type="radio" on="on" nameIcon="book-outline" title="Lý thuyết" onClick={eventSideBar.baiHoc}/>
                 <SideBarButton type="radio" nameIcon="videocam-outline" title="Live" />
-                <SideBarButton
-                    type="radio"
-                    nameIcon="create-outline"
-                    title="Bài tập"
-                    onClick={eventSideBar.baiTap}
-                />
+                <SideBarButton type="radio" nameIcon="create-outline" title="Bài tập" onClick={eventSideBar.baiTap} />
+
             </div>
             <div className="action-botton">
                 <SideBarButton
@@ -323,6 +312,23 @@ function ListHocSinh(props) {
     )
 }
 
+function ChatPage(props) {
+    return (
+        <div className="chat-main">
+          <div className="chat-body">
+          </div>
+          <div className="chat-input">
+            <span className="textarea" role="textbox" contentEditable />
+            <div className="chat-body-button">
+              <svg xmlns="http://www.w3.org/2000/svg" id="Group_10235" data-name="Group 10235" width={40} viewBox="0 0 173.64 149.826">
+                <path id="Path_8370" data-name="Path 8370" d="M163.3,94.537,23.2,36.4A16.767,16.767,0,0,0,.529,56.035L13,104.936H74.053a5.087,5.087,0,0,1,0,10.175H13l-12.47,48.9A16.768,16.768,0,0,0,23.2,183.643l140.1-58.132a16.767,16.767,0,0,0,0-30.974Z" transform="translate(-0.001 -35.111)" />
+              </svg>
+            </div>
+          </div>
+        </div>
+      );
+}
+
 function ChatTab(props) {
     const classhtt = props.classhtt;
 
@@ -362,8 +368,8 @@ function ChatTab(props) {
                     <ion-icon name="caret-up-outline"></ion-icon>
 
                     <div className="chat-bottom-button-list">
-                        <div onClick={() => {classttn.lamBaiLai()}}>Làm bài lại</div>
-                        <div onClick={() => {classttn.lamBaiLai(true)}}>Làm lại bài mới</div>
+                        <div onClick={() => {classttn.lamBaiLai(true)}}>Làm bài lại</div>
+                        <div onClick={() => {classttn.lamBaiLai()}}>Làm lại bài mới</div>
                     </div>
 
                 </button>
@@ -381,7 +387,6 @@ function ChatTab(props) {
 function PhongHoc(props) {
     const classhtt = props.classhtt;
     const item = classhtt.arr_Data_BaiHoc;
-    console.log(classhtt.isSideBar);
     return (
         <React.Fragment>
             <div className="phonghoc">
@@ -408,4 +413,24 @@ function PhongHoc(props) {
             </div>
         </React.Fragment>
     );
+}
+
+function ViewFile(props) {
+    return (
+        <div className="div-file-view">
+            <div className="div-file-iframe" id="fileiframe">
+                <iframe src={props.url} frameBorder="0"></iframe>
+            </div>
+            
+            <div className="div-file-button" style={{display: 'none'}}>
+                <div className="div-file-close">
+                    <ion-icon name="close-outline"></ion-icon>
+                </div>
+                <div className="div-file-dow">
+                    <ion-icon src="./img/svg/download-347.svg"></ion-icon>
+                </div>
+            </div>
+
+        </div>
+    )
 }

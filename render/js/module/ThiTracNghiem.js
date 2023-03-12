@@ -440,6 +440,11 @@ function ThiTracNghiem() {
                             showMsg("Thông báo", KetQua, undefined, 'success', function () {
                                 classttn = new ThiTracNghiem();
                                 checkloggin(() => {
+                                    classhtt.joinRoomIfYes(() => {
+                                        classhtt.getBaiHoc(() => {
+                                        })
+                                    })
+                                    classhtt.isLoadBaiTap=false
                                     document.querySelector('.action-button').click()
                                 })
                             });
@@ -464,6 +469,12 @@ function ThiTracNghiem() {
                             showMsg("Thông báo", KetQua, undefined, 'success', function () {
                                 classttn = new ThiTracNghiem();
                                 checkloggin(() => {
+                                    classhtt.joinRoomIfYes(() => {
+                                        classhtt.getBaiHoc(() => {
+                                        })
+                                        document.querySelector('.action-button').click()
+                                    })
+                                    classhtt.isLoadBaiTap=false
                                     document.querySelector('.action-button').click()
                                 })
                             });

@@ -1,7 +1,60 @@
 var _imgex = ["bmp", ".tif", "gif", "webp", 'png', 'jpg', 'jpeg'];
+const fileTypes = [ 
+    'doc', 'docx',
+    'gif', 'jpg', 'png', 'jpeg',
+    'zip', 'rar',
+    'xlsx', 'xls',
+    'txt',
+    'ppt', 'pptx',
+    'pdf',
+    'm4a', 'mp4',
+    'mp3',
+]
+const iconFile = [
+    'img/svg/docx-8.svg',
+    'img/svg/jpg-44.svg',
+    'img/svg/zip-72.svg',
+    'img/svg/xls-19.svg',
+    'img/svg/txt-1-2.svg',
+    'img/svg/ppt-65.svg',
+    'img/svg/pdf-94.svg',
+    'img/svg/mp4-22.svg',
+    'img/svg/mp3-43.svg'
+]
+
 var df_arrCauHinhPDF = {};
 var df_classImgView;
 var df_toastID = 0;
+
+function getSrcFileIcon(type) {
+    switch (type) {
+        case 'doc': case 'docx':
+            return iconFile[0]
+        case 'gif': case'jpg': case'png': case'jpeg':
+            return iconFile[1]
+        
+        case 'zip': case 'rar':
+            return iconFile[2]
+        
+        case 'xlsx': case 'xls':
+            return iconFile[3]
+        
+        case 'txt':
+            return iconFile[4]
+        
+        case 'ppt': case 'pptx':
+            return iconFile[5]
+        
+        case 'pdf':
+            return iconFile[6]
+        
+        case 'm4a': case 'mp4':
+            return iconFile[7]
+
+        case 'mp3':
+            return iconFile[8]
+    }
+}
 
 function makeid(length) {
     let result = '';
@@ -15,7 +68,8 @@ function makeid(length) {
     return result;
 }
 
-function tranSTTtoString(now_cauhoi, dapan) {
+function tranSTTtoString(now_cauhoi,
+        dapan) {
     var arr_HoanViID = convertJson2Array(classttn.arr_HoanVi, 'HoanViID');
     var poshv = arr_HoanViID.indexOf(now_cauhoi.hoanvi);
     var arr_HoanVi_CH = [];
@@ -730,14 +784,30 @@ function showConfirm(title, msg, labelyes, labelno, okCallback, cancelCallback) 
         }, 300)
     })
     
-    document.getElementById('message').prepend(ele)
-
-    
-    
+    document.getElementById('message').prepend(ele)   
 }
 
-function SlideBarHome() {
-    // document.querySelectorAll("div.slide-bar-li-title div.slide-bar-end").forEach(e => {
-    //     e.addEventListener('click', )
-    // })
+function viewEleViewFile(name , type , url) {
+    switch (type) {
+        case "doc" | 'docx' | "pptx" | 'pps' | 'xlsx' | 'xls':
+            break;
+    }
+}
+
+function getFileSize(url , ele)
+{
+    var fileSize = '';
+    var http = new XMLHttpRequest();
+    http.open('HEAD', url, true); // true = Asynchronous
+    http.onreadystatechange = function() {
+        if (this.readyState == this.DONE) {
+            if (this.status === 200) {
+                fileSize = this.getResponseHeader('content-length');
+                console.log('fileSize = ' + fileSize);
+            }
+        }
+    };
+    http.send();
+    console.log('lấy size file', url )
+    return ;
 }

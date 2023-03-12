@@ -52,7 +52,6 @@ function HocSinhChonPhong() {
         }
     }
 
-
     this.handlReSize = function(e) {
         console.log(e)
     }
@@ -108,13 +107,6 @@ function HocSinhChonPhong() {
             Root.render(React.createElement(ListSub , {
                 Classhscp: this
             }))
-
-            
-
-            setTimeout(() => {
-                console.log('ok')
-                SlideBarHome()
-            }, 100)
         })
     }
 
@@ -131,13 +123,6 @@ function HocSinhChonPhong() {
                 Root.render(React.createElement(ListSub , {
                     Classhscp: this
                 }))
-
-                
-
-                setTimeout(() => {
-                    console.log('ok')
-                    SlideBarHome()
-                }, 100)
             }.bind(this), this.DLL, "GetHSPhongHoc", e.toString());
         })
     }

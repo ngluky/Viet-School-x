@@ -17,7 +17,9 @@ const colorTheme = {
         '--background-slide-bar': '#2B2D31',
         '--font-color': '#D2D3D7',
         '--color-button': '#5865F2',
-        '--color-check': '#23A55A'
+        '--color-check': '#23A55A',
+        '--filter-thumbnail': 'grayscale(1)',
+        '--filter-img-dapan': 'invert(1)'
     },
 
     light : {
@@ -26,7 +28,10 @@ const colorTheme = {
         '--background-slide-bar': ' #ECECEC',
         '--font-color': ' #202020',
         '--color-button': ' #5865F2',
-        '--color-check': ' #00692c'
+        '--color-check': ' #00692c',
+        '--filter-thumbnail': 'grayscale(0)',
+        '--filter-img-dapan': 'invert(0)'
+
     }
 }
 
@@ -46,13 +51,13 @@ function handleLogin(user , pass , remender) {
     }
 
     Cookie['Remenber'] = remender
-
+    df_ShowLoading()
     Service.call((result) => {
         if (!result.Data) {
             console.log(result.Error)
-
+            df_HideLoading()
             showMsg("Login" , result.Error)
-
+            
         }
         else 
         {
@@ -71,7 +76,6 @@ function handleLogin(user , pass , remender) {
                 }
                 else if (data.get('location') != undefined)
                 {
-                    df_ShowLoading()
                     getTNTokenID(data.get('location') , (e) => {
 
                         if (remender) {
@@ -103,6 +107,8 @@ function handleLogin(user , pass , remender) {
                 else {
                     showMsg("Login" , "Lỗi đăng nhập không sác định")
                 }
+
+                df_HideLoading()
             }
             
 
@@ -163,51 +169,6 @@ function getTNTokenID(url , callback)
     fetchAsync(url).then(() => {
         if (callback) callback()
     })
-    // $.ajax({
-    //     url: url,
-    //     type: 'GET',
-    //     dataType: 'text',
-    //     success: function(result){
-    //         // console.log(result);
-    //         Cookie['LoginOTP'] = 1
-    //         let line = result.split('\n');
-    //         line.forEach(element => {
-    //             if (element.includes("var sessionid")){
-    //                 var sessionid = element.split('=')[1].replaceAll("'" , "");
-    //                 sessionid = sessionid.trim()
-    //                 sessionid = sessionid.replace(";" , "");
-    //                 Cookie['Net_SessionId'] = sessionid
-    //             }
-    //             else if (element.includes("var token"))
-    //             {
-    //                 var token = element.split('=')[1].replaceAll("'" , "");
-    //                 token = token.trim()
-    //                 token = token.replace(";" , "");
-    //                 console.log(token);
-    //                 Cookie['TNTokenID'] = token
-    //             }
-    //             else if (element.includes("var error")){
-    //                 var error = element.split('=')[1].replaceAll("'" , "");
-    //                 error = error.substr(1 , error.length - 2);
-    //                 return;
-    //             }
-    //         });
-
-    //         // connect();
-    //         // document.location.href
-    //         if (callback) callback()
-    //     },
-
-    //     error: function(error) {
-    //         df_HideLoading()
-    //         showMsg('login', "lỗi lấy Token");
-    //     }
-    // })
-
-    // WSGet(function (result) {
-    //     console.log(result) 
-    // }, "Elearning.Core.Login", "CheckLogged");
-    
 }
 
 SettingIpc.getAll().then(e => {
@@ -279,16 +240,13 @@ $(document).ready(() => {
             App.minimize()
         })
         console.log("ok")
-        connect(() => {})
-        setTheme(Setting.theme)
-        
-
-        setTimeout(() => {
+        connect(() => {
             if (!Cookie.LoginOTP) {
                 Root.render(React.createElement(LoginPage , {onClick: handleLogin}))
             }
             else {
                 WSGet(function (result) {
+                    df_HideLoading()
                     var jsonResult = JSON.parse(result.Data);
                     if (jsonResult) {
                         User = jsonResult
@@ -306,9 +264,8 @@ $(document).ready(() => {
                     
                 }, "Elearning.Core.Login", "CheckLogged");
             }
-            df_HideLoading()
-        }, 100)
-        
+        })
+        setTheme(Setting.theme)
     }
 
 )

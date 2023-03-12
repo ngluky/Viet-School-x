@@ -171,6 +171,7 @@ body {
 }
 
 .sub .sub-img img {
+    filter: var(--filter-thumbnail);
     position: absolute;
     top: 50%;
     left: 50%;

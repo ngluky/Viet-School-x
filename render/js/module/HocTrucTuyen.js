@@ -51,15 +51,205 @@ function HocTrucTuyen() {
     this.classGiamSatWeb;
     this.rootContent = null;
     this.rootChat = null;
-    this.dataTab = {}
+    this.rootSlideBar = null
     this.isSideBar = true
     this.isOnTap = false
     this.isLoadThanhVien = false
     this.LopID = null
+    this.tabFileData = {}
 
+
+    this.slideBarTool = [
+        {
+            title: 'Thành viên',
+            iconName: 'people-outline',
+            onClick: () => {
+
+                document.querySelector('#side-bar > div.chat-top').innerHTML = `
+                    <div onclick="classhtt.rootChat.render(React.createElement(Menu , {data: classhtt.slideBarTool}));document.querySelector('#side-bar > div.chat-top').innerHTML = ''" class="chat-button">
+                        <ion-icon name="backspace-outline"></ion-icon>
+                        <p>Thành viên</p>
+                    </div>`
+                if (!this.isLoadThanhVien) {
+                    this.slideBarShowLoading()
+                    this.getThanhVien(() => {
+                        var cou = this.arr_Lop_Online.length
+                        this.arr_Lop_Online.forEach(e => {
+                            this.getHocSinhOnline(e , () => {
+                                cou = cou - 1
+                                if (cou == 0) {
+                                    this.isLoadThanhVien = true
+                                    console.log("get hoc sinh do")
+                                    this.rootChat.render(React.createElement(ListHocSinh , {data: this.DsLop_ThanhVien}))
+                                }
+                            })
+                        })
+                    })
+                }
+                else {
+                    this.rootChat.render(React.createElement(ListHocSinh , {data: this.DsLop_ThanhVien}))
+                }
+            }
+        },
+        {
+            title: 'chat',
+            iconName: 'chatbox-outline',
+            onClick: () => {
+                document.querySelector('#side-bar > div.chat-top').innerHTML = `
+                    <div onclick="classhtt.rootChat.render(React.createElement(Menu , {data: classhtt.slideBarTool}));document.querySelector('#side-bar > div.chat-top').innerHTML = ''" class="chat-button">
+                        <ion-icon name="backspace-outline"></ion-icon>
+                        <p>Chat</p>
+                    </div>`
+
+                
+                
+
+            }
+        },
+        {
+            title: 'Câu hỏi',
+            iconName: 'checkbox-outline',
+            onClick: () => { console.log('chat') }
+        }
+
+    ]
+
+    this.handlSideBar = {
+        isSideBar: () => this.isSideBar,
+
+        out: () => {
+            this.rootChat = null
+            this.rootContent = null
+            this.arr_Data = []
+            classttn.resetFieldTracNghiem()
+            clearInterval(_Ttn_Timer);
+            this.outRoom()
+        },
+
+        baiHoc: () => {
+            clearInterval(_Ttn_Timer);
+            document.querySelector(".phonghoc-content-top").classList.remove('baitap')
+            document.querySelector('#side-bar div.chat-top').classList.remove('baitap')
+            this.updateRootContent(React.createElement(BaiHoc))
+            setTimeout(() => {
+                this.setContent(
+                    this.arr_Data_BaiHoc.NoiDungBaiHoc
+                )
+            }, 10)
+
+        },
+
+        baiTap: () => {
+            if (!this.rootContent) {
+                this.rootContent = ReactDOM.createRoot(document.getElementById('content'))
+            }
+
+            this.updateRootContent(React.createElement(BaiTap, {
+                classttn: classttn
+            }))
+
+            if (this.isLoadBaiTap) {
+                console.log("no dow")
+                setTimeout(() => {
+                    _Ttn_Timer = setInterval(function () {
+                        this.second_Bailam++;
+                        var ThoiGianLamBai_Client = parseInt((new Date() - this.GioBatDauLamBai_Client) / 1000); // giay
+                        this.second_Bailam_TruocDongBo = this.second_Bailam;
+
+                        if (this.second_Bailam >= this.limit_minute * 60) {/*classhtt.isKiemTra && */
+                            this.isConThoiGianLamBai = false;
+                            clearInterval(_Ttn_Timer);
+                            console.log("time end")
+                        }
+
+                        this.isConThoiGianLamBai = true;
+                        var thoigianconlai = this.limit_minute * 60 - this.second_Bailam;
+                        var str = formatTime(Math.floor(thoigianconlai))
+                        // console.log(str)
+                        document.getElementById('bottom-timer').textContent = str;
+                    }.bind(classttn), 1000)
+                    classttn.readerCauhoi()
+                    var thoigianconlai = classttn.limit_minute * 60 - classttn.second_Bailam;
+                    var str = formatTime(Math.floor(thoigianconlai))
+                    // console.log(str)
+                    document.getElementById('bottom-timer').textContent = str;
+                }, 10)
+            }
+            else {
+                this.getBaiTap(() => {
+                    this.isLoadBaiTap = true
+                    classttn.initTimer()
+                    classttn.readerCauhoi()
+                })
+            }
+
+            document.querySelector(".phonghoc-content-top").classList.add('baitap')
+            document.querySelector('#side-bar div.chat-top').classList.add('baitap')
+        },
+
+        chatOnOff: (on) => {
+            this.isSideBar = !on;
+            const ele = document.getElementById('side-bar')
+            if (!on) {
+                ele.querySelector('#slideBarContent').style.display = 'block'
+                ele.querySelector('.chat-bottom').style.display = 'flex'
+                ele.classList.remove('off');
+                ele.style = {}
+            }
+
+            else {
+                ele.classList.add('off');
+                ele.style.width = "0px"
+                ele.style.margin = "0"
+                ele.style.opacity = "0";
+
+                setTimeout(() => {
+                    ele.querySelector('#slideBarContent').style.display = 'none'
+                    ele.querySelector('.chat-bottom').style.display = 'none'
+                }, 200)
+            }
+        }
+
+    }
+
+    this.getThanhVien = function(callback) {
+        WSGet(function (result) {
+            if (CheckResult(result)) {
+                // this.dtThanhVien_Lop = result.Data.Tables[0];
+                this.arr_Lop_Online = result.Data.Tables[0].toJson();
+                console.log('get thanh vien')
+
+                if (callback) 
+                    callback()
+                // this.generateDockOnline('LOP', 'div-online-content');
+                // this.generateDockOnline('LOP', 'div-online-content-desk');
+            }
+        }.bind(this), this.DLL_LearningRoom, 'ElearningInitThanhVien', this.BaiHocGiaoVienID.toString(), this.LopID.toString(), this.StoreMode);
+    }
+
+    this.getHocSinhOnline = function(lopid, callback) {
+        WSGet(function (rs) {
+            df_HideLoading();
+            if (CheckResult(rs)) {
+                if (rs.Data.getTable('Online'))
+                    this.DsLop_ThanhVien[lopid.TenLop] = rs.Data.getTable('Online').toJson();
+
+                if (callback) 
+                    callback()
+            }
+        }.bind(this), this.DLL_LearningRoom, 'ElearningGetOnline', this.BaiHocGiaoVienID, lopid.LopID.toString(), this.StoreMode);
+    }
 
     this.getBaiHoc = (callback) => {
         WSGet(function (result) {
+
+            if (result.ErrorNumber != 0) {
+                showMsg('Phòng học', result.ErrorMessage , '' , 'error' , () => {
+                    classhtt.outRoom()
+                    df_HideLoading()
+                })
+                return ;
+            }
 
             if (result.Data.getTable('GioHienHanh')) {
 
@@ -87,6 +277,8 @@ function HocTrucTuyen() {
                         this.lockBaiHoc = this.arr_Data_BaiHoc['KhongHienBaiHoc'];
                         this.lockKiemTra = this.arr_Data_BaiHoc['KhongHienBaiTap'];
                         if (!this.lockBaiHoc && !this.isKiemTra) {
+                            
+                            this.arr_Data_BaiHoc['NoiDungBaiHoc'] = this.formatNoiDungBaiHoc(this.arr_Data_BaiHoc['NoiDungBaiHoc'])
                             this.setContent(this.arr_Data_BaiHoc['NoiDungBaiHoc']);
                             this.ChoHSChamDiem = this.arr_Data_BaiHoc["ChoHSChamDiem"];
                         }
@@ -96,150 +288,12 @@ function HocTrucTuyen() {
             }
 
             else {
+                showMsg("Phòng hoc" , 'không thể lấy bài học')
                 console.log('lỗi lấy bài học')
             }
 
             if (callback) callback()
         }.bind(this), this.DLL_LearningRoom, 'ElearningInit', this.BaiHocGiaoVienID, this.StoreMode)
-    }
-
-    this.setContent = (data) => {
-
-        document.getElementById("noidungbaihoc").innerHTML = data;
-
-    }
-
-    this.slideBarTool = [
-        {
-            title: 'Thành viên',
-            iconName: 'people-outline',
-            onClick: () => {
-
-                document.querySelector('#side-bar > div.chat-top').innerHTML = `<div onclick="classhtt.rootChat.render(React.createElement(Menu , {data: classhtt.slideBarTool}));document.querySelector('#side-bar > div.chat-top').innerHTML = ''" class="chat-button">
-                <ion-icon name="backspace-outline"></ion-icon>
-                <p>Thành viên</p>
-            </div>`
-
-                this.slideBarShowLoading()
-                this.getThanhVien(() => {
-                    var cou = this.arr_Lop_Online.length
-                    this.arr_Lop_Online.forEach(e => {
-                        this.getHocSinhOnline(e , () => {
-                            cou = cou - 1
-                            if (cou == 0) {
-                                console.log("get hoc sinh do")
-                                this.rootChat.render(React.createElement(ListHocSinh , {data: this.DsLop_ThanhVien}))
-                            }
-                        })
-                    })
-                })
-            }
-        },
-        {
-            title: 'chat',
-            iconName: 'chatbox-outline',
-            onClick: () => { console.log('chat') }
-        },
-        {
-            title: 'Câu hỏi',
-            iconName: 'checkbox-outline',
-            onClick: () => { console.log('chat') }
-        }
-
-    ]
-
-    this.handlSideBar = {
-        isSideBar: () => this.isSideBar,
-
-        out: () => {
-            this.rootChat = null
-            this.rootContent = null
-            this.arr_Data = []
-            classttn.resetFieldTracNghiem()
-            clearInterval(_Ttn_Timer);
-            this.outRoom()
-        },
-
-        baiHoc: () => {
-            if (!classhtt.rootContent) {
-                classhtt.rootContent = ReactDOM.createRoot(document.getElementById('content'))
-            }
-            clearInterval(_Ttn_Timer);
-            document.querySelector(".phonghoc-content-top").classList.remove('baitap')
-            document.querySelector('#side-bar div.chat-top').classList.remove('baitap')
-            this.rootContent.render(React.createElement(BaiHoc))
-            setTimeout(() => {
-                this.setContent(
-                    this.arr_Data_BaiHoc.NoiDungBaiHoc
-                )
-            }, 10)
-
-        },
-
-        baiTap: () => {
-            if (!this.rootContent) {
-                this.rootContent = ReactDOM.createRoot(document.getElementById('content'))
-            }
-
-            classhtt.rootContent.render(React.createElement(BaiTap, {
-                classttn: classttn
-            }))
-
-            if (classttn.arr_Data.length > 0) {
-                console.log("no dow")
-                setTimeout(() => {
-                    _Ttn_Timer = setInterval(function () {
-                        this.second_Bailam++;
-                        var ThoiGianLamBai_Client = parseInt((new Date() - this.GioBatDauLamBai_Client) / 1000); // giay
-                        this.second_Bailam_TruocDongBo = this.second_Bailam;
-
-                        if (this.second_Bailam >= this.limit_minute * 60) {/*classhtt.isKiemTra && */
-                            this.isConThoiGianLamBai = false;
-                            // clearInterval(_Ttn_Timer);
-
-                            console.log("time end")
-                        }
-
-                        this.isConThoiGianLamBai = true;
-                        var thoigianconlai = this.limit_minute * 60 - this.second_Bailam;
-                        var str = formatTime(Math.floor(thoigianconlai))
-                        console.log(str)
-                        document.getElementById('bottom-timer').textContent = str;
-                    }.bind(classttn), 1000)
-                    classttn.readerCauhoi()
-                    var thoigianconlai = classttn.limit_minute * 60 - classttn.second_Bailam;
-                    var str = formatTime(Math.floor(thoigianconlai))
-                    // console.log(str)
-                    document.getElementById('bottom-timer').textContent = str;
-                }, 10)
-            }
-            else {
-                this.getBaiTap(() => {
-                    classttn.initTimer()
-                    classttn.readerCauhoi()
-                })
-            }
-
-            document.querySelector(".phonghoc-content-top").classList.add('baitap')
-            document.querySelector('#side-bar div.chat-top').classList.add('baitap')
-        },
-
-        chatOnOff: (on) => {
-            this.isSideBar = !on;
-            const ele = document.getElementById('side-bar')
-            if (!on) {
-                ele.classList.remove('off');
-                ele.style = {}
-            }
-
-            else {
-                ele.classList.add('off');
-                ele.style.width = "0px"
-                ele.style.margin = "0"
-                ele.style.opacity = "0";
-            }
-        }
-
     }
 
     this.getBaiTap = (callback) => {
@@ -254,7 +308,7 @@ function HocTrucTuyen() {
                         classttn.arr_HoanVi = result.Data.getTable('HoanVi').toJson();
                     if (classttn.arr_HoanVi == undefined || classttn.arr_HoanVi.length == 0) {
                         classttn.errorChangeCauHoi = 'Không tải được bảng hoán vị, vui lòng liên hệ giáo viên dạy bạn.';
-                        // showMsg('Thông báo lỗi', classttn.errorChangeCauHoi);
+                        showMsg('Thông báo lỗi', classttn.errorChangeCauHoi);
                         return false;
                     }
                     if (result.Data.getTable('DoanVan'))
@@ -282,7 +336,7 @@ function HocTrucTuyen() {
                                     if (pos == -1) {
                                         arr_Cauhoi = [];
                                         classttn.errorChangeCauHoi = 'Giáo viên đã thay đổi dữ liệu câu hỏi. Vui lòng liên hệ giáo viên để làm mới bài tập! Nội dung câu hỏi có thay đổi: ' + item['cauhoi'];
-                                        // showMsg('Thông báo lỗi', classttn.errorChangeCauHoi);
+                                        showMsg('Thông báo lỗi', classttn.errorChangeCauHoi);
                                         return false;
                                     }
                                     var arr_HoanViID = convertJson2Array(classttn.arr_HoanVi, 'HoanViID');
@@ -310,7 +364,7 @@ function HocTrucTuyen() {
                                     }
                                     else {
                                         classttn.errorChangeCauHoi = 'HTT: Câu hỏi không đủ số lượng đáp án, vui lòng liên hệ giáo viên để kiểm tra lại. Nội dung câu hỏi:' + item['cauhoi'];
-                                        // showMsg('Thông báo lỗi', classttn.errorChangeCauHoi);
+                                        showMsg('Thông báo lỗi', classttn.errorChangeCauHoi);
                                         return false;
                                     }
                                 }
@@ -338,7 +392,7 @@ function HocTrucTuyen() {
                         // không có BHHS
                     }
                     if (classhtt.arr_Data_BaiHoc['TGKT'] == undefined) {
-                        // showMsg('Thông báo lỗi', "Không thể lấy được thời gian kết thúc bài học, Hãy vào phòng lại hoặc làm tươi (F5) trang web.", 'OK', 'error', function () { return; });
+                        showMsg('Thông báo lỗi', "Không thể lấy được thời gian kết thúc bài học, Hãy vào phòng lại hoặc làm tươi (F5) trang web.", 'OK', 'error', function () { return; });
                     }
                     else {
                         classhtt.tinhThoiGianLamBai();
@@ -359,15 +413,121 @@ function HocTrucTuyen() {
                             // window.location.href = '/#/HocSinhChonPhong/' + classhtt.LoaiPhongHoc;
                             // loadpage('#/HocSinhChonPhong/' + classhtt.LoaiPhongHoc);
                             // clearInterval(_Htt_Timer);
-                            // clearInterval(_Ttn_Timer);
+                            clearInterval(_Ttn_Timer);
                         }
                     }
                 }
             }
             catch (error) {
-                // showMsg('Thông báo lỗi', error, 'OK', 'error', function () { return; });
+                showMsg('Thông báo lỗi', error, 'OK', 'error', function () { return; });
             }
         }.bind(this), classhtt.DLL_LearningRoom, 'ElearningInitCauHoi_Upgade', classhtt.BaiHocGiaoVienID, classhtt.BaiHocLopID, this.StoreMode);
+    }
+
+    this.formatNoiDungBaiHoc = function(str) {
+        var ele = document.createElement('div')
+        ele.innerHTML = str
+        var allAEle = ele.querySelectorAll('a')
+        // console.log(allAEle)
+
+        allAEle.forEach(e => {
+            const fullNameFile = e.textContent
+            const type = fullNameFile.substring(fullNameFile.lastIndexOf(".") + 1 , fullNameFile.length).toLowerCase()
+            if (fileTypes.includes(type.toLowerCase()) && e.href.indexOf('https://file.vietschool.vn/') >= 0) {
+                const name = fullNameFile.substring(0 , fullNameFile.lastIndexOf("."))
+                console.log('make view file' , type)
+
+                var divFileView = document.createElement('div')
+                divFileView.className = "file-view"
+                divFileView.title = fullNameFile;
+                var iconSrc = getSrcFileIcon(type)
+
+                divFileView.innerHTML = `
+                    <div class="file-icon">
+                        <ion-icon src="${iconSrc}"></ion-icon>
+                    </div>
+            
+                    <div class="file-body">
+                        <div class="file-fullname">
+                            <p class="file-name">${name}</p>
+                            <p class="file-type">.${type}</p>
+                        </div>
+            
+                        <div class="file-size">20kb</div>
+                    </div>
+            
+                    <div class="file-dow">
+                        <div class="file-button" title="Download">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                        </div>
+                    </div>
+                `
+                const parent = e.parentNode;
+                divFileView.onclick = () => {
+                    console.log(e.href)
+                    this.renderFileView(e.href)
+                }
+                parent.removeChild(e)
+                parent.appendChild(divFileView)
+            }
+        })
+
+        return ele;
+    }
+
+    this.updateRootContent = function(ele) {
+        if (!classhtt.rootContent) {
+            classhtt.rootContent = ReactDOM.createRoot(document.getElementById('content'))
+        }
+
+        classhtt.rootContent.render(ele)
+    }
+
+    this.renderFileView = function(url , type) {
+        var id = url.substring(url.lastIndexOf('/') , url.length)
+
+        this.updateRootContent(React.createElement(ViewFile , {url : `https://docs.google.com/gview?url=${url}&embedded=true`}))
+
+        // setTimeout(() => {
+        //     if (this.tabFileData[id]) {
+        //         document.getElementById('fileiframe').appendChild(this.tabFileData[id] , )
+                
+        //     }
+    
+        //     else {
+        //         var iframe = document.createElement('iframe')
+        //         iframe.src = `https://docs.google.com/gview?url=${url}&embedded=true`
+        //         iframe.frameBorder = '0'
+    
+        //         iframe.style.border = "None";
+    
+                
+        //         this.tabFileData[id] = iframe
+
+        //         // document.getElementById('fileiframe').innerHTML = ''
+        //         document.getElementById('fileiframe').appendChild(iframe)
+        //     }
+        // }, 100)
+    }
+
+    this.setContent = (data) => {
+        var count = document.getElementById("noidungbaihoc").innerHTML = ''
+        console.log(data)
+        document.getElementById("noidungbaihoc").appendChild(data)
+    }
+
+    this.send = function(str)  {
+        var jsonBroadcast = this.generateJsonBroadcast('comment_add', { 'ID': User.HocSinhID, 'msg': msg }, this.HoTen, "HS");
+    }
+
+    this.generateJsonBroadcast = function(command, para, from, usertype) {
+        var jsonBroadcast = {};
+        jsonBroadcast['Command'] = command;
+        jsonBroadcast['Para'] = para
+        jsonBroadcast['From'] = from;
+        jsonBroadcast['UserType'] = usertype;
+        jsonBroadcast = JSON.stringify(jsonBroadcast);
+        return jsonBroadcast;
     }
 
     this.outRoom = () => {
@@ -412,6 +572,10 @@ function HocTrucTuyen() {
         this.LopID = data.LopID;
         this.isOnTap = data.VaoPhong == "Ôn Tập" ? true : false
         this.arr_Lop_Online = null
+        this.StoreMode = data.TrangThaiID.toString()
+        this.isLoadThanhVien = false
+        this.isLoadBaiTap = false
+        this.IsLoadChat = false
         ws.registerOnMessageFunction(this, this.socketMessage);
         this.renderInit()
         this.joinRoomIfYes(() => {
@@ -471,31 +635,5 @@ function HocTrucTuyen() {
         this.rootChat.render(React.createElement(SideBarLoading))
     }
 
-    this.getThanhVien = function(callback) {
-        WSGet(function (result) {
-            if (CheckResult(result)) {
-                // this.dtThanhVien_Lop = result.Data.Tables[0];
-                this.arr_Lop_Online = result.Data.Tables[0].toJson();
-                console.log('get thanh vien')
-
-                if (callback) 
-                    callback()
-                // this.generateDockOnline('LOP', 'div-online-content');
-                // this.generateDockOnline('LOP', 'div-online-content-desk');
-            }
-        }.bind(this), this.DLL_LearningRoom, 'ElearningInitThanhVien', this.BaiHocGiaoVienID.toString(), this.LopID.toString(), this.StoreMode);
-    }
-
-    this.getHocSinhOnline = function(lopid, callback) {
-        WSGet(function (rs) {
-            df_HideLoading();
-            if (CheckResult(rs)) {
-                if (rs.Data.getTable('Online'))
-                    this.DsLop_ThanhVien[lopid.TenLop] = rs.Data.getTable('Online').toJson();
-
-                if (callback) 
-                    callback()
-            }
-        }.bind(this), this.DLL_LearningRoom, 'ElearningGetOnline', this.BaiHocGiaoVienID, lopid.LopID.toString(), this.StoreMode);
-    }
+    
 }
