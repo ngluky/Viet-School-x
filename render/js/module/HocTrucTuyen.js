@@ -14,7 +14,7 @@ function HocTrucTuyen() {
     this.arr_LockComment = [];
     this.DsLop_ThanhVien = [];
     this.LopID_ThanhVien_Act = null;
-    this.tabActive = '#div-editor';
+    this.tabActive = 0;
     this.arrCauHinhPDF = {};
     this.dtsCauHoi;
     this.dgvBaiHoc_CauHoi = null;
@@ -47,16 +47,16 @@ function HocTrucTuyen() {
     this.GS_HocSinhID_ChiTiet;
     this.LopID;
     this.GS_HocSinhCamera = [];
-    this.isLoadBaiTap = false;
     this.classGiamSatWeb;
     this.rootContent = null;
     this.rootChat = null;
     this.rootSlideBar = null
+    this.isLoadBaiTap = false;
     this.isSideBar = true
     this.isOnTap = false
     this.isLoadThanhVien = false
     this.LopID = null
-    this.tabFileData = {}
+    this.tabFileData = []
 
 
     this.slideBarTool = [
@@ -80,14 +80,14 @@ function HocTrucTuyen() {
                                 if (cou == 0) {
                                     this.isLoadThanhVien = true
                                     console.log("get hoc sinh do")
-                                    this.rootChat.render(React.createElement(ListHocSinh , {data: this.DsLop_ThanhVien}))
+                                    this.updateRootChat(React.createElement(ListHocSinh , {data: this.DsLop_ThanhVien}))
                                 }
                             })
                         })
                     })
                 }
                 else {
-                    this.rootChat.render(React.createElement(ListHocSinh , {data: this.DsLop_ThanhVien}))
+                    this.updateRootChat(React.createElement(ListHocSinh , {data: this.DsLop_ThanhVien}))
                 }
             }
         },
@@ -101,7 +101,15 @@ function HocTrucTuyen() {
                         <p>Chat</p>
                     </div>`
 
-                
+                if (!this.IsLoadChat) {
+                    console.log('get thảo luận')
+                    this.getThaoLuan(() => {
+                        this.updateRootChat(React.createElement(ChatPage , {data: this.arr_Data_Chat}))
+                    })
+                }
+                else {
+                    this.updateRootChat(React.createElement(ChatPage , {data: this.arr_Data_Chat}))
+                }
                 
 
             }
@@ -210,6 +218,22 @@ function HocTrucTuyen() {
             }
         }
 
+    }
+
+    this.getThaoLuan = function(callback) {
+        // this.slideBarShowLoading()
+        WSGet(function (result) {
+            if (CheckResult(result)) {
+                console.log(result)
+                if (result.Data.getTable('LockComment'))
+                    this.arr_LockComment = result.Data.getTable('LockComment').toJson();
+                if (result.Data.getTable('Comment'))
+                    this.arr_Data_Chat = result.Data.getTable('Comment').toJson();
+                // this.generateDockChat();
+                this.IsLoadChat = true;
+                if (callback) callback()
+            }
+        }.bind(this), this.DLL_LearningRoom, 'ElearningInitThaoLuan', this.BaiHocGiaoVienID, this.StoreMode);
     }
 
     this.getThanhVien = function(callback) {
@@ -440,6 +464,10 @@ function HocTrucTuyen() {
                 var divFileView = document.createElement('div')
                 divFileView.className = "file-view"
                 divFileView.title = fullNameFile;
+                divFileView.onclick = () => {
+                    console.log(e.href)
+                    this.renderFileView(e.href , iconSrc , name)
+                }
                 var iconSrc = getSrcFileIcon(type)
 
                 divFileView.innerHTML = `
@@ -463,10 +491,6 @@ function HocTrucTuyen() {
                     </div>
                 `
                 const parent = e.parentNode;
-                divFileView.onclick = () => {
-                    console.log(e.href)
-                    this.renderFileView(e.href)
-                }
                 parent.removeChild(e)
                 parent.appendChild(divFileView)
             }
@@ -483,31 +507,45 @@ function HocTrucTuyen() {
         classhtt.rootContent.render(ele)
     }
 
-    this.renderFileView = function(url , type) {
-        var id = url.substring(url.lastIndexOf('/') , url.length)
+    this.updateRootSideBar = function(ele) {
+        if (!this.rootSlideBar) {
+            this.rootSlideBar = ReactDOM.createRoot(document.getElementById('slidebar'))
+        }
 
-        this.updateRootContent(React.createElement(ViewFile , {url : `https://docs.google.com/gview?url=${url}&embedded=true`}))
+        this.rootSlideBar.render(ele)
+    }
 
-        // setTimeout(() => {
-        //     if (this.tabFileData[id]) {
-        //         document.getElementById('fileiframe').appendChild(this.tabFileData[id] , )
-                
-        //     }
-    
-        //     else {
-        //         var iframe = document.createElement('iframe')
-        //         iframe.src = `https://docs.google.com/gview?url=${url}&embedded=true`
-        //         iframe.frameBorder = '0'
-    
-        //         iframe.style.border = "None";
-    
-                
-        //         this.tabFileData[id] = iframe
+    this.updateRootChat = function(ele) {
+        if (!this.rootChat) 
+            this.rootChat = ReactDOM.createRoot(document.getElementById('slideBarContent'))
 
-        //         // document.getElementById('fileiframe').innerHTML = ''
-        //         document.getElementById('fileiframe').appendChild(iframe)
-        //     }
-        // }, 100)
+        this.rootChat.render(ele)
+    }
+
+    this.renderFileView = function(url , iconSrc , name) {
+        var id = url.substring(url.lastIndexOf('/') + 1 , url.length)
+        var file = this.tabFileData.filter(e => e.id = id)
+        if (file.length == 0) {
+            var item = {
+                id: id,
+                url: url,
+                name: name,
+                iconSrc: iconSrc,
+                index: 3 + this.tabFileData.length
+            }
+
+            this.tabActive = item.index
+            this.tabFileData.push(item)
+            this.updateRootSideBar(React.createElement(SideBar , {classhtt: this}))
+            this.updateRootContent(React.createElement(ViewFile , {url : `https://docs.google.com/gview?url=${url}&embedded=true`}))
+        }
+        else {
+            this.tabActive = file[0].index
+            document.querySelectorAll('div.action-top > div.action-button.radio')[this.tabActive].click()
+            this.updateRootSideBar(React.createElement(SideBar , {classhtt: this}))
+            this.updateRootContent(React.createElement(ViewFile , {url : `https://docs.google.com/gview?url=${url}&embedded=true`}))
+        }
+
     }
 
     this.setContent = (data) => {
@@ -531,9 +569,17 @@ function HocTrucTuyen() {
     }
 
     this.outRoom = () => {
-        console.log('ok')
+        this.rootContent = null
+        this.rootChat = null
+        this.rootSlideBar = null
+        
+        this.isLoadBaiTap = false;
+        this.isSideBar = true
+        this.isOnTap = false
+        this.isLoadThanhVien = false
+
         WSGet(function () {
-            console.log('ok')
+            console.log('out room')
             classhscp.renderInit()
         }.bind(this), "Elearning.Core.RoomManager", "OutRoom", this.BaiHocGiaoVienID.toString())
     }
@@ -560,7 +606,13 @@ function HocTrucTuyen() {
     }
 
     this.socketMessage = (ms) => {
-        console.log(ms)
+        try {
+            const data = JSON.parse(ms)
+            console.log(data)
+        }
+        catch (e) {
+
+        }
     }
 
     this.joinRoom = (data) => {
@@ -576,6 +628,8 @@ function HocTrucTuyen() {
         this.isLoadThanhVien = false
         this.isLoadBaiTap = false
         this.IsLoadChat = false
+        this.tabActive = 0
+        this.tabFileData = []
         ws.registerOnMessageFunction(this, this.socketMessage);
         this.renderInit()
         this.joinRoomIfYes(() => {
@@ -628,12 +682,7 @@ function HocTrucTuyen() {
 
     }
 
-    this.slideBarShowLoading = function() {        
-        if (!this.rootChat) 
-            this.rootChat = ReactDOM.createRoot(document.getElementById('slideBarContent'))
-
-        this.rootChat.render(React.createElement(SideBarLoading))
+    this.slideBarShowLoading = function() {
+        this.updateRootChat(React.createElement(SideBarLoading))
     }
-
-    
 }

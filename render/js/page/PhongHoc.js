@@ -77,19 +77,21 @@ function SideBarButton(props) {
                     ele.style[e] = buttonSeleStyle[e];
                 });
             };
+            var propsIcon = {
+                name : props.nameIcon
+            }
+
+            if (props.srcIcon) {
+                propsIcon = {
+                    src: props.srcIcon
+                }
+            }
 
             if (props.title) {
                 return (
-                    <div
-                        className={"action-button radio " + on + " " + clasId}
-                        style={props.on ? buttonSeleStyle : {}}
-                        onClick={() => {
-                            handlOnClick();
-                            props.onClick();
-                        }}
-                    >
+                    <div className={"action-button radio " + on + " " + clasId} style={props.on ? buttonSeleStyle : {}} onClick={() => {handlOnClick();props.onClick();}}>
                         <div className="action-button-svg">
-                            <ion-icon name={props.nameIcon}></ion-icon>
+                            <ion-icon {...propsIcon}></ion-icon>
                         </div>
                         <div className="action-button-text">
                             <p>{props.title}</p>
@@ -98,15 +100,9 @@ function SideBarButton(props) {
                 );
             } else {
                 return (
-                    <div
-                        className={"action-button radio" + on + " " + clasId}
-                        onClick={() => {
-                            handlOnClick();
-                            props.onClick();
-                        }}
-                    >
+                    <div className={"action-button radio " + on + " " + clasId} style={props.on ? buttonSeleStyle : {}} onClick={() => { handlOnClick(); props.onClick();}} >
                         <div className="action-button-svg">
-                            <ion-icon name={props.nameIcon}></ion-icon>
+                            <ion-icon {...propsIcon}></ion-icon>
                         </div>
                     </div>
                 );
@@ -218,14 +214,21 @@ function BaiHoc() {
 }
 
 function SideBar(props) {
-    const eventSideBar = props.eventHandl;
-    return (
-        <div className="action">
-            <div className="action-top">
-                <SideBarButton type="radio" on="on" nameIcon="book-outline" title="Lý thuyết" onClick={eventSideBar.baiHoc}/>
-                <SideBarButton type="radio" nameIcon="videocam-outline" title="Live" />
-                <SideBarButton type="radio" nameIcon="create-outline" title="Bài tập" onClick={eventSideBar.baiTap} />
+    const classhtt = props.classhtt
+    const eventSideBar = classhtt.handlSideBar;
+    var fileButton = classhtt.tabFileData
 
+    console.log(fileButton)
+
+    return (
+        <React.Fragment>
+            <div className="action-top">
+                <SideBarButton type="radio" on={classhtt.tabActive == 0} nameIcon="book-outline" title="Lý thuyết" onClick={() => {classhtt.tabActive = 0; eventSideBar.baiHoc()}}/>
+                <SideBarButton type="radio" on={classhtt.tabActive == 1} nameIcon="videocam-outline" title="Live" onClick={() => {classhtt.tabActive = 1}}/>
+                <SideBarButton type="radio" on={classhtt.tabActive == 2} nameIcon="create-outline" title="Bài tập" onClick={() => {classhtt.tabActive = 2; eventSideBar.baiTap()}} />
+                {fileButton.map((e, index) => (
+                    <SideBarButton key={index} type="radio" on={classhtt.tabActive == e.index} srcIcon={e.iconSrc} onClick={() => {classhtt.tabActive = e.index;classhtt.renderFileView(e.url , e.iconSrc , e.name)}}/>
+                ) )}
             </div>
             <div className="action-botton">
                 <SideBarButton
@@ -237,7 +240,8 @@ function SideBar(props) {
                 />
                 <SideBarButton nameIcon="log-out-outline" onClick={eventSideBar.out} />
             </div>
-        </div>
+        </React.Fragment>
+        
     );
 }
 
@@ -312,21 +316,72 @@ function ListHocSinh(props) {
     )
 }
 
+function ChatEle(props) {
+
+    if (props.name)
+        return (
+            <div className={`chat-mess ${props.me ? 'me': ''}`} style={{'margin-top': '10px'}}>
+                <div className="chat-mess-name">
+                    {props.name}
+                </div>
+                <div className="chat-mess-body">
+                    {props.mess}    
+                </div>
+            </div>
+        );
+    else 
+        return (
+            <div className={`chat-mess ${props.me ? 'me': ''}`}>
+                <div className="chat-mess-body">
+                    {props.mess}
+                </div>
+            </div>
+        );
+    
+
+}
+
+function ChatBody(props) {
+    var chats = props.data
+    // chats.reverse()
+    return (
+        <React.Fragment>
+            {chats.map((e , index) => {
+                console.log(e)
+                var name = e.HoTen
+                // console.log(index - 1)
+                if (index > 0) {
+                    if (e.HocSinhID == chats[index - 1].HocSinhID)
+                        name = null
+                }
+
+                const me = e.HocSinhID == User.HocSinhID
+
+                return (
+                    <ChatEle key={index} me={me} mess={e.Comment} name={name} thoiGiam={e.ThoiGianChat}/>
+                )
+            })}
+        </React.Fragment>
+    )
+}
+
 function ChatPage(props) {
+
     return (
         <div className="chat-main">
-          <div className="chat-body">
-          </div>
-          <div className="chat-input">
-            <span className="textarea" role="textbox" contentEditable />
-            <div className="chat-body-button">
-              <svg xmlns="http://www.w3.org/2000/svg" id="Group_10235" data-name="Group 10235" width={40} viewBox="0 0 173.64 149.826">
-                <path id="Path_8370" data-name="Path 8370" d="M163.3,94.537,23.2,36.4A16.767,16.767,0,0,0,.529,56.035L13,104.936H74.053a5.087,5.087,0,0,1,0,10.175H13l-12.47,48.9A16.768,16.768,0,0,0,23.2,183.643l140.1-58.132a16.767,16.767,0,0,0,0-30.974Z" transform="translate(-0.001 -35.111)" />
-              </svg>
+            <div className="chat-body">
+                <ChatBody data={props.data}/>
             </div>
-          </div>
+            <div className="chat-input">
+                <span className="textarea" role="textbox" contentEditable />
+                <div className="chat-body-button">
+                <svg xmlns="http://www.w3.org/2000/svg" id="Group_10235" data-name="Group 10235" width={40} viewBox="0 0 173.64 149.826">
+                    <path id="Path_8370" data-name="Path 8370" d="M163.3,94.537,23.2,36.4A16.767,16.767,0,0,0,.529,56.035L13,104.936H74.053a5.087,5.087,0,0,1,0,10.175H13l-12.47,48.9A16.768,16.768,0,0,0,23.2,183.643l140.1-58.132a16.767,16.767,0,0,0,0-30.974Z" transform="translate(-0.001 -35.111)"/>
+                </svg>
+                </div>
+            </div>
         </div>
-      );
+    );
 }
 
 function ChatTab(props) {
@@ -374,9 +429,7 @@ function ChatTab(props) {
 
                 </button>
 
-                <button className="chat-bottom-button" onClick={() => {
-                    classttn.handlNopBai()
-                }}>
+                <button className="chat-bottom-button" onClick={() => {classttn.handlNopBai()}}>
                     nopbai
                 </button>
             </div>
@@ -391,7 +444,9 @@ function PhongHoc(props) {
         <React.Fragment>
             <div className="phonghoc">
                 <div className="phonghoc-row1">
-                    <SideBar eventHandl={classhtt.handlSideBar} />
+                    <div className="action" id="slidebar">
+                        <SideBar classhtt={classhtt} />
+                    </div>
 
                     <div className="phonghoc-chat-conter">
                         <div className="phonghoc-chat" id="side-bar" style={ classhtt.isSideBar ? {} : { width: "0px", margin: "0", opacity: "0" }}>

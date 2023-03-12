@@ -75,8 +75,7 @@ body {
 }
 
 .action-button .action-button-svg ion-icon {
-    height: 25px;
-    width: 25px;
+    font-size: 24px;
 }
 
 .action-button:hover .action-button-svg ion-icon {
@@ -511,6 +510,7 @@ div.cauhoi .stt {
 
 .chat-body {
     height: 100%;
+    overflow-y: scroll;
 }
 
 .chat-input {
@@ -625,7 +625,7 @@ div.cauhoi .stt {
 
 
 .div-file-view {
-    height: calc(100% - 4px);;
+    height: calc(100%);;
     width: 100%;
     border-radius: 5px;
     overflow: hidden;
@@ -639,4 +639,37 @@ div.cauhoi .stt {
 .div-file-iframe iframe {
     height: 100%;
     width: 100%;
+}
+
+.chat-mess {
+    display: flex;
+    flex-direction: column;
+}
+
+.chat-mess.me {
+    align-items: flex-end;
+}
+
+.chat-mess-name {
+    font-family: serif;
+    margin: 0 8px;
+}
+
+.chat-mess-body {
+    margin-left: 5px;
+    width: calc(100% - 40px);
+    padding: 6px 5px;
+    background-color: var(--background-chat);
+    box-shadow: 0 0 4px 0 var(--background-chat);
+    border-radius: 5px;
+    margin-top: 3px;
+}
+
+.chat-mess.me .chat-mess-body {
+    margin-left: 0;
+    margin-right: 5px;
+}
+
+.chat-mess.me .chat-mess-body {
+    background-color: #4444ff;
 }

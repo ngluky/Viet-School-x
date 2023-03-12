@@ -230,7 +230,7 @@ function setTheme(mode) {
     }
 }
 
-df_ShowLoading()
+df_ShowLoading('vui lòng đợi kết nối với server')
 
 $(document).ready(() => {
         document.getElementById('close').addEventListener("click" , () => {
