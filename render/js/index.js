@@ -51,7 +51,6 @@ function handleLogin(user , pass , remender) {
         showMsg("Login" , "Bạn chưa nhập đầy đủ thông tin" , '' , 'war')
         return;
     }
-
     Cookie['Remenber'] = remender
     df_ShowLoading()
     Service.call((result) => {
@@ -83,34 +82,40 @@ function handleLogin(user , pass , remender) {
                         if (remender) {
                             CookieIpc.setAll(Cookie)
                         }
-                        WSGet(function (result) {
-                            df_HideLoading()
-                            var jsonResult = JSON.parse(result.Data);
-
-                            if (jsonResult) {
-                                User = jsonResult
-                                classhscp = new HocSinhChonPhong();
-                                classhscp.init();
-
-                                classhtt = new HocTrucTuyen();
-                                classttn = new ThiTracNghiem();
-                            }
-                        
+                        df_ShowLoading('đăng nhập thành công, đang lấy dữ liệu từ server')
+                        connect(() => {
+                            WSGet(function (result) {
+                                df_HideLoading()
+                                var jsonResult = JSON.parse(result.Data);
+    
+                                if (jsonResult) {
+                                    User = jsonResult
+                                    classhscp = new HocSinhChonPhong();
+                                    classhscp.init();
+    
+                                    classhtt = new HocTrucTuyen();
+                                    classttn = new ThiTracNghiem();
+                                }
                             
-                        }, "Elearning.Core.Login", "CheckLogged");
+                                
+                            }, "Elearning.Core.Login", "CheckLogged");
+
+                        })
+
                         
                     })
                 }
                 else if (data.get('Error') != undefined)
                 {
                     showMsg("Login" , data.get('Error'))
+                    df_HideLoading()
                     console.log(data.get('Error'))
                 }
                 else {
                     showMsg("Login" , "Lỗi đăng nhập không sác định")
+                    df_HideLoading()
                 }
 
-                df_HideLoading()
             }
             
 
@@ -232,7 +237,6 @@ function setTheme(mode) {
     }
 }
 
-df_ShowLoading('vui lòng đợi kết nối với server')
 
 $(document).ready(() => {
         document.getElementById('close').addEventListener("click" , () => {
@@ -242,11 +246,16 @@ $(document).ready(() => {
             App.minimize()
         })
         console.log("ok")
-        connect(() => {
-            if (!Cookie.LoginOTP) {
+
+        
+        if (!Cookie.LoginOTP) {
+            setTimeout(() => {
                 Root.render(React.createElement(LoginPage , {onClick: handleLogin}))
-            }
-            else {
+            }, 10)
+        }
+        else {
+            df_ShowLoading('vui lòng đợi kết nối với server')
+            connect(() => {
                 WSGet(function (result) {
                     df_HideLoading()
                     var jsonResult = JSON.parse(result.Data);
@@ -265,8 +274,10 @@ $(document).ready(() => {
                     
                     
                 }, "Elearning.Core.Login", "CheckLogged");
-            }
-        })
+            })
+            
+        }
+        
         setTheme(Setting.theme)
     }
 
