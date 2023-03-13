@@ -19,7 +19,8 @@ const colorTheme = {
         '--color-button': '#5865F2',
         '--color-check': '#23A55A',
         '--filter-thumbnail': 'grayscale(1)',
-        '--filter-img-dapan': 'invert(1)'
+        '--filter-img-dapan': 'invert(1)',
+        '--background-chat': '#262524'
     },
 
     light : {
@@ -30,7 +31,8 @@ const colorTheme = {
         '--color-button': ' #5865F2',
         '--color-check': ' #00692c',
         '--filter-thumbnail': 'grayscale(0)',
-        '--filter-img-dapan': 'invert(0)'
+        '--filter-img-dapan': 'invert(0)',
+        '--background-chat': '#D9D9D9'
 
     }
 }

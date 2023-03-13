@@ -57,6 +57,7 @@ function HocTrucTuyen() {
     this.isLoadThanhVien = false
     this.LopID = null
     this.tabFileData = []
+    this.rootMessBody = null
 
 
     this.slideBarTool = [
@@ -75,6 +76,7 @@ function HocTrucTuyen() {
                     this.getThanhVien(() => {
                         var cou = this.arr_Lop_Online.length
                         this.arr_Lop_Online.forEach(e => {
+                            console.log(e)
                             this.getHocSinhOnline(e , () => {
                                 cou = cou - 1
                                 if (cou == 0) {
@@ -256,7 +258,7 @@ function HocTrucTuyen() {
             df_HideLoading();
             if (CheckResult(rs)) {
                 if (rs.Data.getTable('Online'))
-                    this.DsLop_ThanhVien[lopid.TenLop] = rs.Data.getTable('Online').toJson();
+                    this.DsLop_ThanhVien[lopid.LopID] = rs.Data.getTable('Online').toJson();
 
                 if (callback) 
                     callback()
@@ -555,7 +557,30 @@ function HocTrucTuyen() {
     }
 
     this.send = function(str)  {
-        var jsonBroadcast = this.generateJsonBroadcast('comment_add', { 'ID': User.HocSinhID, 'msg': msg }, this.HoTen, "HS");
+        if (!str) {
+            str = document.querySelector('#slideBarContent > div > div.chat-input > span').textContent
+            document.querySelector('#slideBarContent > div > div.chat-input > span').textContent = ''
+        }
+        var jsonBroadcast = this.generateJsonBroadcast('comment_add', { 'ID': User.HocSinhID, 'msg': str }, User.FullName, "HS");
+        WSGet(function (result) {
+            if (CheckResult(result)) {
+                
+        
+                const nowTime = new Date;
+                var item = {
+                    "CommentID": null,
+                    "Comment": str,
+                    "HocSinhID": User.HocSinhID,
+                    "ThoiGianTao": `${nowTime.getHours()}:${nowTime.getMinutes()}:${nowTime.getSeconds()} ${nowTime.getDate()}/${nowTime.getMonth()}/${nowTime.getFullYear()}`,
+                    "BaiHocGiaoVienID": null,
+                    "HoTen": User.FullName,
+                    "ThoiGianChat": `${nowTime.getHours()}:${nowTime.getMinutes()}`
+                }
+        
+                this.arr_Data_Chat.push(item)
+                this.updateRootChat(React.createElement(ChatPage , {data: this.arr_Data_Chat}))
+            }
+        }.bind(this), this.DLL_LearningRoom, 'ElearningSaveComment', this.BaiHocGiaoVienID, str, jsonBroadcast);
     }
 
     this.generateJsonBroadcast = function(command, para, from, usertype) {
@@ -609,6 +634,51 @@ function HocTrucTuyen() {
         try {
             const data = JSON.parse(ms)
             console.log(data)
+
+            switch (data.Command) {
+                case "comment_add":
+                    const nowTime = new Date();
+                    var item = {
+                        "CommentID": null,
+                        "Comment": data.Para.msg,
+                        "HocSinhID": data.Para.ID,
+                        "ThoiGianTao": `${nowTime.getHours()}:${nowTime.getMinutes()}:${nowTime.getSeconds()} ${nowTime.getDate()}/${nowTime.getMonth()}/${nowTime.getFullYear()}`,
+                        "BaiHocGiaoVienID": null,
+                        "HoTen": data.From,
+                        "ThoiGianChat": `${nowTime.getHours()}:${nowTime.getMinutes()}`
+                    }
+
+                    this.arr_Data_Chat.push(item)
+                    this.updateRootChat(React.createElement(ChatPage , {data: this.arr_Data_Chat}))
+                    break;
+                
+                case "room_join":
+                    var para = JSON.parse(data.Para)
+                    var fromId = para.HocSinhID
+                    var classID = para.LopID
+
+                    this.DsLop_ThanhVien[classID].forEach(e => {
+                        if (e.HocSinhID == fromId) {
+                            console.log(data.From, 'đã vào phòng')
+                            e.Online = 1
+                        }
+                    })
+                    this.updateRootChat(React.createElement(ListHocSinh , {data: this.DsLop_ThanhVien}))
+                    break;
+                case "room_out":
+                    var para = JSON.parse(data.Para)
+                    var fromId = para.HocSinhID
+                    var classID = para.LopID
+
+                    this.DsLop_ThanhVien[classID].forEach(e => {
+                        if (e.HocSinhID == fromId) {
+                            console.log(data.From, 'đã ra khỏi phòng')
+                            e.Online = 0
+                        }
+                    })
+                    this.updateRootChat(React.createElement(ListHocSinh , {data: this.DsLop_ThanhVien}))
+                    break;
+            }
         }
         catch (e) {
 

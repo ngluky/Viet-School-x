@@ -277,7 +277,6 @@ function ListLop(props) {
     var data = props.data;
 
     const countOnline = data[1].filter(e => e.Online).length
-
     return (
         <div className="list-lop">
             <div className="list-lop-title">
@@ -292,12 +291,16 @@ function ListLop(props) {
             </div>
 
             <div className="list-lop-view">
-                {data[1].map((e , index) => (
-                    <div key={index} className={`list-hocsinh ${e.Online ? 'online' : ''}`}>
-                        <p className="hocsinh-stt-name">{index + 1} - {e.HoTen}</p>
-                        <div className="hocsinh-status"></div>
-                    </div>
-                ))}
+                {data[1].map((e , index) => {
+                    var pli = e.HoTen.split(' ')
+                    var name = `${pli[pli.length - 2]} ${pli[pli.length - 1]}`
+                    return(
+                        <div key={index} className={`list-hocsinh ${e.Online ? 'online' : ''}`}>
+                            <p className="hocsinh-stt-name">{index + 1} - {name}</p>
+                            <div className="hocsinh-status"></div>
+                        </div>
+                    )
+                })}
             </div>
         </div>
     )
@@ -317,18 +320,22 @@ function ListHocSinh(props) {
 }
 
 function ChatEle(props) {
+    if (props.name){
 
-    if (props.name)
+        
+        var names = props.name.split(' ')   
+        
         return (
-            <div className={`chat-mess ${props.me ? 'me': ''}`} style={{'margin-top': '10px'}}>
+            <div className={`chat-mess ${props.me ? 'me': ''}`} style={{'marginTop': '10px'}}>
                 <div className="chat-mess-name">
-                    {props.name}
+                    {names[names.length - 2]} {names[names.length - 1]}
                 </div>
                 <div className="chat-mess-body">
                     {props.mess}    
                 </div>
             </div>
         );
+    }
     else 
         return (
             <div className={`chat-mess ${props.me ? 'me': ''}`}>
@@ -369,12 +376,12 @@ function ChatPage(props) {
 
     return (
         <div className="chat-main">
-            <div className="chat-body">
+            <div className="chat-body" id="chat-mess-body">
                 <ChatBody data={props.data}/>
             </div>
             <div className="chat-input">
                 <span className="textarea" role="textbox" contentEditable />
-                <div className="chat-body-button">
+                <div className="chat-body-button" onClick={() => {classhtt.send()}}>
                 <svg xmlns="http://www.w3.org/2000/svg" id="Group_10235" data-name="Group 10235" width={40} viewBox="0 0 173.64 149.826">
                     <path id="Path_8370" data-name="Path 8370" d="M163.3,94.537,23.2,36.4A16.767,16.767,0,0,0,.529,56.035L13,104.936H74.053a5.087,5.087,0,0,1,0,10.175H13l-12.47,48.9A16.768,16.768,0,0,0,23.2,183.643l140.1-58.132a16.767,16.767,0,0,0,0-30.974Z" transform="translate(-0.001 -35.111)"/>
                 </svg>

@@ -454,7 +454,8 @@ div.cauhoi .stt {
 
 .list-hocsinh {
     display: flex;
-    margin: 5px;
+    margin: 5px 8px;
+    
     justify-content: space-between;
     height: 17px;
     align-items: center;
@@ -657,17 +658,20 @@ div.cauhoi .stt {
 
 .chat-mess-body {
     margin-left: 5px;
-    width: calc(100% - 40px);
+    max-width: calc(100% - 40px);
+    width: fit-content;
     padding: 6px 5px;
     background-color: var(--background-chat);
     box-shadow: 0 0 4px 0 var(--background-chat);
     border-radius: 5px;
     margin-top: 3px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 .chat-mess.me .chat-mess-body {
     margin-left: 0;
     margin-right: 5px;
+    text-align: right;
 }
 
 .chat-mess.me .chat-mess-body {

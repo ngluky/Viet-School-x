@@ -182,7 +182,8 @@ body {
 
 .sub .sub-title .title {
     font-weight: bold;
-    font-size: 19px;
+    /* font-size: 19px; */
+    font-size: 16.5px;
     text-overflow: ellipsis;
     max-height: 100%;
     -webkit-line-clamp: 2;
