@@ -496,3 +496,21 @@ function ViewFile(props) {
         </div>
     )
 }
+
+function ListViewCauHoi({data = []}) {
+    return (
+        <div className="list-cauhoi">
+            <div className="list-cauhoi-view">
+                {data.map(e => {
+                    return (
+                        <div className="list-cauhoi-ele">
+                            <p>{e.cau}</p>
+                            <hr />
+                            <p>{e.dapan}</p>
+                        </div>
+                    )
+                })}
+            </div>
+        </div>
+    )
+}

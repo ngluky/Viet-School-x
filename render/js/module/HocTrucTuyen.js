@@ -119,7 +119,14 @@ function HocTrucTuyen() {
         {
             title: 'Câu hỏi',
             iconName: 'checkbox-outline',
-            onClick: () => { console.log('chat') }
+            onClick: () => {
+                document.querySelector('#side-bar > div.chat-top').innerHTML = `
+                    <div onclick="classhtt.rootChat.render(React.createElement(Menu , {data: classhtt.slideBarTool}));document.querySelector('#side-bar > div.chat-top').innerHTML = ''" class="chat-button">
+                        <ion-icon name="backspace-outline"></ion-icon>
+                        <p>Câu hỏi</p>
+                    </div>`
+                classhtt.updateRootChat(React.createElement(ListViewCauHoi , {data: classttn.arr_Bailam}))
+            }
         }
 
     ]

@@ -455,7 +455,6 @@ div.cauhoi .stt {
 .list-hocsinh {
     display: flex;
     margin: 5px 8px;
-    
     justify-content: space-between;
     height: 17px;
     align-items: center;
@@ -676,4 +675,48 @@ div.cauhoi .stt {
 
 .chat-mess.me .chat-mess-body {
     background-color: #4444ff;
+}
+
+.list-cauhoi {
+    height: 100%;
+    width: 100%;
+    overflow-y: scroll;
+}
+
+.list-cauhoi-view {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+
+
+.list-cauhoi .list-cauhoi-ele:nth-child(odd) {
+    /* background: red; */
+    margin: 5px;
+    margin-left: 15px;
+}
+
+.list-cauhoi .list-cauhoi-ele:nth-child(even) {
+    /* background: red; */
+    margin: 5px;
+    margin-right: 15px;
+}
+
+.list-cauhoi .list-cauhoi-ele {
+    display: flex;
+    height: 30px;
+    margin-top: 5px;
+    border-radius: 5px;
+    align-items: center;
+    background: var(--background-main);
+}
+
+.list-cauhoi .list-cauhoi-ele hr {
+    background: var(--font-color);
+    height: calc(100% - 10px);
+    margin: 5px 0;
+}
+.list-cauhoi .list-cauhoi-ele p {
+    width: 50%;
+    text-align: center;
 }
