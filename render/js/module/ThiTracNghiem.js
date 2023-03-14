@@ -62,7 +62,7 @@ function ThiTracNghiem() {
     this.initTimer = function () {
 
         this.isBaiOnTap = classhtt.isOnTap;
-
+        
         this.arr_Bailam.forEach(e => {
             var value = this.arr_Data[e.cau - 1];
             var dapan = tranSTTtoString(value, e.dapan);
@@ -160,15 +160,11 @@ function ThiTracNghiem() {
 
         this.updateCauHoi(this.now_slide - 1)
         document.getElementById('bottom-dalam').textContent = this.arr_Bailam.length + '/' + this.arr_Data.length
-
     }
 
+
     this.nextSlide = function () {
-        var cauChon = Array.from(document.querySelectorAll('div.dapan > div.dp')).map(e => e.querySelector('input').checked).indexOf(true)
-        if (cauChon != -1) {
-            this.updateBaiLam(this.now_slide , classhtt.MappingID2Char[cauChon])
-        }
-        console.log(cauChon)
+        
 
         this.now_slide += 1;
         if (this.now_slide > this.arr_Data.length) {
@@ -177,6 +173,36 @@ function ThiTracNghiem() {
 
         this.updateCauHoi(this.now_slide - 1)
         document.getElementById('bottom-dalam').textContent = this.arr_Bailam.length + '/' + this.arr_Data.length
+
+    }
+
+    this.changeCauChon = function() {
+        var cauChon = Array.from(document.querySelectorAll('div.dapan > div.dp')).map(e => e.querySelector('input').checked).indexOf(true)
+        if (cauChon != -1) {
+            this.updateBaiLam(this.now_slide , classhtt.MappingID2Char[cauChon])
+            console.log("câu" , this.now_slide , 'chọn' , classhtt.MappingID2Char[cauChon])
+            document.getElementById('bottom-dalam').textContent = this.arr_Bailam.length + '/' + this.arr_Data.length
+
+        if (classhtt.slideBarTab == 3) {
+                var templayArrBaiLam = this.arr_Data.map((e , index) => {
+                    var cau = this.arr_Bailam.filter(j => j.cau == index + 1)
+                    var dapAn = null
+                    var xemLai = 0
+                    if (cau.length == 1) {
+                        dapAn = cau[0].dapan
+                        xemLai = cau[0].xemlai
+                    }
+                    var item = {
+                        "cau": index + 1,
+                        "dapan": dapAn,
+                        "xemlai": xemLai,
+                    }
+                    return item
+                })
+
+                classhtt.updateRootChat(React.createElement(ListViewCauHoi , {data: templayArrBaiLam}))
+            }
+        }
 
     }
 
@@ -287,7 +313,11 @@ function ThiTracNghiem() {
             r[0].setCell('STTDapAn', stt);
             r[0].setCell('NoiDungBaiLam', noidung);
         }
-        this.doSave(true);
+        this.doSave(true, () => {
+            var arr_Cau_dalam = convertJson2Array(this.arr_Bailam, 'cau');
+            var pos = arr_Cau_dalam.indexOf(cau);
+            this.arr_Bailam[pos].isdaluu = true
+        });
     }
 
     this.WriteHist = function (index, dapan) {
@@ -343,7 +373,6 @@ function ThiTracNghiem() {
                                     i++;
                         }
                         if (IsThuCong) {
-                            console.log("Thông báo", "Đã lưu bài", "Đồng ý", 'success', function () { return; });
                             if (SuccessCallback != null)
                                 SuccessCallback();
                         }
@@ -545,7 +574,6 @@ function ThiTracNghiem() {
     }
 
     this.handlNopBai = function() {
-
         if (!this.isNopBai) {
             console.log('nopbai')
             if (!this.isConThoiGianLamBai) {

@@ -151,28 +151,28 @@ function BaiTap(props) {
                 </div>
 
                 <div className="dapan">
-                    <div className="dapan-A dp">
+                    <div className="dapan-A dp" onClick={() => classttn.changeCauChon()}>
                         <input type="radio" name="gr-dapan" id="dapan-A" />
                         <label htmlFor="dapan-A">
                             <div className="hed">A</div>
                             <div className="noidung" id="noidung-da-A"></div>
                         </label>
                     </div>
-                    <div className="dapan-B dp">
+                    <div className="dapan-B dp" onClick={() => classttn.changeCauChon()}>
                         <input type="radio" name="gr-dapan" id="dapan-B" />
                         <label htmlFor="dapan-B">
                             <div className="hed">B</div>
                             <div className="noidung" id="noidung-da-B"></div>
                         </label>
                     </div>
-                    <div className="dapan-C dp">
+                    <div className="dapan-C dp" onClick={() => classttn.changeCauChon()}>
                         <input type="radio" name="gr-dapan" id="dapan-C" />
                         <label htmlFor="dapan-C">
                             <div className="hed">C</div>
                             <div className="noidung" id="noidung-da-C"></div>
                         </label>
                     </div>
-                    <div className="dapan-D dp">
+                    <div className="dapan-D dp" onClick={() => classttn.changeCauChon()}>
                         <input type="radio" name="gr-dapan" id="dapan-D" />
                         <label htmlFor="dapan-D">
                             <div className="hed">D</div>
@@ -501,9 +501,9 @@ function ListViewCauHoi({data = []}) {
     return (
         <div className="list-cauhoi">
             <div className="list-cauhoi-view">
-                {data.map(e => {
+                {data.map((e , index) => {
                     return (
-                        <div className="list-cauhoi-ele">
+                        <div className="list-cauhoi-ele" key={index} onClick={() => {classttn.updateCauHoi(e.cau - 1)}}>
                             <p>{e.cau}</p>
                             <hr />
                             <p>{e.dapan}</p>

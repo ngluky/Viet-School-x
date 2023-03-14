@@ -215,6 +215,7 @@ function setTheme(mode) {
     {
         if (ele)
             ele[0].classList.add('on')
+        Setting["theme"] = 'light'
         SettingIpc.set('theme' , 'light')
         Object.keys(colorTheme.light).forEach(e => {
             document.documentElement.style.setProperty(e, colorTheme.light[e]);
@@ -223,6 +224,8 @@ function setTheme(mode) {
     else if (mode == "dark") {
         if (ele)
             ele[1].classList.add('on')
+
+        Setting["theme"] = 'dark'
         SettingIpc.set('theme' , 'dark')
         Object.keys(colorTheme.dark).forEach(e => {
             document.documentElement.style.setProperty(e, colorTheme.dark[e]);
@@ -232,6 +235,8 @@ function setTheme(mode) {
     else if (mode == 'system') {
         if (ele)
             ele[2].classList.add('on')
+
+        Setting["theme"] = 'system'
         SettingIpc.set('theme' , 'system')
         getSystemMod()
     }
@@ -246,6 +251,7 @@ $(document).ready(() => {
             App.minimize()
         })
         console.log("ok")
+        setTheme(Setting.theme)
 
         
         if (!Cookie.LoginOTP) {
@@ -278,7 +284,6 @@ $(document).ready(() => {
             
         }
         
-        setTheme(Setting.theme)
     }
 
 )

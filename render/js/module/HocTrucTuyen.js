@@ -51,6 +51,8 @@ function HocTrucTuyen() {
     this.rootContent = null;
     this.rootChat = null;
     this.rootSlideBar = null
+    // this.isOpenListCauHoi = false
+    this.slideBarTab = 0
     this.isLoadBaiTap = false;
     this.isSideBar = true
     this.isOnTap = false
@@ -67,10 +69,13 @@ function HocTrucTuyen() {
             onClick: () => {
 
                 document.querySelector('#side-bar > div.chat-top').innerHTML = `
-                    <div onclick="classhtt.rootChat.render(React.createElement(Menu , {data: classhtt.slideBarTool}));document.querySelector('#side-bar > div.chat-top').innerHTML = ''" class="chat-button">
+                    <div onclick="classhtt.slideBarTab = 0;classhtt.rootChat.render(React.createElement(Menu , {data: classhtt.slideBarTool}));document.querySelector('#side-bar > div.chat-top').innerHTML = ''" class="chat-button">
                         <ion-icon name="backspace-outline"></ion-icon>
                         <p>Thành viên</p>
                     </div>`
+
+                this.slideBarTab = 1
+                
                 if (!this.isLoadThanhVien) {
                     this.slideBarShowLoading()
                     this.getThanhVien(() => {
@@ -98,14 +103,15 @@ function HocTrucTuyen() {
             iconName: 'chatbox-outline',
             onClick: () => {
                 document.querySelector('#side-bar > div.chat-top').innerHTML = `
-                    <div onclick="classhtt.rootChat.render(React.createElement(Menu , {data: classhtt.slideBarTool}));document.querySelector('#side-bar > div.chat-top').innerHTML = ''" class="chat-button">
+                    <div onclick="classhtt.slideBarTab = 0;classhtt.rootChat.render(React.createElement(Menu , {data: classhtt.slideBarTool}));document.querySelector('#side-bar > div.chat-top').innerHTML = ''" class="chat-button">
                         <ion-icon name="backspace-outline"></ion-icon>
                         <p>Chat</p>
                     </div>`
-
+                this.slideBarTab = 2
                 if (!this.IsLoadChat) {
                     console.log('get thảo luận')
                     this.getThaoLuan(() => {
+                        
                         this.updateRootChat(React.createElement(ChatPage , {data: this.arr_Data_Chat}))
                     })
                 }
@@ -120,12 +126,37 @@ function HocTrucTuyen() {
             title: 'Câu hỏi',
             iconName: 'checkbox-outline',
             onClick: () => {
-                document.querySelector('#side-bar > div.chat-top').innerHTML = `
-                    <div onclick="classhtt.rootChat.render(React.createElement(Menu , {data: classhtt.slideBarTool}));document.querySelector('#side-bar > div.chat-top').innerHTML = ''" class="chat-button">
-                        <ion-icon name="backspace-outline"></ion-icon>
-                        <p>Câu hỏi</p>
-                    </div>`
-                classhtt.updateRootChat(React.createElement(ListViewCauHoi , {data: classttn.arr_Bailam}))
+
+                if (this.isLoadBaiTap) {
+                    document.querySelector('#side-bar > div.chat-top').innerHTML = `
+                        <div onclick="classhtt.slideBarTab = 0;classhtt.rootChat.render(React.createElement(Menu , {data: classhtt.slideBarTool}));document.querySelector('#side-bar > div.chat-top').innerHTML = ''" class="chat-button">
+                            <ion-icon name="backspace-outline"></ion-icon>
+                            <p>Câu hỏi</p>
+                        </div>`
+
+                    var templayArrBaiLam = classttn.arr_Data.map((e , index) => {
+                        var cau = classttn.arr_Bailam.filter(j => j.cau == index + 1)
+                        var dapAn = null
+                        var xemLai = 0
+                        if (cau.length == 1) {
+                            dapAn = cau[0].dapan
+                            xemLai = cau[0].xemlai
+                        }
+                        var item = {
+                            "cau": index + 1,
+                            "dapan": dapAn,
+                            "xemlai": xemLai,
+                        }
+                        return item
+                    })
+                    this.slideBarTab = 3
+                    this.updateRootChat(React.createElement(ListViewCauHoi , {data: templayArrBaiLam}))
+                }
+
+                else {
+                    this.isOpenListCauHoi = false
+                    showMsg('Thông báo', 'chưa tải bài tập')
+                }
             }
         }
 
@@ -144,6 +175,11 @@ function HocTrucTuyen() {
         },
 
         baiHoc: () => {
+            if (this.slideBarTab == 3) {
+                this.slideBarTab = 0
+                classhtt.rootChat.render(React.createElement(Menu , {data: classhtt.slideBarTool}))
+                document.querySelector('#side-bar > div.chat-top').innerHTML = ''
+            }
             clearInterval(_Ttn_Timer);
             document.querySelector(".phonghoc-content-top").classList.remove('baitap')
             document.querySelector('#side-bar div.chat-top').classList.remove('baitap')

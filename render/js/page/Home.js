@@ -184,7 +184,7 @@ function SlideBar(props) {
                             <ion-icon name="log-out-outline"></ion-icon>
                             <p>Đăng xuất</p>
                         </div>
-                        <div className="slide-bar-setting" onClick={() => {console.log('setting')}}>
+                        <div className="slide-bar-setting" onClick={() => {console.log('setting'); SettingInitRender()}}>
                             <ion-icon name="settings-sharp"></ion-icon>
                         </div>
                     </div>

@@ -692,23 +692,29 @@ div.cauhoi .stt {
 
 .list-cauhoi .list-cauhoi-ele:nth-child(odd) {
     /* background: red; */
-    margin: 5px;
+    margin: 7px;
     margin-left: 15px;
 }
 
 .list-cauhoi .list-cauhoi-ele:nth-child(even) {
     /* background: red; */
-    margin: 5px;
+    margin: 7px;
     margin-right: 15px;
 }
 
 .list-cauhoi .list-cauhoi-ele {
+    cursor: pointer;
+    box-shadow: 0 0 4px 0 var(--background-main);
     display: flex;
     height: 30px;
     margin-top: 5px;
     border-radius: 5px;
     align-items: center;
     background: var(--background-main);
+}
+
+.list-cauhoi .list-cauhoi-ele:hover {
+    filter: brightness(1.2);
 }
 
 .list-cauhoi .list-cauhoi-ele hr {
