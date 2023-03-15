@@ -21,4 +21,6 @@
 
 ## phòng học
 
-![](https://scontent.fsgn5-13.fna.fbcdn.net/v/t1.15752-9/334928793_912429866570945_179803195075671752_n.png?_nc_cat=106&ccb=1-7&_nc_sid=ae9488&_nc_ohc=cf-1SPx3e0QAX-6Tw1x&_nc_ht=scontent.fsgn5-13.fna&oh=03_AdSY5qK5xLge5NR0oEpuWePNvr9c_53bH7PsmzzB8mlyLA&oe=64317B3A)
+![](https://scontent.fsgn5-14.fna.fbcdn.net/v/t1.15752-9/335429588_5799616140135767_2982349814196937649_n.png?_nc_cat=101&ccb=1-7&_nc_sid=ae9488&_nc_ohc=UAxmBK8oNWEAX9CoFkI&_nc_ht=scontent.fsgn5-14.fna&oh=03_AdSRR_JYhtTacrwoORt1Vw9PKj2ai13pJq9Ve6IC-EOg-Q&oe=64396D90)
+
+![](https://scontent.fsgn5-5.fna.fbcdn.net/v/t1.15752-9/335069337_544504687666333_3581174226541581889_n.png?_nc_cat=100&ccb=1-7&_nc_sid=ae9488&_nc_ohc=aTuS2lXmqwAAX-cgWDW&_nc_ht=scontent.fsgn5-5.fna&oh=03_AdRYeeNvfG3d5IS2BCmhBh4E5RdBno-iPMkqIzCt6nIHaA&oe=64396D77)
