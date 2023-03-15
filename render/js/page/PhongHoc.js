@@ -87,9 +87,11 @@ function SideBarButton(props) {
                 }
             }
 
+            console.log(props.style)
+
             if (props.title) {
                 return (
-                    <div className={"action-button radio " + on + " " + clasId} style={props.on ? buttonSeleStyle : {}} onClick={() => {handlOnClick();props.onClick();}}>
+                    <div className={"action-button radio " + on + " " + clasId} style={props.on ? buttonSeleStyle : props.style} onClick={() => {handlOnClick();props.onClick();}}>
                         <div className="action-button-svg">
                             <ion-icon {...propsIcon}></ion-icon>
                         </div>
@@ -99,8 +101,9 @@ function SideBarButton(props) {
                     </div>
                 );
             } else {
+
                 return (
-                    <div className={"action-button radio " + on + " " + clasId} style={props.on ? buttonSeleStyle : {}} onClick={() => { handlOnClick(); props.onClick();}} >
+                    <div className={"action-button radio " + on + " " + clasId} style={props.on ? buttonSeleStyle : props.style} onClick={() => { handlOnClick(); props.onClick();}} >
                         <div className="action-button-svg">
                             <ion-icon {...propsIcon}></ion-icon>
                         </div>
@@ -225,10 +228,10 @@ function SideBar(props) {
             <div className="action-top">
                 <SideBarButton type="radio" on={classhtt.tabActive == 0} nameIcon="book-outline" title="Lý thuyết" onClick={() => {classhtt.tabActive = 0; eventSideBar.baiHoc()}}/>
                 <SideBarButton type="radio" on={classhtt.tabActive == 1} nameIcon="videocam-outline" title="Live" onClick={() => {classhtt.tabActive = 1}}/>
-                <SideBarButton type="radio" on={classhtt.tabActive == 2} nameIcon="create-outline" title="Bài tập" onClick={() => {classhtt.tabActive = 2; eventSideBar.baiTap()}} />
+                <SideBarButton type="radio" on={classhtt.tabActive == 2} nameIcon="create-outline" title="Bài tập" onClick={() => {classhtt.tabActive = 2; eventSideBar.baiTap()}} style={{display: 'none'}} />
                 {fileButton.map((e, index) => (
                     <SideBarButton key={index} type="radio" on={classhtt.tabActive == e.index} srcIcon={e.iconSrc} onClick={() => {classhtt.tabActive = e.index;classhtt.renderFileView(e.url , e.iconSrc , e.name)}}/>
-                ) )}
+                ))}
             </div>
             <div className="action-botton">
                 <SideBarButton
@@ -354,7 +357,7 @@ function ChatBody(props) {
     return (
         <React.Fragment>
             {chats.map((e , index) => {
-                console.log(e)
+                // console.log(e)
                 var name = e.HoTen
                 // console.log(index - 1)
                 if (index > 0) {
@@ -373,7 +376,6 @@ function ChatBody(props) {
 }
 
 function ChatPage(props) {
-
     return (
         <div className="chat-main">
             <div className="chat-body" id="chat-mess-body">
@@ -389,6 +391,20 @@ function ChatPage(props) {
             </div>
         </div>
     );
+}
+
+function ChatSlideHeader({data = []}) {
+    return (
+        <React.Fragment>
+            {data.map((e , index) => {
+                return (
+                    <div className="button-tab" onClick={() => {e.onClick()}} key={index} style={index == classhtt.slideBarTab ? {borderBottom: "2px solid #6200FF" , height: 'calc(100% - 2px)'} : {}}>
+                        <ion-icon name={e.iconName} style={index == classhtt.slideBarTab ? {color: "gray"} : {}}></ion-icon>
+                    </div>
+                )
+            })}
+        </React.Fragment>
+    )
 }
 
 function ChatTab(props) {
@@ -416,11 +432,11 @@ function ChatTab(props) {
     return (
         <React.Fragment>
             <div className="chat-top">
-                
+                <ChatSlideHeader data={classhtt.slideBarTool}/>
             </div>
 
             <div className="chat-content" id="slideBarContent">
-                <Menu data={classhtt.slideBarTool} />
+
             </div>
 
             <div className="chat-bottom">
@@ -461,9 +477,20 @@ function PhongHoc(props) {
                         </div>
                         <div className="phonghoc-content">
                             <div className="phonghoc-content-top">
-                                <p>
+                                <p className="phonghoc-title">
                                     {item.TenMon} - {item.TenBaiHoc}
                                 </p>
+
+                                <div className="phonghoc-tool" style={{display: 'none'}}>
+                                    <div className="phonghoc-button-icon">
+                                        <ion-icon name="copy-outline"></ion-icon>
+                                    </div>
+                                    <div className="phonghoc-button-icon">
+                                        <ion-icon name="clipboard-outline"></ion-icon>
+                                    </div>
+                                </div>
+
+
                             </div>
 
                             <div className="phonghoc-content-bottom" id="content">

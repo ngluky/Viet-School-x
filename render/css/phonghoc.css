@@ -113,13 +113,15 @@ body {
     height: 35px;
     display: flex;
     align-items: center;
-    padding: 0 0 0 10px;
     font-weight: bold;
     margin-bottom: 2px;
     border-radius: 5px 5px 0px 0px;
 }
 
 .phonghoc-content-top {
+    padding: 0 0 0 10px;
+
+    justify-content: space-between;
     background-color: var(--background-content);
 }
 
@@ -487,6 +489,8 @@ div.cauhoi .stt {
 #side-bar > div.chat-top {
     display: flex;
     align-items: center;
+    align-items: center;
+    justify-content: space-evenly;
 }
 
 .chat-button ion-icon {
@@ -725,4 +729,28 @@ div.cauhoi .stt {
 .list-cauhoi .list-cauhoi-ele p {
     width: 50%;
     text-align: center;
+}
+
+.phonghoc-button-icon {
+    margin: 0 4px;
+    font-size: 20px;
+    display: inline-block;
+}
+
+.button-tab {
+    font-size: 20px;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0px 5px;
+}
+
+.button-tab > ion-icon {
+    stroke-width: 6px;
+}
+
+#noidungbaihoc p > span {
+    color: var(--font-color) !important;
 }

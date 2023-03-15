@@ -116,6 +116,7 @@ function ThiTracNghiem() {
             if (classhtt.arr_BHHS.ThoiGianNopBai && classhtt.arr_BHHS.ThoiGianNopBai != null && classhtt.arr_BHHS.ThoiGianNopBai.trim() != "") {
                 this.isNopBai = true;
                 this.checkLuuBai()
+
                 console.log("đã nộp bài")
             }
 
@@ -160,6 +161,26 @@ function ThiTracNghiem() {
 
         this.updateCauHoi(this.now_slide - 1)
         document.getElementById('bottom-dalam').textContent = this.arr_Bailam.length + '/' + this.arr_Data.length
+    }
+
+    this.getDapAn = function() {
+        WSGet(function (rs) {
+            if (CheckResult(rs)) {
+                var arr_Dapan_Dung = [];
+                arr_Dapan_Dung = rs.Data.getTable('DapAn').toJson();// ko HV
+                //console.log(arr_Dapan_Dung)
+                $('#div-cauhoi-bailam').html('');
+                var arr_Cau = convertJson2Array(arr_Bailam, 'cau');
+                var Doanvanarr = {};// thông tin đoan van cau hoi theo thu tu
+                var arr_doanvan_id = convertJson2Array(arr_DoanVan, 'ID');
+            }
+            else {
+            }
+        }.bind(this), 'Elearning.Core.LearningRoom', 'ElearningGetDapAn', String(itemPhong.BaiHocGiaoVienID), this.StoreMode, LopID);
+    }
+
+    this.viewBaiLam = function() {
+
     }
 
 

@@ -1,4 +1,17 @@
 
+function ContentSetting(props) {
+    return (
+
+        <Reac.Fragment>
+            <div className="title">
+                
+            </div>
+            <div className="body"></div>
+        </Reac.Fragment>
+
+    )
+}
+
 function MainSetting(props) {
     return (
         <div className="setting-main">

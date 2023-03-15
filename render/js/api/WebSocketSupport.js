@@ -87,8 +87,7 @@ function CheckResult(result, showDiv) {
         }
         const indexOfFirst = errMess.indexOf(':');
         errMess = errMess.substring(indexOfFirst + 1);
-        if (showDiv) { $('#' + showDiv).text(errMess); }
-        else showMsg('Thông báo lỗi', errMess, 'Chấp nhận', 'error', function () { return; });
+        console.error(errMess , 1)
         return false;
     }
 }

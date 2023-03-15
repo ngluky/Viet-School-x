@@ -51,6 +51,7 @@ function HocTrucTuyen() {
     this.rootContent = null;
     this.rootChat = null;
     this.rootSlideBar = null
+    this.rootChatTop = null
     // this.isOpenListCauHoi = false
     this.slideBarTab = 0
     this.isLoadBaiTap = false;
@@ -61,20 +62,13 @@ function HocTrucTuyen() {
     this.tabFileData = []
     this.rootMessBody = null
 
-
     this.slideBarTool = [
         {
             title: 'Thành viên',
-            iconName: 'people-outline',
+            iconName: 'people',
             onClick: () => {
-
-                document.querySelector('#side-bar > div.chat-top').innerHTML = `
-                    <div onclick="classhtt.slideBarTab = 0;classhtt.rootChat.render(React.createElement(Menu , {data: classhtt.slideBarTool}));document.querySelector('#side-bar > div.chat-top').innerHTML = ''" class="chat-button">
-                        <ion-icon name="backspace-outline"></ion-icon>
-                        <p>Thành viên</p>
-                    </div>`
-
-                this.slideBarTab = 1
+                this.slideBarTab = 0
+                this.updataRootChatTop(React.createElement(ChatSlideHeader , {data: classhtt.slideBarTool}))
                 
                 if (!this.isLoadThanhVien) {
                     this.slideBarShowLoading()
@@ -100,14 +94,10 @@ function HocTrucTuyen() {
         },
         {
             title: 'chat',
-            iconName: 'chatbox-outline',
+            iconName: 'chatbox',
             onClick: () => {
-                document.querySelector('#side-bar > div.chat-top').innerHTML = `
-                    <div onclick="classhtt.slideBarTab = 0;classhtt.rootChat.render(React.createElement(Menu , {data: classhtt.slideBarTool}));document.querySelector('#side-bar > div.chat-top').innerHTML = ''" class="chat-button">
-                        <ion-icon name="backspace-outline"></ion-icon>
-                        <p>Chat</p>
-                    </div>`
-                this.slideBarTab = 2
+                this.slideBarTab = 1
+                this.updataRootChatTop(React.createElement(ChatSlideHeader , {data: classhtt.slideBarTool}))
                 if (!this.IsLoadChat) {
                     console.log('get thảo luận')
                     this.getThaoLuan(() => {
@@ -121,44 +111,44 @@ function HocTrucTuyen() {
                 
 
             }
-        },
-        {
-            title: 'Câu hỏi',
-            iconName: 'checkbox-outline',
-            onClick: () => {
-
-                if (this.isLoadBaiTap) {
-                    document.querySelector('#side-bar > div.chat-top').innerHTML = `
-                        <div onclick="classhtt.slideBarTab = 0;classhtt.rootChat.render(React.createElement(Menu , {data: classhtt.slideBarTool}));document.querySelector('#side-bar > div.chat-top').innerHTML = ''" class="chat-button">
-                            <ion-icon name="backspace-outline"></ion-icon>
-                            <p>Câu hỏi</p>
-                        </div>`
-
-                    var templayArrBaiLam = classttn.arr_Data.map((e , index) => {
-                        var cau = classttn.arr_Bailam.filter(j => j.cau == index + 1)
-                        var dapAn = null
-                        var xemLai = 0
-                        if (cau.length == 1) {
-                            dapAn = cau[0].dapan
-                            xemLai = cau[0].xemlai
-                        }
-                        var item = {
-                            "cau": index + 1,
-                            "dapan": dapAn,
-                            "xemlai": xemLai,
-                        }
-                        return item
-                    })
-                    this.slideBarTab = 3
-                    this.updateRootChat(React.createElement(ListViewCauHoi , {data: templayArrBaiLam}))
-                }
-
-                else {
-                    this.isOpenListCauHoi = false
-                    showMsg('Thông báo', 'chưa tải bài tập')
-                }
-            }
         }
+        // {
+        //     title: 'Câu hỏi',
+        //     iconName: 'checkbox',
+        //     onClick: () => {
+
+        //         if (this.isLoadBaiTap) {
+        //             document.querySelector('#side-bar > div.chat-top').innerHTML = `
+        //                 <div onclick="classhtt.slideBarTab = 0;classhtt.rootChat.render(React.createElement(Menu , {data: classhtt.slideBarTool}));document.querySelector('#side-bar > div.chat-top').innerHTML = ''" class="chat-button">
+        //                     <ion-icon name="backspace-outline"></ion-icon>
+        //                     <p>Câu hỏi</p>
+        //                 </div>`
+
+        //             var templayArrBaiLam = classttn.arr_Data.map((e , index) => {
+        //                 var cau = classttn.arr_Bailam.filter(j => j.cau == index + 1)
+        //                 var dapAn = null
+        //                 var xemLai = 0
+        //                 if (cau.length == 1) {
+        //                     dapAn = cau[0].dapan
+        //                     xemLai = cau[0].xemlai
+        //                 }
+        //                 var item = {
+        //                     "cau": index + 1,
+        //                     "dapan": dapAn,
+        //                     "xemlai": xemLai,
+        //                 }
+        //                 return item
+        //             })
+        //             this.slideBarTab = 3
+        //             this.updateRootChat(React.createElement(ListViewCauHoi , {data: templayArrBaiLam}))
+        //         }
+
+        //         else {
+        //             this.isOpenListCauHoi = false
+        //             showMsg('Thông báo', 'chưa tải bài tập')
+        //         }
+        //     }
+        // }
 
     ]
 
@@ -171,15 +161,26 @@ function HocTrucTuyen() {
             this.arr_Data = []
             classttn.resetFieldTracNghiem()
             clearInterval(_Ttn_Timer);
+
+            var arrTitle = convertJson2Array(this.slideBarTool, 'title');
+            var index = arrTitle.indexOf('Câu hỏi')
+            if (index != -1) {
+                this.slideBarTool.splice(index, 1)
+                this.slideBarTab = 0
+            }
+
             this.outRoom()
         },
 
         baiHoc: () => {
-            if (this.slideBarTab == 3) {
-                this.slideBarTab = 0
-                classhtt.rootChat.render(React.createElement(Menu , {data: classhtt.slideBarTool}))
-                document.querySelector('#side-bar > div.chat-top').innerHTML = ''
+            var arrTitle = convertJson2Array(this.slideBarTool, 'title');
+            var index = arrTitle.indexOf('Câu hỏi')
+            if (index != -1) {
+                this.slideBarTool.splice(index, 1)
+                document.querySelector('#side-bar > div.chat-top > div:nth-child(1)').click()
             }
+            this.updataRootChatTop(React.createElement(ChatSlideHeader , {data: classhtt.slideBarTool}))
+            document.querySelector('div.phonghoc-chat-conter > div.phonghoc-content > div.phonghoc-content-top > div').style.display = 'none'
             clearInterval(_Ttn_Timer);
             document.querySelector(".phonghoc-content-top").classList.remove('baitap')
             document.querySelector('#side-bar div.chat-top').classList.remove('baitap')
@@ -193,13 +194,39 @@ function HocTrucTuyen() {
         },
 
         baiTap: () => {
-            if (!this.rootContent) {
-                this.rootContent = ReactDOM.createRoot(document.getElementById('content'))
-            }
-
+            var index = this.slideBarTool.push(
+                {
+                    title: 'Câu hỏi',
+                    iconName: 'checkbox',
+                    onClick: () => {
+                        this.slideBarTab = 2
+                        this.updataRootChatTop(React.createElement(ChatSlideHeader , {data: classhtt.slideBarTool}))
+                        var templayArrBaiLam = classttn.arr_Data.map((e , index) => {
+                            var cau = classttn.arr_Bailam.filter(j => j.cau == index + 1)
+                            var dapAn = null
+                            var xemLai = 0
+                            if (cau.length == 1) {
+                                dapAn = cau[0].dapan
+                                xemLai = cau[0].xemlai
+                            }
+                            var item = {
+                                "cau": index + 1,
+                                "dapan": dapAn,
+                                "xemlai": xemLai,
+                            }
+                            return item
+                        })
+                        this.updateRootChat(React.createElement(ListViewCauHoi , {data: templayArrBaiLam}))
+                    }
+                }
+            )
+            this.slideBarTool[index - 1].onClick()
+            this.updataRootChatTop(React.createElement(ChatSlideHeader , {data: this.slideBarTool}))
             this.updateRootContent(React.createElement(BaiTap, {
                 classttn: classttn
             }))
+
+            document.querySelector('div.phonghoc-chat-conter > div.phonghoc-content > div.phonghoc-content-top > div').style.display = 'block'
 
             if (this.isLoadBaiTap) {
                 console.log("no dow")
@@ -486,6 +513,9 @@ function HocTrucTuyen() {
                         }
                     }
                 }
+
+                callback(false);
+
             }
             catch (error) {
                 showMsg('Thông báo lỗi', error, 'OK', 'error', function () { return; });
@@ -544,6 +574,13 @@ function HocTrucTuyen() {
         return ele;
     }
 
+    this.updataRootChatTop = function(ele) {
+        if (!this.rootChatTop)
+            this.rootChatTop = ReactDOM.createRoot(document.querySelector('#side-bar > div.chat-top'))
+
+        this.rootChatTop.render(ele)
+    }
+
     this.updateRootContent = function(ele) {
         if (!classhtt.rootContent) {
             classhtt.rootContent = ReactDOM.createRoot(document.getElementById('content'))
@@ -595,7 +632,6 @@ function HocTrucTuyen() {
 
     this.setContent = (data) => {
         var count = document.getElementById("noidungbaihoc").innerHTML = ''
-        console.log(data)
         document.getElementById("noidungbaihoc").appendChild(data)
     }
 
@@ -640,6 +676,7 @@ function HocTrucTuyen() {
         this.rootContent = null
         this.rootChat = null
         this.rootSlideBar = null
+        this.rootChatTop = null
         
         this.isLoadBaiTap = false;
         this.isSideBar = true
@@ -654,9 +691,8 @@ function HocTrucTuyen() {
 
     this.renderInit = () => {
         checkloggin()
-        Root.render(React.createElement(PhongHoc, {
-            classhtt: this
-        }))
+        Root.render(React.createElement(PhongHoc, {classhtt: this}))
+
     }
 
     this.joinRoomIfYes = (callback) => {
@@ -746,8 +782,21 @@ function HocTrucTuyen() {
         ws.registerOnMessageFunction(this, this.socketMessage);
         this.renderInit()
         this.joinRoomIfYes(() => {
+            var count = 2
             this.getBaiHoc(() => {
-                df_HideLoading()
+                count -= 1
+                if (count == 0)
+                    df_HideLoading()
+
+                this.slideBarTool[this.slideBarTab].onClick()
+            })
+
+            this.getBaiTap((data) => {
+                count -= 1
+                if (count == 0)
+                    df_HideLoading()
+                if (data)
+                    document.querySelector('#slidebar > div.action-top > div.action-button:nth-child(3)').style.display = 'block'
             })
         })
 
