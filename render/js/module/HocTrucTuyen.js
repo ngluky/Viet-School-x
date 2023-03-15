@@ -692,7 +692,6 @@ function HocTrucTuyen() {
     this.renderInit = () => {
         checkloggin()
         Root.render(React.createElement(PhongHoc, {classhtt: this}))
-
     }
 
     this.joinRoomIfYes = (callback) => {
