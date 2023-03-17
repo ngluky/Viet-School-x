@@ -54,7 +54,7 @@ function connect(callback) {
     ws.registerOnMessageFunction(this, socketMessage);
 }
 function socketMessage(msg) {
-    console.log(msg)
+    // console.log(msg)
 }
 
 var __arg;

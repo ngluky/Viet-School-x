@@ -355,11 +355,9 @@ function ChatBody(props) {
     var chats = props.data
     // chats.reverse()
     return (
-        <React.Fragment>
+        <div>
             {chats.map((e , index) => {
-                // console.log(e)
                 var name = e.HoTen
-                // console.log(index - 1)
                 if (index > 0) {
                     if (e.HocSinhID == chats[index - 1].HocSinhID)
                         name = null
@@ -371,7 +369,7 @@ function ChatBody(props) {
                     <ChatEle key={index} me={me} mess={e.Comment} name={name} thoiGiam={e.ThoiGianChat}/>
                 )
             })}
-        </React.Fragment>
+        </div>
     )
 }
 

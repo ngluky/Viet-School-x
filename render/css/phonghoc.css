@@ -754,3 +754,7 @@ div.cauhoi .stt {
 #noidungbaihoc p > span {
     color: var(--font-color) !important;
 }
+
+#chat-mess-body > div {
+    padding-bottom: 10px;
+}
