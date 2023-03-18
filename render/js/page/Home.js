@@ -175,6 +175,13 @@ function SlideBar(props) {
                         </li>
                     </div>
                 </div>
+
+                <div className="slide-bar-li">
+                    <div className="slide-bar-li-title">
+                        <ion-icon name="calendar-clear-outline"></ion-icon>
+                        <p>Thời khóa biểu</p>
+                    </div>
+                </div>
             </div>
             <div className="slide-bar-bottom">
                 <div className="slide-bar-li">

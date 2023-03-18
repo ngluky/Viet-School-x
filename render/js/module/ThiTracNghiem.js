@@ -55,8 +55,25 @@ function ThiTracNghiem() {
             classhtt.rootContent = ReactDOM.createRoot(document.getElementById('content'))
         }
 
+        document.getElementById('bottom-dalam').textContent = this.arr_Bailam.length + '/' + this.arr_Data.length
         this.updateCauHoi(this.now_slide - 1)
+        if (this.isNopBai) {
+            this.checkLuuBai()
+        }
+        else {
+            var thoigianconlai = this.limit_minute * 60 - this.second_Bailam;
+            var str = formatTime(Math.floor(thoigianconlai))
+            // console.log(str)
+            document.getElementById('bottom-timer').textContent = str;
+        }
 
+        
+        document.querySelectorAll('div.dapan > div.dp').forEach(e => {
+            if (this.isNopBai)
+                e.querySelector('input').disabled = true
+            else
+                e.querySelector('input').disabled = false
+        })
     }
 
     this.initTimer = function () {
@@ -106,7 +123,6 @@ function ThiTracNghiem() {
                 }
                 console.log('Đã làm: ' + this.arr_Bailam.length + '/' + this.arr_Data.length);
             }
-            document.getElementById('bottom-dalam').textContent = this.arr_Bailam.length + '/' + this.arr_Data.length
 
             if (this.GioBatDauLamBai_Client == undefined) {// lúc chuyển tab qua lại sẽ không reset thời gian
                 this.GioBatDauLamBai_Client = new Date();
@@ -115,8 +131,6 @@ function ThiTracNghiem() {
 
             if (classhtt.arr_BHHS.ThoiGianNopBai && classhtt.arr_BHHS.ThoiGianNopBai != null && classhtt.arr_BHHS.ThoiGianNopBai.trim() != "") {
                 this.isNopBai = true;
-                this.checkLuuBai()
-
                 console.log("đã nộp bài")
             }
 
@@ -140,10 +154,7 @@ function ThiTracNghiem() {
                     }
 
                     this.isConThoiGianLamBai = true;
-                    var thoigianconlai = this.limit_minute * 60 - this.second_Bailam;
-                    var str = formatTime(Math.floor(thoigianconlai))
-                    // console.log(str)
-                    document.getElementById('bottom-timer').textContent = str;
+                    
                 }.bind(this), 1000)
             }
         }
@@ -166,23 +177,12 @@ function ThiTracNghiem() {
     this.getDapAn = function() {
         WSGet(function (rs) {
             if (CheckResult(rs)) {
-                var arr_Dapan_Dung = [];
-                arr_Dapan_Dung = rs.Data.getTable('DapAn').toJson();// ko HV
-                //console.log(arr_Dapan_Dung)
-                $('#div-cauhoi-bailam').html('');
-                var arr_Cau = convertJson2Array(arr_Bailam, 'cau');
-                var Doanvanarr = {};// thông tin đoan van cau hoi theo thu tu
-                var arr_doanvan_id = convertJson2Array(arr_DoanVan, 'ID');
+                this.arr_Dapan_Dung = rs.Data.getTable('DapAn').toJson();
             }
             else {
             }
-        }.bind(this), 'Elearning.Core.LearningRoom', 'ElearningGetDapAn', String(itemPhong.BaiHocGiaoVienID), this.StoreMode, LopID);
+        }.bind(this), 'Elearning.Core.LearningRoom', 'ElearningGetDapAn', classhtt.BaiHocGiaoVienID.toString(), classhtt.StoreMode, classhtt.LopID.toString());
     }
-
-    this.viewBaiLam = function() {
-
-    }
-
 
     this.nextSlide = function () {
         
@@ -204,7 +204,7 @@ function ThiTracNghiem() {
             console.log("câu" , this.now_slide , 'chọn' , classhtt.MappingID2Char[cauChon])
             document.getElementById('bottom-dalam').textContent = this.arr_Bailam.length + '/' + this.arr_Data.length
 
-        if (classhtt.slideBarTab == 3) {
+        if (classhtt.slideBarTab == 2) {
                 var templayArrBaiLam = this.arr_Data.map((e , index) => {
                     var cau = this.arr_Bailam.filter(j => j.cau == index + 1)
                     var dapAn = null
@@ -231,10 +231,27 @@ function ThiTracNghiem() {
 
         document.querySelectorAll('div.dapan > div.dp').forEach(e => {
             e.querySelector('input').checked = false
+            e.style.background = ''
+
         })
+        
         const dalam = this.arr_Bailam.filter(e => e.cau == index + 1)[0]
-        if (dalam) {
-            document.querySelectorAll('div.dapan > div.dp')[classhtt.MappingID2Char.indexOf(dalam.dapan)].querySelector('input').checked = true
+        if (!this.isNopBai) {
+            if (dalam) {
+                document.querySelectorAll('div.dapan > div.dp')[classhtt.MappingID2Char.indexOf(dalam.dapan)].querySelector('input').checked = true
+
+            }
+        }
+        else {
+            const dapAnDung = this.arr_Dapan_Dung.filter(e => e.STTCau == index + 1)[0]
+            if (dalam) {
+                document.querySelectorAll('div.dapan > div.dp')[classhtt.MappingID2Char.indexOf(dalam.dapan)].style.background = "#D5504D"
+            }
+            
+            if (dapAnDung) {
+                document.querySelectorAll('div.dapan > div.dp')[dapAnDung.dapan].style.background = "#409972"
+            }
+
         }
         const cau = this.arr_Data[index]
         
@@ -489,13 +506,10 @@ function ThiTracNghiem() {
                         if (code == true || code == 1) {
                             showMsg("Thông báo", KetQua, undefined, 'success', function () {
                                 classttn = new ThiTracNghiem();
-                                checkloggin(() => {
-                                    classhtt.joinRoomIfYes(() => {
-                                        classhtt.getBaiHoc(() => {
-                                        })
-                                    })
-                                    classhtt.isLoadBaiTap=false
-                                    document.querySelector('.action-button').click()
+                                classhtt.isLoasdBaiTap = false
+                                classhtt.getBaiTap(() => {
+                                    classttn.initTimer()
+                                    classttn.readerCauhoi()
                                 })
                             });
                         }
@@ -511,21 +525,17 @@ function ThiTracNghiem() {
             showConfirm("Làm bài mới - không bảo lưu", "Khi làm bài mới:<br/>- Các câu hỏi,đáp án, vị trí câu hỏi và đáp án sẽ được làm mới.<br/>- Thời gian sẽ được bắt đầu lại.", 'Đồng ý', 'Bỏ qua', function () {
                 console.log("continu")
                 WSDBGet(function (rs) {
-                    df_HideLoading();
+                    df_HideLoading()
                     if (CheckResult(rs)) {
                         var code = rs.Data.Tables[0].Rows[0].getCell('Code');
                         var KetQua = rs.Data.Tables[0].Rows[0].getCell('KetQua');
                         if (code == true || code == 1) {
                             showMsg("Thông báo", KetQua, undefined, 'success', function () {
                                 classttn = new ThiTracNghiem();
-                                checkloggin(() => {
-                                    classhtt.joinRoomIfYes(() => {
-                                        classhtt.getBaiHoc(() => {
-                                        })
-                                        document.querySelector('.action-button').click()
-                                    })
-                                    classhtt.isLoadBaiTap=false
-                                    document.querySelector('.action-button').click()
+                                classhtt.isLoadBaiTap = false
+                                classhtt.getBaiTap(() => {
+                                    classttn.initTimer()
+                                    classttn.readerCauhoi()
                                 })
                             });
                         }

@@ -50,8 +50,8 @@ function SideBarButton(props) {
 
             if (props.onStyle) buttonSeleStyleTemplay = props.onStyle;
 
-            var buttonSeleStyle = {};
-
+            var buttonSeleStyle = Object.assign({} , props.style);
+            
             Object.keys(buttonSeleStyleTemplay).forEach((e) => {
                 var str = e;
                 var index = e.indexOf("-");
@@ -68,7 +68,15 @@ function SideBarButton(props) {
                 const parent = ele.parentElement;
                 parent.querySelectorAll(".radio").forEach((e) => {
                     e.classList.remove("on");
-                    e.style = {};
+                    Object.keys(buttonSeleStyleTemplay).forEach((j) => {
+                        var str = j;
+                        var index = j.indexOf("-");
+                        if (j.indexOf("-") != -1) {
+                            var newRp = str.charAt(index + 1).toUpperCase();
+                            str = str.replace(`-${str.charAt(index + 1)}`, newRp);
+                        }
+                        e.style[str] = '';
+                    });
                 });
 
                 ele.classList.add("on");
@@ -80,14 +88,13 @@ function SideBarButton(props) {
             var propsIcon = {
                 name : props.nameIcon
             }
-
             if (props.srcIcon) {
                 propsIcon = {
                     src: props.srcIcon
                 }
-            }
+            }  
 
-            console.log(props.style)
+
 
             if (props.title) {
                 return (
@@ -144,7 +151,6 @@ function SideBarButton(props) {
 }
 
 function BaiTap(props) {
-    const classttn = props.classttn;
     return (
         <React.Fragment>
             <div className="div-cauhoi">
@@ -217,18 +223,14 @@ function BaiHoc() {
 }
 
 function SideBar(props) {
-    const classhtt = props.classhtt
     const eventSideBar = classhtt.handlSideBar;
     var fileButton = classhtt.tabFileData
-
-    console.log(fileButton)
-
     return (
         <React.Fragment>
             <div className="action-top">
                 <SideBarButton type="radio" on={classhtt.tabActive == 0} nameIcon="book-outline" title="Lý thuyết" onClick={() => {classhtt.tabActive = 0; eventSideBar.baiHoc()}}/>
                 <SideBarButton type="radio" on={classhtt.tabActive == 1} nameIcon="videocam-outline" title="Live" onClick={() => {classhtt.tabActive = 1}}/>
-                <SideBarButton type="radio" on={classhtt.tabActive == 2} nameIcon="create-outline" title="Bài tập" onClick={() => {classhtt.tabActive = 2; eventSideBar.baiTap()}} style={{display: 'none'}} />
+                <SideBarButton type="radio" on={classhtt.tabActive == 2} nameIcon="create-outline" title="Bài tập" onClick={() => {classhtt.tabActive = 2; eventSideBar.baiTap()}}/>
                 {fileButton.map((e, index) => (
                     <SideBarButton key={index} type="radio" on={classhtt.tabActive == e.index} srcIcon={e.iconSrc} onClick={() => {classhtt.tabActive = e.index;classhtt.renderFileView(e.url , e.iconSrc , e.name)}}/>
                 ))}
@@ -466,7 +468,7 @@ function PhongHoc(props) {
             <div className="phonghoc">
                 <div className="phonghoc-row1">
                     <div className="action" id="slidebar">
-                        <SideBar classhtt={classhtt} />
+                        <SideBar/>
                     </div>
 
                     <div className="phonghoc-chat-conter">
@@ -505,8 +507,8 @@ function PhongHoc(props) {
 function ViewFile(props) {
     return (
         <div className="div-file-view">
-            <div className="div-file-iframe" id="fileiframe">
-                <iframe src={props.url} frameBorder="0"></iframe>
+            <div className="div-file-iframe" id="fileiframe-div">
+                <webview id="fileiframe" src={props.url} style={{height: "100%" , width: "100%"}}></webview>
             </div>
             
             <div className="div-file-button" style={{display: 'none'}}>
@@ -528,7 +530,10 @@ function ListViewCauHoi({data = []}) {
             <div className="list-cauhoi-view">
                 {data.map((e , index) => {
                     return (
-                        <div className="list-cauhoi-ele" key={index} onClick={() => {classttn.updateCauHoi(e.cau - 1)}}>
+                        <div className="list-cauhoi-ele" key={index} onClick={() => {
+                                classttn.now_slide = e.cau;
+                                classttn.updateCauHoi(e.cau - 1)
+                            }}>
                             <p>{e.cau}</p>
                             <hr />
                             <p>{e.dapan}</p>

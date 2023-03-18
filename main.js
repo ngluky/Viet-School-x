@@ -1,6 +1,7 @@
 const { app, BrowserWindow , ipcMain} = require('electron')
 const path = require('path');
 const fs = require('fs');
+const url = require('url')
 
 const pathAppLocal = path.join(app.getPath('home') , "AppData/Local/LopHocApp");
 
@@ -20,6 +21,7 @@ const createWindow = () => {
         webPreferences: {
             contextIsolation: true,
             preload: path.join(__dirname, 'preload.js'),
+            webviewTag: true
         },
     })
 
@@ -35,7 +37,12 @@ const createWindow = () => {
 
     ipcInit()
 
-    win.loadFile('./render/index.html')
+    // win.loadFile('./render/index.html')
+    win.loadURL(url.format({
+        pathname: path.join(__dirname, './render/index.html'),
+        protocol: 'file:',
+        slashes: true
+    }))
 }
 
 app.whenReady().then(() => {

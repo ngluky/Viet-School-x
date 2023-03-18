@@ -198,10 +198,10 @@ function HocTrucTuyen() {
             }))
 
             document.querySelector('div.phonghoc-chat-conter > div.phonghoc-content > div.phonghoc-content-top > div').style.display = 'block'
-
-            if (this.isLoadBaiTap) {
-                console.log("no dow")
-                setTimeout(() => {
+            // classttn.readerCauhoi()
+            console.log("no dow")
+            setTimeout(() => {
+                if (!classttn.isNopBai)
                     _Ttn_Timer = setInterval(function () {
                         this.second_Bailam++;
                         var ThoiGianLamBai_Client = parseInt((new Date() - this.GioBatDauLamBai_Client) / 1000); // giay
@@ -219,20 +219,8 @@ function HocTrucTuyen() {
                         // console.log(str)
                         document.getElementById('bottom-timer').textContent = str;
                     }.bind(classttn), 1000)
-                    classttn.readerCauhoi()
-                    var thoigianconlai = classttn.limit_minute * 60 - classttn.second_Bailam;
-                    var str = formatTime(Math.floor(thoigianconlai))
-                    // console.log(str)
-                    document.getElementById('bottom-timer').textContent = str;
-                }, 10)
-            }
-            else {
-                this.getBaiTap(() => {
-                    this.isLoadBaiTap = true
-                    classttn.initTimer()
-                    classttn.readerCauhoi()
-                })
-            }
+                classttn.readerCauhoi()
+            }, 50)
 
             document.querySelector(".phonghoc-content-top").classList.add('baitap')
             document.querySelector('#side-bar div.chat-top').classList.add('baitap')
@@ -307,7 +295,7 @@ function HocTrucTuyen() {
         }.bind(this), this.DLL_LearningRoom, 'ElearningGetOnline', this.BaiHocGiaoVienID, lopid.LopID.toString(), this.StoreMode);
     }
 
-    this.getBaiHoc = (callback) => {
+    this.getBaiHoc = function(callback) {
         WSGet(function (result) {
 
             if (result.ErrorNumber != 0) {
@@ -363,9 +351,8 @@ function HocTrucTuyen() {
         }.bind(this), this.DLL_LearningRoom, 'ElearningInit', this.BaiHocGiaoVienID, this.StoreMode)
     }
 
-    this.getBaiTap = (callback) => {
+    this.getBaiTap = function(callback) {
         WSGet(function (result) {
-            // df_HideLoading();
             try {
                 if (CheckResult(result)) {
                     let arrGio = result.Data.getTable('GioHienHanh').toJson();
@@ -590,13 +577,13 @@ function HocTrucTuyen() {
             this.tabActive = item.index
             this.tabFileData.push(item)
             this.updateRootSideBar(React.createElement(SideBar , {classhtt: this}))
-            this.updateRootContent(React.createElement(ViewFile , {url : `https://docs.google.com/gview?url=${url}&embedded=true`}))
+            this.updateRootContent(React.createElement(ViewFile , {url : `https://view.officeapps.live.com/op/embed.aspx?src=${url}`}))
         }
         else {
             this.tabActive = file[0].index
             document.querySelectorAll('div.action-top > div.action-button.radio')[this.tabActive].click()
             this.updateRootSideBar(React.createElement(SideBar , {classhtt: this}))
-            this.updateRootContent(React.createElement(ViewFile , {url : `https://docs.google.com/gview?url=${url}&embedded=true`}))
+            this.updateRootContent(React.createElement(ViewFile , {url : `https://view.officeapps.live.com/op/embed.aspx?src=${url}`}))
         }
 
     }
@@ -658,7 +645,6 @@ function HocTrucTuyen() {
         this.rootChatTop = null
         
         this.isLoadBaiTap = false;
-        this.isSideBar = true
         this.isOnTap = false
         this.isLoadThanhVien = false
 
@@ -770,20 +756,27 @@ function HocTrucTuyen() {
         this.renderInit()
         this.joinRoomIfYes(() => {
             var count = 2
+            document.querySelector('#slidebar > div.action-top > div.action-button:nth-child(3)').style.display = 'none'
             this.getBaiHoc(() => {
                 count -= 1
                 if (count == 0)
                     df_HideLoading()
-
                 this.slideBarTool[this.slideBarTab].onClick()
             })
 
             this.getBaiTap((data) => {
+                this.isLoadBaiTap = true
                 count -= 1
                 if (count == 0)
                     df_HideLoading()
-                if (data)
+
+                if (data) {
                     document.querySelector('#slidebar > div.action-top > div.action-button:nth-child(3)').style.display = 'block'
+                    classttn.initTimer()
+                    if (classttn.isNopBai) {
+                        classttn.getDapAn()
+                    }
+                }
             })
         })
 
