@@ -811,3 +811,7 @@ function getFileSize(url , ele)
     console.log('lấy size file', url )
     return ;
 }
+
+function isNumeric(value) {
+    return /^-?\d+$/.test(value);
+}

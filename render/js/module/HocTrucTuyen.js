@@ -482,6 +482,7 @@ function HocTrucTuyen() {
     }
 
     this.formatNoiDungBaiHoc = function(str) {
+        str = str.replaceAll('src="//' , 'src="https://')    
         var ele = document.createElement('div')
         ele.innerHTML = str
         var allAEle = ele.querySelectorAll('a')
@@ -648,7 +649,10 @@ function HocTrucTuyen() {
         this.isOnTap = false
         this.isLoadThanhVien = false
 
+        df_ShowLoading()
+
         WSGet(function () {
+            df_HideLoading()
             console.log('out room')
             classhscp.renderInit()
         }.bind(this), "Elearning.Core.RoomManager", "OutRoom", this.BaiHocGiaoVienID.toString())

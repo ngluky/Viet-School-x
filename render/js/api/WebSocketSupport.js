@@ -33,7 +33,7 @@ function connect(callback) {
     ws = new ProSocket({ urls: urls, token: null });
     ws.onopen = () => {
         __lastSocketOK = true;
-
+        __showSocketOpened()
         callback();
         console.log("Socket was opened");
         if (__inroom)   
@@ -153,12 +153,12 @@ function WSDBGet() {
 
 var __bootbox;
 function __showSocketClosed() {
-    //if (__lastSocketOK)
-    //    __bootbox = bootbox.alert('Mất kết nối với máy chủ');
+    console.error('mất kết nối với máy chủ' , 1)
+    document.querySelector('div.title-l > div').style.background = "#D5504D"
 }
 
 function __showSocketOpened() {
-    Home_chophepdangnhap();
+    document.querySelector('div.title-l > div').style.background = "#409972"
 }
 
 function Rejoin(callback) {

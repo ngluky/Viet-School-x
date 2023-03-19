@@ -58,6 +58,7 @@ body {
     aspect-ratio: 1/1;
     position: relative;
     transition: all 0.2s;
+    cursor: pointer;
 }
 
 .action-button svg {
@@ -212,6 +213,7 @@ div.cauhoi .stt {
     height: 100%;
     width: 100%;
     align-items: center;
+    cursor: pointer;
 }
 
 .div-cauhoi .dapan .dp label .hed {
@@ -296,13 +298,14 @@ div.cauhoi .stt {
     background: #d4d5d7;
     margin: 0px 5px;
 
+    cursor: pointer;
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
 .bottom-key-contro-key .bottom-button:hover {
-    color: gray;
+    filter: brightness(0.8);
 }
 
 .bottom-key-timer {
@@ -378,6 +381,12 @@ div.cauhoi .stt {
     background-color: #00925d;
     border: none;
     outline: none;
+    cursor: pointer;
+}
+
+.chat-bottom .chat-bottom-button:disabled {
+    filter: brightness(0.5);
+    cursor: default;
 }
 
 .chat-bottom-button.lamlai .chat-bottom-button-list {
@@ -414,6 +423,10 @@ div.cauhoi .stt {
 .chat-bottom-button.lamlai .chat-bottom-button-list>div:hover {
     filter: brightness(0.8);
     border-radius: 5px;
+}
+
+.chat-bottom-button.lamlai ion-icon{
+    font-size: 20px;
 }
 
 .chat-bottom-button.lamlai {
@@ -741,8 +754,12 @@ div.cauhoi .stt {
     justify-content: center;
     align-items: center;
     margin: 0px 5px;
+    cursor: pointer;
 }
 
+.button-tab:hover > ion-icon {
+    filter: brightness(0.8);
+}
 .button-tab > ion-icon {
     stroke-width: 6px;
 }

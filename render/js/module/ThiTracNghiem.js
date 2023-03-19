@@ -59,6 +59,7 @@ function ThiTracNghiem() {
         this.updateCauHoi(this.now_slide - 1)
         if (this.isNopBai) {
             this.checkLuuBai()
+            document.querySelector('div.chat-bottom > button:nth-child(3)').disabled = true
         }
         else {
             var thoigianconlai = this.limit_minute * 60 - this.second_Bailam;
@@ -164,6 +165,24 @@ function ThiTracNghiem() {
 
     }
 
+    this.copyDapAnDung = function() {
+        var data = {}
+        if (this.arr_Dapan_Dung.length > 0) {
+            this.arr_Dapan_Dung.forEach(e => {
+                data[e.cauhoiid] = this.arr_Data[e.STTCau - 1].dapan[e.dapan].noidung
+            })
+        }
+        return data;
+    }
+
+    this.copyBaiLam = function() {
+        var data = {}
+        this.arr_Bailam.forEach(e => {
+            const cau = this.arr_Data[e.cau - 1]
+            data[cau.cauhoiid] = this.tranStringtoSTT(cau, e.dapan)
+        })   
+        return data
+    }
     this.backSlide = function () {
         this.now_slide -= 1;
         if (this.now_slide <= 0) {
@@ -178,6 +197,11 @@ function ThiTracNghiem() {
         WSGet(function (rs) {
             if (CheckResult(rs)) {
                 this.arr_Dapan_Dung = rs.Data.getTable('DapAn').toJson();
+
+                // this.arr_Dapan_Dung.forEach(e => {
+                //     e.dapan = classhtt.MappingID2Char.indexOf(tranSTTtoString(classttn.arr_Data[e.STTCau - 1] , e.dapan))
+                    
+                // })
             }
             else {
             }
@@ -234,16 +258,16 @@ function ThiTracNghiem() {
             e.style.background = ''
 
         })
+        const cau = this.arr_Data[index]
         
         const dalam = this.arr_Bailam.filter(e => e.cau == index + 1)[0]
         if (!this.isNopBai) {
             if (dalam) {
                 document.querySelectorAll('div.dapan > div.dp')[classhtt.MappingID2Char.indexOf(dalam.dapan)].querySelector('input').checked = true
-
             }
         }
         else {
-            const dapAnDung = this.arr_Dapan_Dung.filter(e => e.STTCau == index + 1)[0]
+            const dapAnDung = this.arr_Dapan_Dung.filter(e => e.cauhoiid == cau.cauhoiid)[0]
             if (dalam) {
                 document.querySelectorAll('div.dapan > div.dp')[classhtt.MappingID2Char.indexOf(dalam.dapan)].style.background = "#D5504D"
             }
@@ -253,7 +277,6 @@ function ThiTracNghiem() {
             }
 
         }
-        const cau = this.arr_Data[index]
         
 
         document.querySelector('div.cauhoi > span.stt').innerHTML = `Câu ${index + 1}: `
@@ -559,7 +582,10 @@ function ThiTracNghiem() {
         }
     }
 
-    this.tranSTTtoString = function (now_cauhoi, dapan) {
+    this.tranStringtoSTT = function (now_cauhoi, dapan) {
+        const arrString = ['A' , 'B' , 'C' , 'D']
+        if (!isNumeric(dapan))
+            dapan = arrString.indexOf(dapan)
         var arr_HoanViID = convertJson2Array(classttn.arr_HoanVi, 'HoanViID');
         var poshv = arr_HoanViID.indexOf(now_cauhoi.hoanvi);
         var arr_HoanVi_CH = [];
@@ -569,20 +595,12 @@ function ThiTracNghiem() {
             }
         }
 
-        var arr_HoanViID_fill = convertJson2Array(arr_HoanVi_CH, 'STTDapAn');
+        var arr_HoanViID_fill = convertJson2Array(arr_HoanVi_CH, 'STT');
         var pos1 = arr_HoanViID_fill.indexOf(dapan);
         if (pos1 != -1) {
-            dapan = arr_HoanVi_CH[pos1]['STT'];
+            dapan = arr_HoanVi_CH[pos1]['STTDapAn'];
         }
 
-        if (dapan == 0)
-            dapan = 'A';
-        else if (dapan == 1)
-            dapan = 'B';
-        else if (dapan == 2)
-            dapan = 'C';
-        else
-            dapan = 'D';
         return dapan;
     }
 

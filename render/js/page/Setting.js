@@ -12,7 +12,14 @@ function ContentSetting(props) {
     )
 }
 
+function SettingTab(props) {
+    return (
+        <div></div>
+    )
+}
+
 function MainSetting(props) {
+    const data = props.data
     return (
         <div className="setting-main">
             <div className="setting-list">

@@ -82,13 +82,25 @@
             font-size: 16px;
             padding-left: 10px;
             -webkit-app-region: drag;
+            display: flex;
+            align-items: center;
         }
+
+        .title-l > div {
+            border-radius: 50%;
+            height: calc(100% - 14px);
+            margin-right: 5px;
+            aspect-ratio: 1/1;
+            background: #D5504D;
+        }
+
     </style>
 </head>
 <body>
     <div class="title-bar">
         <div class="title-l">
-            title
+            <div></div>
+            <p>Viet school</p>
         </div>
         <div class="title-r">
             <div class='div-svg bl' id="minimize">

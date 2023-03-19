@@ -429,6 +429,18 @@ function ChatTab(props) {
         }
     }
 
+    const handlOnOff2 = function() {
+        const ele = document.querySelector('.chat-bottom-button.lamlai:nth-child(2) .chat-bottom-button-list');
+        if (ele.classList.contains('on')) {
+            ele.classList.remove('on')
+        }
+        else {
+            ele.classList.add('on')
+
+            document.getElementById('root').addEventListener('click', handlOff)
+        }
+    }
+
     return (
         <React.Fragment>
             <div className="chat-top">
@@ -440,10 +452,21 @@ function ChatTab(props) {
             </div>
 
             <div className="chat-bottom">
-                <button className="chat-bottom-button lamlai" style={classhtt.isOnTap ? {} : {'display': 'none'}} onClick={() => {
-                    handlOnOff()
-                }}>
-                    <ion-icon name="caret-up-outline"></ion-icon>
+
+                <button className="chat-bottom-button lamlai" onClick={() => {handlOnOff()}}>
+                    <ion-icon name="build-outline"></ion-icon>
+
+                    <div className="chat-bottom-button-list">
+                        <div onClick={() => {
+
+                        }}>
+                            Copy Bài làm</div>
+                    </div>
+
+                </button>
+
+                <button className="chat-bottom-button lamlai" style={classhtt.isOnTap ? {} : {'display': 'none'}} onClick={() => {handlOnOff2()}}>
+                    <ion-icon name="refresh-outline"></ion-icon>
 
                     <div className="chat-bottom-button-list">
                         <div onClick={() => {classttn.lamBaiLai(true)}}>Làm bài lại</div>
@@ -452,7 +475,7 @@ function ChatTab(props) {
 
                 </button>
 
-                <button className="chat-bottom-button" onClick={() => {classttn.handlNopBai()}}>
+                <button className="chat-bottom-button" onClick={() => {classttn.handlNopBai()}} >
                     nopbai
                 </button>
             </div>
@@ -481,13 +504,8 @@ function PhongHoc(props) {
                                     {item.TenMon} - {item.TenBaiHoc}
                                 </p>
 
-                                <div className="phonghoc-tool" style={{display: 'none'}}>
-                                    <div className="phonghoc-button-icon">
-                                        <ion-icon name="copy-outline"></ion-icon>
-                                    </div>
-                                    <div className="phonghoc-button-icon">
-                                        <ion-icon name="clipboard-outline"></ion-icon>
-                                    </div>
+                                <div className="phonghoc-diem" style={{display: 'none'}}>
+                                    
                                 </div>
 
 
