@@ -49,6 +49,7 @@ function ThiTracNghiem() {
     this.LastTimeViPham;
     this.SoLanViPham_NopBaiWeb = 0;
     this.LyDoNopBai = '';
+    this.arr_Diem = []
 
     this.readerCauhoi = function () {
         if (!classhtt.rootContent) {
@@ -60,6 +61,7 @@ function ThiTracNghiem() {
         if (this.isNopBai) {
             this.checkLuuBai()
             document.querySelector('div.chat-bottom > button:nth-child(3)').disabled = true
+            document.querySelector('div.phonghoc-content > div.phonghoc-content-top.baitap > div').textContent = `${this.arr_Diem.TongDiem}Đ - ${this.arr_Diem.TNDung}/${this.arr_Data.length}`
         }
         else {
             var thoigianconlai = this.limit_minute * 60 - this.second_Bailam;
@@ -193,15 +195,20 @@ function ThiTracNghiem() {
         document.getElementById('bottom-dalam').textContent = this.arr_Bailam.length + '/' + this.arr_Data.length
     }
 
+    this.getDiemBaiTap = function() {
+        WSDBGet(function (rs) {
+            if (CheckResult(rs)) {
+                this.arr_Diem = rs.Data.getTable("Data").toJson()[0]
+
+            }
+
+        }.bind(this), 'HS.LamLaiBaiLuyenTap', 'BaiHocGiaoVienID', classhtt.BaiHocGiaoVienID.toString(), "BaiHocLopID", classhtt.BaiHocLopID.toString(), "BaiHocHSID", classhtt.arr_BHHS.BaiHocHSID.toString() , "Type", "ChamBai", "Store", classhtt.StoreMode);
+    }
+
     this.getDapAn = function() {
         WSGet(function (rs) {
             if (CheckResult(rs)) {
                 this.arr_Dapan_Dung = rs.Data.getTable('DapAn').toJson();
-
-                // this.arr_Dapan_Dung.forEach(e => {
-                //     e.dapan = classhtt.MappingID2Char.indexOf(tranSTTtoString(classttn.arr_Data[e.STTCau - 1] , e.dapan))
-                    
-                // })
             }
             else {
             }
@@ -215,7 +222,6 @@ function ThiTracNghiem() {
         if (this.now_slide > this.arr_Data.length) {
             this.now_slide = 1;
         }
-
         this.updateCauHoi(this.now_slide - 1)
         document.getElementById('bottom-dalam').textContent = this.arr_Bailam.length + '/' + this.arr_Data.length
 
@@ -252,7 +258,11 @@ function ThiTracNghiem() {
     }
 
     this.updateCauHoi = function (index) {
-
+        var items = document.querySelectorAll('#slideBarContent > div > div .list-cauhoi-ele')
+        items.forEach(e => {
+            e.classList.remove('on')
+        })
+        items[index].classList.add('on')
         document.querySelectorAll('div.dapan > div.dp').forEach(e => {
             e.querySelector('input').checked = false
             e.style.background = ''
@@ -724,4 +734,48 @@ function ThiTracNghiem() {
             }.bind(this), function () { return });
         }
     }
+
+    this.exportBaiLam = function(path, index) {
+        if (index > this.arr_Data.length) {
+            showMsg('Thông báo', "Xuất ảnh thành công" , "ok" , 'success')
+            return false
+        }
+        this.now_slide = index
+        this.updateCauHoi(this.now_slide - 1)
+
+        var images = document.querySelectorAll('#content > div.div-cauhoi img')
+
+        var imagesLoaded = 0
+        if (images.length > 0) {
+            for (var i = 0; i < images.length; i++) {
+                var img = new window.Image();
+                img.src = images[i].src;
+                img.onload = function () {
+                    imagesLoaded++;
+                    if (imagesLoaded == images.length) {
+                        setTimeout(() => {
+                            App.screenshot(`${path}\\${classhtt.arr_Data_BaiHoc.TenBaiHoc.replaceAll(' ', '-')}-cau-${classttn.now_slide}.png`).then(rs => {
+                                if (rs) {
+                                    console.log(classttn.now_slide + 1)
+                                    classttn.exportBaiLam(path, classttn.now_slide + 1)
+                                }
+                            })
+                        }, 100)
+                    }
+                }
+            }
+        }
+        else {
+            setTimeout(() => {
+                App.screenshot(`${path}\\${classhtt.arr_Data_BaiHoc.TenBaiHoc.replaceAll(' ', '-')}-cau-${classttn.now_slide}.png`).then(rs => {
+                    if (rs) {
+                        console.log(classttn.now_slide + 1)
+                        classttn.exportBaiLam(path, classttn.now_slide + 1)
+                    }
+                })
+            }, 50)
+        }
+
+    }
+    
 }

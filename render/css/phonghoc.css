@@ -715,6 +715,10 @@ div.cauhoi .stt {
     margin-right: 15px;
 }
 
+.list-cauhoi .list-cauhoi-ele.on {
+    transform: scale(1.1);
+    box-shadow: 0 0 4px 0 #00925d;
+}
 .list-cauhoi .list-cauhoi-ele {
     cursor: pointer;
     box-shadow: 0 0 4px 0 var(--background-main);
@@ -770,4 +774,8 @@ div.cauhoi .stt {
 
 #chat-mess-body > div {
     padding-bottom: 10px;
+}
+
+.phonghoc-diem {
+    margin-right: 5px;
 }

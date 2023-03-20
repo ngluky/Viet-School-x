@@ -815,3 +815,9 @@ function getFileSize(url , ele)
 function isNumeric(value) {
     return /^-?\d+$/.test(value);
 }
+
+function getCssRoot() {
+    var data = `--background-main: ${getComputedStyle(document.documentElement).getPropertyValue('--background-main')};--background-content: ${getComputedStyle(document.documentElement).getPropertyValue('--background-content')};--background-slide-bar: ${getComputedStyle(document.documentElement).getPropertyValue('--background-slide-bar')};--font-color: ${getComputedStyle(document.documentElement).getPropertyValue('--font-color')};--color-button: ${getComputedStyle(document.documentElement).getPropertyValue('--color-button')};--color-check: ${getComputedStyle(document.documentElement).getPropertyValue('--color-check')};--filter-thumbnail: ${getComputedStyle(document.documentElement).getPropertyValue('--filter-thumbnail')};--filter-img-dapan: ${getComputedStyle(document.documentElement).getPropertyValue('--filter-img-dapan')};--background-chat: ${getComputedStyle(document.documentElement).getPropertyValue('--background-chat')};`
+
+    return data;
+}

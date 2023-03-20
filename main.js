@@ -1,4 +1,5 @@
-const { app, BrowserWindow , ipcMain} = require('electron')
+const { app, BrowserWindow , ipcMain, dialog} = require('electron')
+
 const path = require('path');
 const fs = require('fs');
 const url = require('url')
@@ -43,6 +44,31 @@ const createWindow = () => {
         protocol: 'file:',
         slashes: true
     }))
+
+    const ws = win.webContents
+
+    ipcMain.handle("export" , async (sender, path) => {
+        // console.log(path)
+        await ws.capturePage().then(image => {
+            fs.writeFileSync(path, image.toPNG(), (err) => {if (err) return false})
+        })
+
+        return true
+    })
+
+    ipcMain.handle("showOpenDialog" , async (sender) => {
+        const { canceled, filePaths } = await dialog.showOpenDialog(win , {
+            properties: ['openDirectory']
+        })
+
+        if (canceled) {
+            return
+        } else {
+            return filePaths[0]
+        }
+    })
+
+
 }
 
 app.whenReady().then(() => {
@@ -127,4 +153,6 @@ function ipcInit() {
         const str = JSON.stringify(Setting)
         fs.writeFileSync(pathAppLocal + '/setting.json', str)
     })
+
+    // export file img
 }

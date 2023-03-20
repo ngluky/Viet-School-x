@@ -45,6 +45,13 @@ contextBridge.exposeInMainWorld("App", {
 
     minimize : () => {
         ipcRenderer.send('minimizeApp')
-    }
+    },
 
+    screenshot : (path) => {
+        return ipcRenderer.invoke('export' , path)
+    },
+
+    showOpenDialog: () => {
+        return ipcRenderer.invoke('showOpenDialog')
+    }
 })

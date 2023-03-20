@@ -779,6 +779,7 @@ function HocTrucTuyen() {
                     classttn.initTimer()
                     if (classttn.isNopBai) {
                         classttn.getDapAn()
+                        classttn.getDiemBaiTap()
                     }
                 }
             })

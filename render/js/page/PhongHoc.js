@@ -458,9 +458,13 @@ function ChatTab(props) {
 
                     <div className="chat-bottom-button-list">
                         <div onClick={() => {
-
+                            App.showOpenDialog().then(data => {
+                                if (data) {
+                                    classttn.exportBaiLam(data , 1)
+                                }
+                            })
                         }}>
-                            Copy Bài làm</div>
+                            Xuất ra hình ảnh</div>
                     </div>
 
                 </button>
