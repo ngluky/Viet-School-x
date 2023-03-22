@@ -778,4 +778,14 @@ function ThiTracNghiem() {
 
     }
     
+
+    this.exportBaiLamToFile = function() {
+        var data = {
+            name: "hello",
+            arrData: classttn.arr_Data,
+            arrDapAn: classttn.arr_Dapan_Dung
+        }
+
+        console.log(JSON.stringify(data))
+    }
 }

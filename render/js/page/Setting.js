@@ -18,6 +18,38 @@ function SettingTab(props) {
     )
 }
 
+function CssView() {
+    return (
+        <div className="setingview">
+
+        </div>
+    )
+}
+
+function EditThemeSetting() {
+    return (
+        <div className="setting-edit">
+            <div className="setting-line-theme">
+                <div className="setting-left-theme">
+                    <p>Background</p>
+                </div>
+                <div className="setting-right-theme">
+                    
+                </div>
+            </div>
+        </div>
+    )
+}
+
+function ThemeSetting() {
+    return (
+        <React.Fragment>
+            <CssView />
+            <EditThemeSetting />
+        </React.Fragment>
+    )
+}
+
 function MainSetting(props) {
     const data = props.data
     return (
@@ -26,7 +58,7 @@ function MainSetting(props) {
 
             </div>
             <div className="setting-content">
-
+                <ThemeSetting />
             </div>
             <div className="setting-close-button" onClick={() => { classhscp.renderInit() }}>
                 <ion-icon name="close-circle-outline"></ion-icon>

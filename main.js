@@ -1,4 +1,4 @@
-const { app, BrowserWindow , ipcMain, dialog} = require('electron')
+const { app, BrowserWindow , ipcMain, dialog , remote} = require('electron')
 
 const path = require('path');
 const fs = require('fs');
@@ -74,6 +74,7 @@ const createWindow = () => {
 app.whenReady().then(() => {
 
 
+
     if (!fs.existsSync(pathAppLocal)) {
         fs.mkdirSync(pathAppLocal)
     }
@@ -87,6 +88,12 @@ app.whenReady().then(() => {
         Setting = JSON.parse(fs.readFileSync(pathAppLocal + '/setting.json'))
     else
         fs.writeFileSync(pathAppLocal + '/setting.json', '{}')
+
+    Setting["path"] = null
+    if(process.argv.length >= 2) {
+        let filePath = process.argv[1];
+        Setting["path"] = filePath
+    }
 
     createWindow()
 

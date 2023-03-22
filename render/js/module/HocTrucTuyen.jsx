@@ -62,6 +62,29 @@ function HocTrucTuyen() {
     this.tabFileData = []
     this.rootMessBody = null
 
+    this.sliderBarView = [
+        {
+            type: "radio",
+            on: () => this.tabActive == 0,
+            nameIcon: "book-outline",
+            title: "Lý thuyết",
+            onClick: function() {
+                classhtt.tabActive = 0; 
+                classhtt.handlSideBar.baiHoc()
+            }
+        },
+
+        {
+            type:"radio",
+            on: () => this.tabActive == 1,
+            nameIcon:"videocam-outline",
+            title:"Live",
+            onClick: function() {
+                classhtt.tabActive = 1
+            }
+        },
+    ]
+
     this.slideBarTool = [
         {
             title: 'Thành viên',
@@ -248,7 +271,6 @@ function HocTrucTuyen() {
                 }, 200)
             }
         }
-
     }
 
     this.getThaoLuan = function(callback) {
@@ -530,6 +552,16 @@ function HocTrucTuyen() {
             }
         })
 
+        var allImgEle = ele.querySelectorAll("img")
+        allImgEle.forEach(e => {
+            var url = e.src
+            var newImg = document.createElement('img')
+            newImg.src = url
+            newImg.className = "imgView"
+            var patder = e.parentElement
+            e.remove()
+            patder.appendChild(newImg)
+        })
         return ele;
     }
 
@@ -572,18 +604,30 @@ function HocTrucTuyen() {
                 url: url,
                 name: name,
                 iconSrc: iconSrc,
-                index: 3 + this.tabFileData.length
+                index: this.sliderBarView.length
+            }
+            const index = this.sliderBarView.length
+            classhtt.tabActive = index
+
+            var tabFile = {
+                type:"radio",
+                on: () => this.tabActive == index,
+                srcIcon: iconSrc,
+                onClick: function() {
+                    classhtt.tabActive = index;
+                    classhtt.renderFileView(url, iconSrc ,name )
+                }
             }
 
-            this.tabActive = item.index
             this.tabFileData.push(item)
-            this.updateRootSideBar(React.createElement(SideBar , {classhtt: this}))
+            this.sliderBarView.push(tabFile)
+            this.updateRootSideBar(React.createElement(SideBar , {data: this.sliderBarView}))
             this.updateRootContent(React.createElement(ViewFile , {url : `https://view.officeapps.live.com/op/embed.aspx?src=${url}`}))
         }
         else {
             this.tabActive = file[0].index
             document.querySelectorAll('div.action-top > div.action-button.radio')[this.tabActive].click()
-            this.updateRootSideBar(React.createElement(SideBar , {classhtt: this}))
+            this.updateRootSideBar(React.createElement(SideBar , {data: this.sliderBarView}))
             this.updateRootContent(React.createElement(ViewFile , {url : `https://view.officeapps.live.com/op/embed.aspx?src=${url}`}))
         }
 
@@ -648,6 +692,29 @@ function HocTrucTuyen() {
         this.isLoadBaiTap = false;
         this.isOnTap = false
         this.isLoadThanhVien = false
+
+        this.sliderBarView = [
+            {
+                type: "radio",
+                on: () => this.tabActive == 0,
+                nameIcon: "book-outline",
+                title: "Lý thuyết",
+                onClick: function() {
+                    classhtt.tabActive = 0; 
+                    classhtt.handlSideBar.baiHoc()
+                }
+            },
+    
+            {
+                type:"radio",
+                on: () => this.tabActive == 1,
+                nameIcon:"videocam-outline",
+                title:"Live",
+                onClick: function() {
+                    classhtt.tabActive = 1
+                }
+            },
+        ]
 
         df_ShowLoading()
 
@@ -760,11 +827,12 @@ function HocTrucTuyen() {
         this.renderInit()
         this.joinRoomIfYes(() => {
             var count = 2
-            document.querySelector('#slidebar > div.action-top > div.action-button:nth-child(3)').style.display = 'none'
+            // document.querySelector('#slidebar > div.action-top > div.action-button:nth-child(3)').style.display = 'none'
             this.getBaiHoc(() => {
                 count -= 1
                 if (count == 0)
                     df_HideLoading()
+                    this.updateRootSideBar(React.createElement(SideBar , {data: this.sliderBarView}))
                 this.slideBarTool[this.slideBarTab].onClick()
             })
 
@@ -773,9 +841,22 @@ function HocTrucTuyen() {
                 count -= 1
                 if (count == 0)
                     df_HideLoading()
+                    this.updateRootSideBar(React.createElement(SideBar , {data: this.sliderBarView}))
+
 
                 if (data) {
-                    document.querySelector('#slidebar > div.action-top > div.action-button:nth-child(3)').style.display = 'block'
+                    const index = this.sliderBarView.length
+                    this.sliderBarView.push(
+                        {
+                            type:"radio",
+                            on: () => this.tabActive == index,
+                            nameIcon:"create-outline",
+                            title:"Bài tập",
+                            onClick: function() {
+                                classhtt.tabActive = 2; 
+                                classhtt.handlSideBar.baiTap()
+                            }
+                        })
                     classttn.initTimer()
                     if (classttn.isNopBai) {
                         classttn.getDapAn()

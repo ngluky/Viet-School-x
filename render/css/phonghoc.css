@@ -144,9 +144,16 @@ body {
     border-radius: 0 0 5px 5px;
 }
 
+
 .phonghoc-content-bottom img {
     width: 100%;
     filter: var(--filter-img-dapan);
+}
+
+.phonghoc-content-bottom img.imgView {
+    width: 50%;
+    border-radius: 5px;
+    filter: none;
 }
 
 #noidungcauhoi > span {
@@ -779,3 +786,7 @@ div.cauhoi .stt {
 .phonghoc-diem {
     margin-right: 5px;
 }
+
+/* .imgView {
+    width: 50%;
+} */

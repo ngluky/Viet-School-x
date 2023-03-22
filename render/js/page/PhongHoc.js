@@ -5,7 +5,7 @@ function SideBarButton(props) {
     }
     switch (type) {
         case "button":
-            var on = props.on;
+            var on;
             if (!props.on) on = "";
             else on = "on";
 
@@ -44,9 +44,9 @@ function SideBarButton(props) {
             var buttonSeleStyleTemplay = {
                 "border-left": "3px solid rgb(98, 0, 255)",
             };
-            var on = props.on;
-            if (!props.on) on = "";
-            else on = "on";
+            var on = "";
+            console.log(props.on())
+            if (props.on()) on = "on";
 
             if (props.onStyle) buttonSeleStyleTemplay = props.onStyle;
 
@@ -92,13 +92,10 @@ function SideBarButton(props) {
                 propsIcon = {
                     src: props.srcIcon
                 }
-            }  
-
-
-
+            } 
             if (props.title) {
                 return (
-                    <div className={"action-button radio " + on + " " + clasId} style={props.on ? buttonSeleStyle : props.style} onClick={() => {handlOnClick();props.onClick();}}>
+                    <div className={"action-button radio " + on + " " + clasId} style={props.on() ? buttonSeleStyle : props.style} onClick={() => {handlOnClick();props.onClick();}}>
                         <div className="action-button-svg">
                             <ion-icon {...propsIcon}></ion-icon>
                         </div>
@@ -110,7 +107,7 @@ function SideBarButton(props) {
             } else {
 
                 return (
-                    <div className={"action-button radio " + on + " " + clasId} style={props.on ? buttonSeleStyle : props.style} onClick={() => { handlOnClick(); props.onClick();}} >
+                    <div className={"action-button radio " + on + " " + clasId} style={props.on() ? buttonSeleStyle : props.style} onClick={() => { handlOnClick(); props.onClick();}} >
                         <div className="action-button-svg">
                             <ion-icon {...propsIcon}></ion-icon>
                         </div>
@@ -222,18 +219,20 @@ function BaiHoc() {
     );
 }
 
-function SideBar(props) {
+function SideBar({
+    data = []
+}) 
+{
     const eventSideBar = classhtt.handlSideBar;
-    var fileButton = classhtt.tabFileData
     return (
         <React.Fragment>
             <div className="action-top">
-                <SideBarButton type="radio" on={classhtt.tabActive == 0} nameIcon="book-outline" title="Lý thuyết" onClick={() => {classhtt.tabActive = 0; eventSideBar.baiHoc()}}/>
-                <SideBarButton type="radio" on={classhtt.tabActive == 1} nameIcon="videocam-outline" title="Live" onClick={() => {classhtt.tabActive = 1}}/>
-                <SideBarButton type="radio" on={classhtt.tabActive == 2} nameIcon="create-outline" title="Bài tập" onClick={() => {classhtt.tabActive = 2; eventSideBar.baiTap()}}/>
-                {fileButton.map((e, index) => (
-                    <SideBarButton key={index} type="radio" on={classhtt.tabActive == e.index} srcIcon={e.iconSrc} onClick={() => {classhtt.tabActive = e.index;classhtt.renderFileView(e.url , e.iconSrc , e.name)}}/>
-                ))}
+
+                {data.map((e) => {
+                    return (
+                        <SideBarButton {...e}/>
+                    )
+                })}
             </div>
             <div className="action-botton">
                 <SideBarButton
