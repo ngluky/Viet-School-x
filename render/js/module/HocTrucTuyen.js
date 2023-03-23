@@ -520,32 +520,47 @@ function HocTrucTuyen() {
                 var divFileView = document.createElement('div')
                 divFileView.className = "file-view"
                 divFileView.title = fullNameFile;
-                divFileView.onclick = () => {
-                    console.log(e.href)
-                    this.renderFileView(e.href , iconSrc , name)
-                }
                 var iconSrc = getSrcFileIcon(type)
 
                 divFileView.innerHTML = `
+                <div class="file-icon-body">
                     <div class="file-icon">
                         <ion-icon src="${iconSrc}"></ion-icon>
                     </div>
-            
+                
                     <div class="file-body">
                         <div class="file-fullname">
                             <p class="file-name">${name}</p>
                             <p class="file-type">.${type}</p>
                         </div>
-            
+                
                         <div class="file-size">20kb</div>
                     </div>
-            
-                    <div class="file-dow">
-                        <div class="file-button" title="Download">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-                        </div>
-                    </div>
+                </div>
+                
+                <div class="file-dow">
+                    <form method="get" action="${e.href}">
+                        <button class="file-button" title="Download">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                <polyline points="7 10 12 15 17 10"></polyline>
+                                <line x1="12" y1="15" x2="12" y2="3"></line>
+                            </svg>
+                        </button>
+                    </form>
+                </div>
                 `
+
+                divFileView.querySelector('.file-button').onclick = function() {
+
+                }
+
+                divFileView.querySelector('.file-icon-body').onclick = () => {
+                    console.log(e.href)
+                    this.renderFileView(e.href , iconSrc , name)
+                }
+
                 const parent = e.parentNode;
                 parent.removeChild(e)
                 parent.appendChild(divFileView)

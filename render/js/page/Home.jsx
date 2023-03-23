@@ -59,11 +59,12 @@ function Sub(props) {
     var onJoinRoom = props.onClick;
     return (
         <div className="sub" onClick={() => {onJoinRoom(data);}}>
-            <div
-                className="sub-sta"
-                style={{background: backgrounds[data.TrangThaiID],}}
-            >
+            <div className="sub-sta" style={{background: backgrounds[data.TrangThaiID],}} >
                 {data.TrangThai}
+            </div>
+
+            <div className="sub-save">
+                <ion-icon name="star-outline"></ion-icon>
             </div>
             <div className="sub-img">
                 <img src={name2url[data.TenMon]} alt="" />

@@ -583,6 +583,12 @@ div.cauhoi .stt {
     margin-top: 10px;
 }
 
+.file-icon-body {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    padding-right: 3px;
+}
 
 .file-icon {
     margin-left: 3px;
@@ -629,6 +635,11 @@ div.cauhoi .stt {
     height: 22px;
     width: 22px;
 }
+
+.file-button:hover svg {
+    color: gray;
+}
+
 .file-dow .file-button {
     border-radius: 5px;
     height: 25px;
@@ -637,12 +648,10 @@ div.cauhoi .stt {
     align-items: center;
     justify-content: center;
     margin-right: 3px;
+    background: transparent;
+    border: none;
+    outline: none;
 }
-
-.file-dow .file-button:hover {
-    color: gray;
-}
-
 
 .div-file-view {
     height: calc(100%);;

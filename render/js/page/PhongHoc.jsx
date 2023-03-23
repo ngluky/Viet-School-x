@@ -410,26 +410,16 @@ function ChatTab(props) {
     const classhtt = props.classhtt;
 
     const handlOff = function() {
-        const ele = document.querySelector('.chat-bottom-button.lamlai .chat-bottom-button-list');
+        const ele = document.querySelectorAll('.chat-bottom-button.lamlai .chat-bottom-button-list');
         console.log('ok')
-        ele.classList.remove('on')
+        ele.forEach(e => {
+            e.classList.remove('on')
+        })
         document.getElementById('root').removeEventListener('click', handlOff , false)
     }
 
-    const handlOnOff = function() {
-        const ele = document.querySelector('.chat-bottom-button.lamlai .chat-bottom-button-list');
-        if (ele.classList.contains('on')) {
-            ele.classList.remove('on')
-        }
-        else {
-            ele.classList.add('on')
-
-            document.getElementById('root').addEventListener('click', handlOff)
-        }
-    }
-
-    const handlOnOff2 = function() {
-        const ele = document.querySelector('.chat-bottom-button.lamlai:nth-child(2) .chat-bottom-button-list');
+    const handlOnOff = function(index = 1) {
+        const ele = document.querySelector(`.chat-bottom-button.lamlai:nth-child(${index}) .chat-bottom-button-list`);
         if (ele.classList.contains('on')) {
             ele.classList.remove('on')
         }
@@ -468,7 +458,7 @@ function ChatTab(props) {
 
                 </button>
 
-                <button className="chat-bottom-button lamlai" style={classhtt.isOnTap ? {} : {'display': 'none'}} onClick={() => {handlOnOff2()}}>
+                <button className="chat-bottom-button lamlai" style={classhtt.isOnTap ? {} : {'display': 'none'}} onClick={() => {handlOnOff(2)}}>
                     <ion-icon name="refresh-outline"></ion-icon>
 
                     <div className="chat-bottom-button-list">
@@ -563,5 +553,49 @@ function ListViewCauHoi({data = []}) {
                 })}
             </div>
         </div>
+    )
+}
+
+function FileView() {
+    return (
+
+        <div className="phonghoc">
+                <div className="phonghoc-row1">
+                    <div className="action" id="slidebar">
+                        <SideBar data={
+                            [{
+                                type: "radio",
+                                on: () => true,
+                                nameIcon: "book-outline",
+                                title: "Lý thuyết",
+                                onClick: function() {}
+                            }]
+                        }/>
+                    </div>
+
+                    <div className="phonghoc-chat-conter">
+                        <div className="phonghoc-chat" id="side-bar" style={ classhtt.isSideBar ? {} : { width: "0px", margin: "0", opacity: "0" }}>
+                            <ChatTab classhtt={classhtt} />
+                        </div>
+                        <div className="phonghoc-content">
+                            <div className="phonghoc-content-top">
+                                <p className="phonghoc-title">
+                                    {item.TenMon} - {item.TenBaiHoc}
+                                </p>
+
+                                <div className="phonghoc-diem" style={{display: 'none'}}>
+                                    
+                                </div>
+
+
+                            </div>
+
+                            <div className="phonghoc-content-bottom" id="content">
+                                <BaiHoc />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
     )
 }

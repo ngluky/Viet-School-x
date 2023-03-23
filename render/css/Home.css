@@ -91,6 +91,25 @@ body {
     border-radius: 5px;
 }
 
+.sub-save:hover > ion-icon { 
+    color: #555;
+}
+.sub-save > ion-icon {
+    color: black;
+
+}
+.sub-save {
+    height: 20px;
+    width: 20px;
+    font-size: 20px;
+    z-index: 2;
+    margin: 10px;
+    position: absolute;
+    right: 0;
+    color: black;
+}
+
+
 .input-custom input {
     background-color: transparent;
     border: none;
