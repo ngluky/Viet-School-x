@@ -571,8 +571,24 @@ div.cauhoi .stt {
     margin-left: 5px;
 }
 
+.file-view > .load > div {
+    background: #00925d;
+    width: 0%;
+    height: 100%;
+}
 
+.file-view > .load {
+    position: absolute;
+    bottom: 0;
+    width: calc(100% - 15px);
+    margin: -1px 7.5px;
+    height: 3px;
+    border-radius: 1px;
+    background-color: #a11b1b;
+    display: none;
+}
 .file-view {
+    position: relative;
     cursor: pointer;
     height: 45px;
     width: 270px;
@@ -631,12 +647,13 @@ div.cauhoi .stt {
     text-overflow: ellipsis;
 }
 
-.file-dow .file-button svg {
+.file-dow .file-button ion-icon {
     height: 22px;
     width: 22px;
+    font-size: 20px;
 }
 
-.file-button:hover svg {
+.file-button:hover ion-icon {
     color: gray;
 }
 

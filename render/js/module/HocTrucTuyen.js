@@ -504,6 +504,7 @@ function HocTrucTuyen() {
     }
 
     this.formatNoiDungBaiHoc = function(str) {
+
         str = str.replaceAll('src="//' , 'src="https://')    
         var ele = document.createElement('div')
         ele.innerHTML = str
@@ -515,10 +516,14 @@ function HocTrucTuyen() {
             const type = fullNameFile.substring(fullNameFile.lastIndexOf(".") + 1 , fullNameFile.length).toLowerCase()
             if (fileTypes.includes(type.toLowerCase()) && e.href.indexOf('https://file.vietschool.vn/') >= 0) {
                 const name = fullNameFile.substring(0 , fullNameFile.lastIndexOf("."))
-                console.log('make view file' , type)
+
+                // console.log('make view file' , type)
+
+                const id = e.href.substring(e.href.lastIndexOf('/') + 1 , e.href.length)
+
 
                 var divFileView = document.createElement('div')
-                divFileView.className = "file-view"
+                divFileView.className = `file-view file${id}`
                 divFileView.title = fullNameFile;
                 var iconSrc = getSrcFileIcon(type)
 
@@ -539,21 +544,28 @@ function HocTrucTuyen() {
                 </div>
                 
                 <div class="file-dow">
-                    <form method="get" action="${e.href}">
                         <button class="file-button" title="Download">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                                <polyline points="7 10 12 15 17 10"></polyline>
-                                <line x1="12" y1="15" x2="12" y2="3"></line>
-                            </svg>
+                            <ion-icon src="./img/svg/download-347.svg"></ion-icon>
                         </button>
-                    </form>
+                </div>
+
+                <div class="load">
+                    <div></div>
                 </div>
                 `
 
                 divFileView.querySelector('.file-button').onclick = function() {
-
+                    App.showOpenDialog().then(path => {
+                        if (path) {
+                            App.downloadFile( {
+                                id : id,
+                                info: {
+                                    url: e.href,
+                                    properties: {directory: path}
+                                }
+                            })
+                        }
+                    })
                 }
 
                 divFileView.querySelector('.file-icon-body').onclick = () => {
@@ -578,6 +590,14 @@ function HocTrucTuyen() {
             patder.appendChild(newImg)
         })
         return ele;
+    }
+
+    this.updateFileDow = function(id, status) {
+        console.log(id , status)
+    }
+
+    this.fileDowShow = function() {
+        document.querySelector('div.file-view > div.load').style.display = "block"
     }
 
     this.updataRootChatTop = function(ele) {

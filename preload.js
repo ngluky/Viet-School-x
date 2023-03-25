@@ -1,6 +1,5 @@
 const { contextBridge, ipcRenderer } = require('electron');
 
-
 contextBridge.exposeInMainWorld('CookieIpc', {
     set: (k , v) => {
         ipcRenderer.send("setCookie" , {key: k, value: v});
@@ -53,5 +52,19 @@ contextBridge.exposeInMainWorld("App", {
 
     showOpenDialog: () => {
         return ipcRenderer.invoke('showOpenDialog')
+    },
+
+    downloadFile: (info) => {
+        ipcRenderer.send("download", info);
     }
 })
+
+ipcRenderer.on("download progress", (event, {id, status}) => {
+    
+    var load = document.querySelector(`.file-view.file${id} > .load`)
+    load.style.display = "block"
+
+    var a = document.querySelector(`.file-view.file${id} > .load > div`)
+    a.style.width = status.percent * 100 + "%"
+
+});

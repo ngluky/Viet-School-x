@@ -1,8 +1,10 @@
 const { app, BrowserWindow , ipcMain, dialog , remote} = require('electron')
+const {download} = require("electron-dl")
 
 const path = require('path');
 const fs = require('fs');
-const url = require('url')
+const url = require('url');
+const { start } = require('repl');
 
 const pathAppLocal = path.join(app.getPath('home') , "AppData/Local/LopHocApp");
 
@@ -34,6 +36,27 @@ const createWindow = () => {
 
     ipcMain.on("minimizeApp" , () => {
         win.minimize()
+    })
+
+    // dow handl ===============================
+    // infor 
+    // {
+    //     url: "URL is here",
+    //     properties: {directory: "Directory is here"}
+    // }
+    ipcMain.on("download", (event, {id, info}) => {
+        console.log(id , info)
+        info.properties.onProgress = status => {
+            win.webContents.send("download progress", {
+                id: id,
+                status: status
+            })
+        };
+        download(BrowserWindow.getFocusedWindow(), info.url, info.properties)
+            .then(dl => {
+                win.webContents.send("download complete", id)
+            });
+
     })
 
     ipcInit()
@@ -72,8 +95,6 @@ const createWindow = () => {
 }
 
 app.whenReady().then(() => {
-
-
 
     if (!fs.existsSync(pathAppLocal)) {
         fs.mkdirSync(pathAppLocal)
@@ -117,6 +138,7 @@ app.on('window-all-closed', () => {
 })
 
 function ipcInit() {
+
     // Cookie ipc ============================
     ipcMain.on("setCookie", (sender, data) => {    
         Cookie[data.key] = data.value;

@@ -270,6 +270,10 @@
     background: tomato;
 }
 
+.toast-button.li {
+    justify-content: right;
+}
+
 
 
 @keyframes toastAnimation {

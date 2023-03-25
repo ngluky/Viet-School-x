@@ -678,7 +678,7 @@ function StringToDOMEle(string) {
     return div.firstElementChild;
 }
 
-function showMsg(title, msg, labelyes = '<i class="fa-solid fa-check" aria-hidden="true"></i> Đồng ý', type = "error", callback = function () { return; }) {
+function showMsg(title, msg, labelyes = null, type = "error", callback = function () { return; }) {
 
     const color = {
         'success': 'yellowgreen',
@@ -709,8 +709,17 @@ function showMsg(title, msg, labelyes = '<i class="fa-solid fa-check" aria-hidde
             <p>
                 ${msg}
             </p>
+            <div class="toast-button li">
+                ${labelyes ? `<button>${labelyes}</button>` : ''}
+            </div>
         </div>
     </div>`)
+
+    console.log(ele)
+
+    ele.querySelector("div.toast-button > button").addEventListener('click' , () => {
+        console.log('hello')
+    })
 
     ele.querySelector('div.toast-close > button').addEventListener('click', () => {
         ele.style.transform = "translateX(120%)"

@@ -228,9 +228,9 @@ function SideBar({
         <React.Fragment>
             <div className="action-top">
 
-                {data.map((e) => {
+                {data.map((e , index) => {
                     return (
-                        <SideBarButton {...e}/>
+                        <SideBarButton key={index} {...e}/>
                     )
                 })}
             </div>

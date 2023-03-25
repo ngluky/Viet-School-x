@@ -242,7 +242,6 @@ function setTheme(mode) {
     }
 }
 
-
 $(document).ready(() => {
         document.getElementById('close').addEventListener("click" , () => {
             App.close()
