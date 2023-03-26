@@ -56,6 +56,8 @@ function getSrcFileIcon(type) {
     }
 }
 
+var arrId = []
+
 function makeid(length) {
     let result = '';
     const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
@@ -65,7 +67,16 @@ function makeid(length) {
       result += characters.charAt(Math.floor(Math.random() * charactersLength));
       counter += 1;
     }
-    return result;
+
+    if (arrId.indexOf(result) < 0) {
+        arrId.push(result)
+        return result;
+    }
+
+    else {
+        return makeid(length)
+    }
+
 }
 
 function tranSTTtoString(now_cauhoi,

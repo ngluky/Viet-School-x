@@ -111,6 +111,7 @@ app.whenReady().then(() => {
         fs.writeFileSync(pathAppLocal + '/setting.json', '{}')
 
     Setting["path"] = null
+    Setting["version"] = app.getVersion()
     if(process.argv.length >= 2) {
         let filePath = process.argv[1];
         Setting["path"] = filePath
