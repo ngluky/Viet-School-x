@@ -1,6 +1,6 @@
 {
   "name": "lophoc_recode",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "recode all lophoc app",
   "main": "main.js",
   "scripts": {
@@ -19,7 +19,7 @@
   "author": "nguyLuky",
   "build": {
     "appId": "com.nguyLuky.vietschool",
-    "productName": "Viet school",
+    "productName": "VietSchool",
     "win": {
       "target": "nsis"
     },

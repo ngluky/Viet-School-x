@@ -9,11 +9,53 @@ const { start } = require('repl');
 
 const pathAppLocal = path.join(app.getPath('home'), "AppData/Local/LopHocApp");
 
-var Cookie = {}
-var Setting = {}
+var Cookie = {
+    "Remenber": null,
+    "LoginOTP": null,
+    "Net_SessionId": null,
+    "TNTokenID": null
+}
+var Setting = {
+    "theme": 'dark',
+    "path": null,
+    "version": null,
+    "autoUpdate": false
+}
+
+// get setting and cooke
+if (!fs.existsSync(pathAppLocal)) {
+    fs.mkdirSync(pathAppLocal)
+}
+
+if (fs.existsSync(pathAppLocal + '/cookie.json')) {
+    var temlay = JSON.parse(fs.readFileSync(pathAppLocal + '/cookie.json'))
+    Object.keys(Cookie).forEach(e => {
+        Cookie[e] = temlay[e]
+    })
+}
+else {
+    fs.writeFileSync(pathAppLocal + '/cookie.json', JSON.stringify(Cookie))
+}
+
+if (fs.existsSync(pathAppLocal + '/setting.json')) {
+    var temlay = JSON.parse(fs.readFileSync(pathAppLocal + '/setting.json'))
+
+    Object.keys(Setting).forEach(e => {
+        Setting[e]  = temlay[e]
+    })
+}
+else
+    fs.writeFileSync(pathAppLocal + '/setting.json', JSON.stringify(Setting))
+
+Setting[ "path" ] = null
+Setting[ "version" ] = app.getVersion()
+if (process.argv.length >= 2) {
+    let filePath = process.argv[ 1 ];
+    Setting[ "path" ] = filePath
+}
 
 //Basic flags
-autoUpdater.autoDownload = false;
+autoUpdater.autoDownload = Setting["autoUpdate"];
 autoUpdater.autoInstallOnAppQuit = true;
 
 let win;
@@ -115,27 +157,6 @@ const createWindow = () => {
 
 app.whenReady().then(() => {
 
-    if (!fs.existsSync(pathAppLocal)) {
-        fs.mkdirSync(pathAppLocal)
-    }
-
-    if (fs.existsSync(pathAppLocal + '/cookie.json'))
-        Cookie = JSON.parse(fs.readFileSync(pathAppLocal + '/cookie.json'))
-    else
-        fs.writeFileSync(pathAppLocal + '/cookie.json', '{}')
-
-    if (fs.existsSync(pathAppLocal + '/setting.json'))
-        Setting = JSON.parse(fs.readFileSync(pathAppLocal + '/setting.json'))
-    else
-        fs.writeFileSync(pathAppLocal + '/setting.json', '{}')
-
-    Setting[ "path" ] = null
-    Setting[ "version" ] = app.getVersion()
-    if (process.argv.length >= 2) {
-        let filePath = process.argv[ 1 ];
-        Setting[ "path" ] = filePath
-    }
-
     createWindow()
 
     app.on('activate', () => {
@@ -148,7 +169,7 @@ app.whenReady().then(() => {
 
 /*New Update Available*/
 autoUpdater.on("update-available", (info) => {
-    var path = autoUpdater.downloadUpdate()
+    // var path = autoUpdater.downloadUpdate()
     console.log(info)
     win.webContents.send("updateApp" , info)
     win.webContents.send("updateApp" , path)
@@ -171,7 +192,6 @@ autoUpdater.on("update-downloaded", (info) => {
 autoUpdater.on("error", (info) => {
     console.log(info)
     win.webContents.send("updateApp" , info)
-
 });
 
 app.on('window-all-closed', () => {

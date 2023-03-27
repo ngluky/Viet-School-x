@@ -9,6 +9,8 @@
     width: 300px;
     border-radius: 5px;
     background: var(--background-slide-bar);
+    display: flex;
+    align-items: center;
 }
 
 .setting-content {
@@ -26,7 +28,7 @@
     position: absolute;
     top: 35px;
     right: 20px;
-    font-size: 30px;
+    font-size: 35px;
     /* font-weight: bold; */
 }
 
@@ -225,8 +227,26 @@ label::after {
     margin-right: 5px;
 }
 
+.list-tab {
+    width: 100%;
+}
 
+.list-tab-li.on {
+    background: #00925d;
+}
+.list-tab-li {
+    margin-right: 10px;
+    display: flex;
+    height: 25px;
+    margin-left: 10px;
+    padding: 9px;
+    align-items: center;
+    border-radius: 5px;
+}
 
-
+.list-tab-li ion-icon {
+    margin-right: 10px;
+    font-size: 25px;
+}
 
 

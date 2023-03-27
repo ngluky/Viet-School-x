@@ -67,14 +67,6 @@ function SettingTab(props) {
     )
 }
 
-function CssView() {
-    return (
-        <div className="setingview">
-
-        </div>
-    )
-}
-
 function EditThemeSetting() {
     return (
         <div className="setting-edit">
@@ -157,7 +149,7 @@ function AppSetting(props) {
                         <h2 className="animate__animated">
                             <span className="logoViet">Viet</span>
                             <span className="logoSchool">School</span>
-                            <p>1.0.0</p>
+                            <p>{Setting['version']}</p>
                         </h2>
                     </div>
                     <div className="setting-ver-update">
@@ -167,14 +159,14 @@ function AppSetting(props) {
                     </div>
                 </div>
                 <div className="appsetting-community">
-                    <div className="appsetting-community-li">
+                    <div className="appsetting-community-li" onClick={() => {App.openLink('https://github.com/ngluky/Viet-School-x')}}>
                         <ion-icon name="logo-github"></ion-icon>
                         <div className="appsetting-community-li-body">
                             <p>GitHub</p>
                             <p>Source code</p>
                         </div>
                     </div>
-                    <div className="appsetting-community-li">
+                    <div className="appsetting-community-li" onClick={() => {App.openLink('https://github.com/ngluky/Viet-School-x/releases')}}>
                         <ion-icon name="newspaper"></ion-icon>
                         <div className="appsetting-community-li-body">
                             <p>What's new</p>
@@ -198,12 +190,27 @@ function AppSetting(props) {
     )
 }
 
+function ListTabSetting() {
+    return (
+        <div className="list-tab">
+            {temlaySeting.map((e , index) => {
+                return (
+                    <div className={index == 0 ? "list-tab-li on" : 'list-tab-li'} key={index}>
+                        <ion-icon name={e.iconName}></ion-icon>
+                        {e.name}
+                    </div>
+                )
+            })}
+        </div>
+    )
+}
+
 function MainSetting(props) {
     const data = props.data
     return (
         <div className="setting-main">
             <div className="setting-list">
-
+                <ListTabSetting />
             </div>
             <div className="setting-content">
                 <AppSetting />

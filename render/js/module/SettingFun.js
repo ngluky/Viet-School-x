@@ -3,6 +3,7 @@ var temlaySeting = [
 
     {
         name: "Application",
+        iconName: 'laptop',
         render: () => {},
         data: [
             {
@@ -76,6 +77,13 @@ var temlaySeting = [
             }
         ]
     },
+
+    {
+        name: "Addon",
+        iconName: 'extension-puzzle',
+        render: () => {},
+        data: []
+    }
 ]
 
 function SettingClose() {
