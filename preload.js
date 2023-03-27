@@ -56,6 +56,10 @@ contextBridge.exposeInMainWorld("App", {
 
     downloadFile: (info) => {
         ipcRenderer.send("download", info);
+    },
+
+    openLink: (link) => {
+        ipcRenderer.send("openLink" , link)
     }
 })
 
@@ -68,3 +72,7 @@ ipcRenderer.on("download progress", (event, {id, status}) => {
     a.style.width = status.percent * 100 + "%"
 
 });
+
+ipcRenderer.on('updateApp' , (event , info) => {
+    console.log(info)
+})

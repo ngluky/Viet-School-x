@@ -181,7 +181,7 @@ function AppSetting(props) {
                             <p>Show release notes</p>
                         </div>
                     </div>
-                    <div className="appsetting-community-li">
+                    <div className="appsetting-community-li" onClick={() => {App.openLink('https://discord.gg/YjmNwa3bM9')}}>
                         <ion-icon name="logo-discord"></ion-icon>
                         <div className="appsetting-community-li-body">
                             <p>Discord</p>

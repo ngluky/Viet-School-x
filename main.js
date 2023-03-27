@@ -1,18 +1,25 @@
-const { app, BrowserWindow , ipcMain, dialog , remote} = require('electron')
-const {download} = require("electron-dl")
+const { app, BrowserWindow, ipcMain, dialog, shell } = require('electron')
+const { autoUpdater, AppUpdater } = require("electron-updater");
+const { download } = require("electron-dl")
 
 const path = require('path');
 const fs = require('fs');
 const url = require('url');
 const { start } = require('repl');
 
-const pathAppLocal = path.join(app.getPath('home') , "AppData/Local/LopHocApp");
+const pathAppLocal = path.join(app.getPath('home'), "AppData/Local/LopHocApp");
 
 var Cookie = {}
 var Setting = {}
 
+//Basic flags
+autoUpdater.autoDownload = false;
+autoUpdater.autoInstallOnAppQuit = true;
+
+let win;
+
 const createWindow = () => {
-    const win = new BrowserWindow({
+    win = new BrowserWindow({
         title: "lop hoc",
         autoHideMenuBar: true,
         width: 1000,
@@ -28,13 +35,25 @@ const createWindow = () => {
         },
     })
 
-    
     // window_ipc ============================
-    ipcMain.on("closeApp" , () => {
+    ipcMain.on("closeApp", () => {
+
+        if (Cookie.Remenber) {
+            const strCooke = JSON.stringify(Cookie);
+            fs.writeFileSync(pathAppLocal + '/cookie.json', strCooke);
+        }
+        else {
+            const strCooke = JSON.stringify({});
+            fs.writeFileSync(pathAppLocal + '/cookie.json', strCooke);
+        }
+    
+        fs.writeFileSync(pathAppLocal + '/setting.json', JSON.stringify(Setting))
+
         win.close()
+        app.exit()
     })
 
-    ipcMain.on("minimizeApp" , () => {
+    ipcMain.on("minimizeApp", () => {
         win.minimize()
     })
 
@@ -44,8 +63,8 @@ const createWindow = () => {
     //     url: "URL is here",
     //     properties: {directory: "Directory is here"}
     // }
-    ipcMain.on("download", (event, {id, info}) => {
-        console.log(id , info)
+    ipcMain.on("download", (event, { id, info }) => {
+        console.log(id, info)
         info.properties.onProgress = status => {
             win.webContents.send("download progress", {
                 id: id,
@@ -70,24 +89,24 @@ const createWindow = () => {
 
     const ws = win.webContents
 
-    ipcMain.handle("export" , async (sender, path) => {
+    ipcMain.handle("export", async (sender, path) => {
         // console.log(path)
         await ws.capturePage().then(image => {
-            fs.writeFileSync(path, image.toPNG(), (err) => {if (err) return false})
+            fs.writeFileSync(path, image.toPNG(), (err) => { if (err) return false })
         })
 
         return true
     })
 
-    ipcMain.handle("showOpenDialog" , async (sender) => {
-        const { canceled, filePaths } = await dialog.showOpenDialog(win , {
-            properties: ['openDirectory']
+    ipcMain.handle("showOpenDialog", async (sender) => {
+        const { canceled, filePaths } = await dialog.showOpenDialog(win, {
+            properties: [ 'openDirectory' ]
         })
 
         if (canceled) {
             return
         } else {
-            return filePaths[0]
+            return filePaths[ 0 ]
         }
     })
 
@@ -105,16 +124,16 @@ app.whenReady().then(() => {
     else
         fs.writeFileSync(pathAppLocal + '/cookie.json', '{}')
 
-    if (fs.existsSync(pathAppLocal + '/setting.json')) 
+    if (fs.existsSync(pathAppLocal + '/setting.json'))
         Setting = JSON.parse(fs.readFileSync(pathAppLocal + '/setting.json'))
     else
         fs.writeFileSync(pathAppLocal + '/setting.json', '{}')
 
-    Setting["path"] = null
-    Setting["version"] = app.getVersion()
-    if(process.argv.length >= 2) {
-        let filePath = process.argv[1];
-        Setting["path"] = filePath
+    Setting[ "path" ] = null
+    Setting[ "version" ] = app.getVersion()
+    if (process.argv.length >= 2) {
+        let filePath = process.argv[ 1 ];
+        Setting[ "path" ] = filePath
     }
 
     createWindow()
@@ -122,27 +141,52 @@ app.whenReady().then(() => {
     app.on('activate', () => {
         if (BrowserWindow.getAllWindows().length === 0) createWindow()
     })
+
+    autoUpdater.checkForUpdates()
+    win.webContents.send("updateApp" , "check")
 })
 
-app.on('window-all-closed', () => {
-    if (Cookie.Remenber) {
-        const strCooke = JSON.stringify(Cookie);
-        fs.writeFileSync(pathAppLocal + '/cookie.json', strCooke);
-    }
-    else {
-        const strCooke = JSON.stringify({});
-        fs.writeFileSync(pathAppLocal + '/cookie.json', strCooke);
-    }
+/*New Update Available*/
+autoUpdater.on("update-available", (info) => {
+    var path = autoUpdater.downloadUpdate()
+    console.log(info)
+    win.webContents.send("updateApp" , info)
+    win.webContents.send("updateApp" , path)
 
-    fs.writeFileSync(pathAppLocal + '/setting.json' , JSON.stringify(Setting))
+});
+
+autoUpdater.on("update-not-available", (info) => {
+    console.log(info)
+    win.webContents.send("updateApp" , info)
+
+});
+
+/*Download Completion Message*/
+autoUpdater.on("update-downloaded", (info) => {
+    console.log(info)
+    win.webContents.send("updateApp" , info)
+
+});
+
+autoUpdater.on("error", (info) => {
+    console.log(info)
+    win.webContents.send("updateApp" , info)
+
+});
+
+app.on('window-all-closed', () => {
     if (process.platform !== 'darwin') app.quit()
 })
 
 function ipcInit() {
 
+    ipcMain.on('openLink', (sender, link) => {
+        shell.openExternal(link)
+    })
+
     // Cookie ipc ============================
-    ipcMain.on("setCookie", (sender, data) => {    
-        Cookie[data.key] = data.value;
+    ipcMain.on("setCookie", (sender, data) => {
+        Cookie[ data.key ] = data.value;
     })
 
     ipcMain.on("setAllCookie", (sender, data) => {
@@ -160,7 +204,7 @@ function ipcInit() {
     })
 
     ipcMain.handle("getCookie", (event, key) => {
-        return Cookie[key];
+        return Cookie[ key ];
     })
 
     ipcMain.handle("getAllCookie", (event) => {
@@ -169,10 +213,10 @@ function ipcInit() {
 
     // setting ipc =============================
     ipcMain.on('setSetting', (sender, data) => {
-        Setting[data.key] = data.value;
-    }) 
-    ipcMain.handle('getSetting' , (sender , key) => {
-        return Setting[key]
+        Setting[ data.key ] = data.value;
+    })
+    ipcMain.handle('getSetting', (sender, key) => {
+        return Setting[ key ]
     })
     ipcMain.handle('getAllSetting', (sender) => {
         return Setting
