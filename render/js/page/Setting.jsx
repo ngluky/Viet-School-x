@@ -153,7 +153,7 @@ function AppSetting(props) {
                         </h2>
                     </div>
                     <div className="setting-ver-update">
-                        <button className="appsetting-update-button">
+                        <button className="appsetting-update-button" onClick={() => {App.checkUpdate()}}>
                             check update
                         </button>
                     </div>

@@ -152,6 +152,7 @@ h2.animate__animated > p {
 }
 
 .switchbutton {
+    cursor: pointer;
     height: 20px;
     aspect-ratio: 2/1;
     border-radius: 12.5px;

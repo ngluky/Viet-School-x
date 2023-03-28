@@ -6,6 +6,7 @@ const path = require('path');
 const fs = require('fs');
 const url = require('url');
 const { start } = require('repl');
+const updater = require('update-electron-app');
 
 const pathAppLocal = path.join(app.getPath('home'), "AppData/Local/LopHocApp");
 
@@ -19,6 +20,7 @@ var Setting = {
     "theme": 'dark',
     "path": null,
     "version": null,
+    "lastVersion": null,
     "autoUpdate": false
 }
 
@@ -30,7 +32,7 @@ if (!fs.existsSync(pathAppLocal)) {
 if (fs.existsSync(pathAppLocal + '/cookie.json')) {
     var temlay = JSON.parse(fs.readFileSync(pathAppLocal + '/cookie.json'))
     Object.keys(Cookie).forEach(e => {
-        Cookie[e] = temlay[e]
+        Cookie[e] = temlay[e] || Cookie[e]
     })
 }
 else {
@@ -41,7 +43,7 @@ if (fs.existsSync(pathAppLocal + '/setting.json')) {
     var temlay = JSON.parse(fs.readFileSync(pathAppLocal + '/setting.json'))
 
     Object.keys(Setting).forEach(e => {
-        Setting[e]  = temlay[e]
+        Setting[e]  = temlay[e] || Setting[e]
     })
 }
 else
@@ -163,7 +165,8 @@ app.whenReady().then(() => {
         if (BrowserWindow.getAllWindows().length === 0) createWindow()
     })
 
-    autoUpdater.checkForUpdates()
+    if (Setting['autoUpdate'])
+        autoUpdater.checkForUpdates()
     win.webContents.send("updateApp" , "check")
 })
 
@@ -172,7 +175,6 @@ autoUpdater.on("update-available", (info) => {
     // var path = autoUpdater.downloadUpdate()
     console.log(info)
     win.webContents.send("updateApp" , info)
-    win.webContents.send("updateApp" , path)
 
 });
 
@@ -186,7 +188,6 @@ autoUpdater.on("update-not-available", (info) => {
 autoUpdater.on("update-downloaded", (info) => {
     console.log(info)
     win.webContents.send("updateApp" , info)
-
 });
 
 autoUpdater.on("error", (info) => {
@@ -199,6 +200,16 @@ app.on('window-all-closed', () => {
 })
 
 function ipcInit() {
+
+    ipcMain.on('checkUpdate', (sender) => {
+        autoUpdater.checkForUpdates()
+        console.log('check update')
+    })
+
+    ipcMain.on('dowloadUpdate', (sender) => {
+        autoUpdater.downloadUpdate()
+        autoUpdater.quitAndInstall()
+    })
 
     ipcMain.on('openLink', (sender, link) => {
         shell.openExternal(link)
