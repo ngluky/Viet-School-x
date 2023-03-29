@@ -11,7 +11,7 @@ var Setting = {}
 
 
 const colorTheme = {
-    dark : {
+    dark: {
         '--background-main': '#1E1F22',
         '--background-content': '#313338',
         '--background-slide-bar': '#2B2D31',
@@ -23,7 +23,7 @@ const colorTheme = {
         '--background-chat': '#262524'
     },
 
-    light : {
+    light: {
         '--background-main': ' #D9D9D9',
         '--background-content': ' #F5F5F5',
         '--background-slide-bar': ' #ECECEC',
@@ -46,38 +46,36 @@ function logOut() {
     checkloggin()
 }
 
-function handleLogin(user , pass , remender) {
+function handleLogin(user, pass, remender) {
     if (!(user && pass)) {
-        showMsg("Login" , "Bạn chưa nhập đầy đủ thông tin" , '' , 'war')
+        showMsg("Login", "Bạn chưa nhập đầy đủ thông tin", '', 'war')
         return;
     }
-    Cookie['Remenber'] = remender
+    Cookie[ 'Remenber' ] = remender
     df_ShowLoading()
     Service.call((result) => {
         if (!result.Data) {
             console.log(result.Error)
             df_HideLoading()
-            showMsg("Login" , result.Error)
-            
+            showMsg("Login", result.Error)
+
         }
-        else 
-        {
+        else {
             let data = result.Data;
-            if (data instanceof DataTable){
-                if (data.Columns.exist('ID_Parent')){
+            if (data instanceof DataTable) {
+                if (data.Columns.exist('ID_Parent')) {
                     alert("cảm ơn đã thử dùng ứng dụng, do sự hạn chế bở quền hạn nê chỉ tối ưu hóa cho học sinh mà thôi")
                 }
 
             }
             else {
-                if (data.Error != undefined){
+                if (data.Error != undefined) {
                     console.log(data.Error)
-                    showMsg("Login" , result.data)
-                    return ;
+                    showMsg("Login", result.data)
+                    return;
                 }
-                else if (data.get('location') != undefined)
-                {
-                    getTNTokenID(data.get('location') , (e) => {
+                else if (data.get('location') != undefined) {
+                    getTNTokenID(data.get('location'), (e) => {
 
                         if (remender) {
                             CookieIpc.setAll(Cookie)
@@ -87,51 +85,50 @@ function handleLogin(user , pass , remender) {
                             WSGet(function (result) {
                                 df_HideLoading()
                                 var jsonResult = JSON.parse(result.Data);
-    
+
                                 if (jsonResult) {
                                     User = jsonResult
                                     classhscp = new HocSinhChonPhong();
                                     classhscp.init();
-    
+
                                     classhtt = new HocTrucTuyen();
                                     classttn = new ThiTracNghiem();
                                 }
-                            
-                                
+
+
                             }, "Elearning.Core.Login", "CheckLogged");
 
                         })
 
-                        
+
                     })
                 }
-                else if (data.get('Error') != undefined)
-                {
-                    showMsg("Login" , data.get('Error'))
+                else if (data.get('Error') != undefined) {
+                    showMsg("Login", data.get('Error'))
                     df_HideLoading()
                     console.log(data.get('Error'))
                 }
                 else {
-                    showMsg("Login" , "Lỗi đăng nhập không sác định")
+                    showMsg("Login", "Lỗi đăng nhập không sác định")
                     df_HideLoading()
                 }
 
             }
-            
+
 
 
         }
-    } , 'Elearning.Core.Login' , 'VietSchoolCheckLogin' , user , pass , '', '', '2');
+    }, 'Elearning.Core.Login', 'VietSchoolCheckLogin', user, pass, '', '', '2');
 }
 
-function checkloggin(callback)  {
+function checkloggin(callback) {
     WSGet(function (result) {
         var jsonResult = JSON.parse(result.Data);
         if (jsonResult) {
         }
 
         else {
-            Root.render(React.createElement(LoginPage , {onClick: handleLogin}))
+            Root.render(React.createElement(LoginPage, { onClick: handleLogin }))
         }
 
         if (callback) callback()
@@ -139,38 +136,36 @@ function checkloggin(callback)  {
     }, "Elearning.Core.Login", "CheckLogged");
 }
 
-async function fetchAsync (url) {
+async function fetchAsync(url) {
     let response = await fetch(url);
     let result = await response.text();
 
-    Cookie['LoginOTP'] = 1
+    Cookie[ 'LoginOTP' ] = 1
     let line = result.split('\n');
     line.forEach(element => {
-        if (element.includes("var sessionid")){
-            var sessionid = element.split('=')[1].replaceAll("'" , "");
+        if (element.includes("var sessionid")) {
+            var sessionid = element.split('=')[ 1 ].replaceAll("'", "");
             sessionid = sessionid.trim()
-            sessionid = sessionid.replace(";" , "");
-            Cookie['Net_SessionId'] = sessionid
+            sessionid = sessionid.replace(";", "");
+            Cookie[ 'Net_SessionId' ] = sessionid
         }
-        else if (element.includes("var token"))
-        {
-            var token = element.split('=')[1].replaceAll("'" , "");
+        else if (element.includes("var token")) {
+            var token = element.split('=')[ 1 ].replaceAll("'", "");
             token = token.trim()
-            token = token.replace(";" , "");
+            token = token.replace(";", "");
             console.log(token);
-            Cookie['TNTokenID'] = token
+            Cookie[ 'TNTokenID' ] = token
         }
-        else if (element.includes("var error")){
-            var error = element.split('=')[1].replaceAll("'" , "");
-            error = error.substr(1 , error.length - 2);
+        else if (element.includes("var error")) {
+            var error = element.split('=')[ 1 ].replaceAll("'", "");
+            error = error.substr(1, error.length - 2);
             return;
         }
     });
-    return ;
-  }
+    return;
+}
 
-function getTNTokenID(url , callback)
-{
+function getTNTokenID(url, callback) {
     console.log(url)
 
     fetchAsync(url).then(() => {
@@ -188,16 +183,16 @@ CookieIpc.all().then(e => {
 
 function getSystemMod() {
     if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-        SettingIpc.set('theme' , 'dark')
+        SettingIpc.set('theme', 'dark')
         Object.keys(colorTheme.dark).forEach(e => {
-            document.documentElement.style.setProperty(e, colorTheme.dark[e]);
+            document.documentElement.style.setProperty(e, colorTheme.dark[ e ]);
         })
         return;
     }
 
-    SettingIpc.set('theme' , 'light')
-        Object.keys(colorTheme.light).forEach(e => {
-        document.documentElement.style.setProperty(e, colorTheme.light[e]);
+    SettingIpc.set('theme', 'light')
+    Object.keys(colorTheme.light).forEach(e => {
+        document.documentElement.style.setProperty(e, colorTheme.light[ e ]);
     })
 
     return;
@@ -211,78 +206,94 @@ function setTheme(mode) {
     })
     if (ele.length == 0)
         ele = null
-    if (mode == "light") 
-    {
+    if (mode == "light") {
         if (ele)
-            ele[0].classList.add('on')
-        Setting["theme"] = 'light'
-        SettingIpc.set('theme' , 'light')
+            ele[ 0 ].classList.add('on')
+        Setting[ "theme" ] = 'light'
+        SettingIpc.set('theme', 'light')
         Object.keys(colorTheme.light).forEach(e => {
-            document.documentElement.style.setProperty(e, colorTheme.light[e]);
+            document.documentElement.style.setProperty(e, colorTheme.light[ e ]);
         })
     }
     else if (mode == "dark") {
         if (ele)
-            ele[1].classList.add('on')
+            ele[ 1 ].classList.add('on')
 
-        Setting["theme"] = 'dark'
-        SettingIpc.set('theme' , 'dark')
+        Setting[ "theme" ] = 'dark'
+        SettingIpc.set('theme', 'dark')
         Object.keys(colorTheme.dark).forEach(e => {
-            document.documentElement.style.setProperty(e, colorTheme.dark[e]);
+            document.documentElement.style.setProperty(e, colorTheme.dark[ e ]);
         })
     }
 
     else if (mode == 'system') {
         if (ele)
-            ele[2].classList.add('on')
+            ele[ 2 ].classList.add('on')
 
-        Setting["theme"] = 'system'
-        SettingIpc.set('theme' , 'system')
+        Setting[ "theme" ] = 'system'
+        SettingIpc.set('theme', 'system')
         getSystemMod()
     }
 }
 
-$(document).ready(() => {
-        document.getElementById('close').addEventListener("click" , () => {
-            App.close()
-        })
-        document.getElementById('minimize').addEventListener("click" , () => {
-            App.minimize()
-        })
-        console.log("ok")
-        setTheme(Setting.theme)
-
-        
-        if (!Cookie.LoginOTP) {
-            setTimeout(() => {
-                Root.render(React.createElement(LoginPage , {onClick: handleLogin}))
-            }, 10)
+function updateMessage(event, html) {
+    console.log(html)
+    document.querySelector('.appsetting-update-button').innerHTML = html
+    if (html.indexOf('install')) {
+        document.querySelector('.appsetting-update-button').onclick = () => {
+            App.downloadUpdate()
         }
-        else {
-            df_ShowLoading('vui lòng đợi kết nối với server')
-            connect(() => {
-                WSGet(function (result) {
-                    df_HideLoading()
-                    var jsonResult = JSON.parse(result.Data);
-                    if (jsonResult) {
-                        User = jsonResult
-                        classhscp = new HocSinhChonPhong();
-                        classhscp.init();
-    
-                        classhtt = new HocTrucTuyen();
-                        classttn = new ThiTracNghiem();
-                    }
-    
-                    else {
-                        Root.render(React.createElement(LoginPage , {onClick: handleLogin}))
-                    }
-                    
-                    
-                }, "Elearning.Core.Login", "CheckLogged");
-            })
-            
-        }
-        
     }
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+    window.bridge.updateMessage(updateMessage);
+});
+
+
+$(document).ready(() => {
+
+
+    document.getElementById('close').addEventListener("click", () => {
+        App.close()
+    })
+    document.getElementById('minimize').addEventListener("click", () => {
+        App.minimize()
+    })
+    console.log("ok")
+    setTheme(Setting.theme)
+
+
+    if (!Cookie.LoginOTP) {
+        setTimeout(() => {
+            Root.render(React.createElement(LoginPage, { onClick: handleLogin }))
+        }, 10)
+    }
+    else {
+        df_ShowLoading('vui lòng đợi kết nối với server')
+        connect(() => {
+            WSGet(function (result) {
+                df_HideLoading()
+                var jsonResult = JSON.parse(result.Data);
+                if (jsonResult) {
+                    User = jsonResult
+                    classhscp = new HocSinhChonPhong();
+                    classhscp.init();
+
+                    classhtt = new HocTrucTuyen();
+                    classttn = new ThiTracNghiem();
+                }
+
+                else {
+                    Root.render(React.createElement(LoginPage, { onClick: handleLogin }))
+                }
+
+
+            }, "Elearning.Core.Login", "CheckLogged");
+        })
+
+    }
+
+}
 
 )

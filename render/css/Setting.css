@@ -103,6 +103,9 @@ h2.animate__animated > p {
     margin-left: 88px;
     border: none;
     cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .appsetting-icon-check-update {

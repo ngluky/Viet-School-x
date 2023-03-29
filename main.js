@@ -32,7 +32,7 @@ if (!fs.existsSync(pathAppLocal)) {
 if (fs.existsSync(pathAppLocal + '/cookie.json')) {
     var temlay = JSON.parse(fs.readFileSync(pathAppLocal + '/cookie.json'))
     Object.keys(Cookie).forEach(e => {
-        Cookie[e] = temlay[e] || Cookie[e]
+        Cookie[ e ] = temlay[ e ] || Cookie[ e ]
     })
 }
 else {
@@ -43,7 +43,7 @@ if (fs.existsSync(pathAppLocal + '/setting.json')) {
     var temlay = JSON.parse(fs.readFileSync(pathAppLocal + '/setting.json'))
 
     Object.keys(Setting).forEach(e => {
-        Setting[e]  = temlay[e] || Setting[e]
+        Setting[ e ] = temlay[ e ] || Setting[ e ]
     })
 }
 else
@@ -57,7 +57,7 @@ if (process.argv.length >= 2) {
 }
 
 //Basic flags
-autoUpdater.autoDownload = Setting["autoUpdate"];
+autoUpdater.autoDownload = Setting[ "autoUpdate" ];
 autoUpdater.autoInstallOnAppQuit = true;
 
 let win;
@@ -65,13 +65,15 @@ let win;
 const createWindow = () => {
     win = new BrowserWindow({
         title: "lop hoc",
-        autoHideMenuBar: true,
         width: 1000,
         height: 600,
         minWidth: 700,
         maxHeight: 900,
         maxWidth: 1400,
         frame: false,
+        removeMenu: true,
+        acceptFirstMouse: true,
+        autoHideMenuBar: true,
         webPreferences: {
             contextIsolation: true,
             preload: path.join(__dirname, 'preload.js'),
@@ -90,7 +92,7 @@ const createWindow = () => {
             const strCooke = JSON.stringify({});
             fs.writeFileSync(pathAppLocal + '/cookie.json', strCooke);
         }
-    
+
         fs.writeFileSync(pathAppLocal + '/setting.json', JSON.stringify(Setting))
 
         win.close()
@@ -165,35 +167,30 @@ app.whenReady().then(() => {
         if (BrowserWindow.getAllWindows().length === 0) createWindow()
     })
 
-    if (Setting['autoUpdate'])
+    if (Setting[ 'autoUpdate' ])
         autoUpdater.checkForUpdates()
-    win.webContents.send("updateApp" , "check")
 })
+//===============================================================
 
 /*New Update Available*/
 autoUpdater.on("update-available", (info) => {
-    // var path = autoUpdater.downloadUpdate()
-    console.log(info)
-    win.webContents.send("updateApp" , info)
-
+    win.webContents.send("updateMessage", `install ${info.version}`);
 });
 
 autoUpdater.on("update-not-available", (info) => {
-    console.log(info)
-    win.webContents.send("updateApp" , info)
-
+    win.webContents.send("updateMessage" ,`no update`);
 });
 
 /*Download Completion Message*/
 autoUpdater.on("update-downloaded", (info) => {
-    console.log(info)
-    win.webContents.send("updateApp" , info)
+    win.webContents.send("updateMessage" ,`Commlit`);
 });
 
 autoUpdater.on("error", (info) => {
-    console.log(info)
-    win.webContents.send("updateApp" , info)
+    win.webContents.send("updateMessage" , 'error');
 });
+
+//================================================================
 
 app.on('window-all-closed', () => {
     if (process.platform !== 'darwin') app.quit()
@@ -202,13 +199,15 @@ app.on('window-all-closed', () => {
 function ipcInit() {
 
     ipcMain.on('checkUpdate', (sender) => {
+        win.webContents.send("updateMessage", '<div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>')
         autoUpdater.checkForUpdates()
-        console.log('check update')
     })
 
     ipcMain.on('dowloadUpdate', (sender) => {
-        autoUpdater.downloadUpdate()
-        autoUpdater.quitAndInstall()
+        win.webContents.send("updateMessage", '<div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>')
+        var path = autoUpdater.downloadUpdate()
+        // win.webContents.send("updateApp" , path)
+
     })
 
     ipcMain.on('openLink', (sender, link) => {
