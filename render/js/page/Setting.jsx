@@ -98,14 +98,14 @@ function SettingUl({ data = [] }) {
                 return (
                     <React.Fragment key={index}>
                         {
-                            e.data.map((e1 , index) => {
+                            e.data.map((e1, index) => {
                                 return (
                                     <React.Fragment key={index}>
-                                        
+
                                         <h2>{e1.title}</h2>
 
                                         {
-                                            e1.children.map((e2 , index) => {
+                                            e1.children.map((e2, index) => {
                                                 return (
                                                     <div className="appsetting-li" key={index}>
                                                         <div className="appsetting-li-left">
@@ -113,19 +113,19 @@ function SettingUl({ data = [] }) {
                                                             {e2.description ? <p>{e2.description}</p> : <React.Fragment></React.Fragment>}
                                                         </div>
                                                         <div className="appsetting-li-right">
-                                                            {e2.button.type == "switch" ? <SwitchButton isCheck={e2.button.isCheck} onClick={e2.button.active}/> : (
-                                                                    <button className="appsetting-li-button" onClick={(e) => {e2.button.active(this)}}>
-                                                                        <ion-icon name={e2.button.iconName}></ion-icon>
-                                                                        <span>{e2.button.label}</span>
-                                                                    </button>
-                                                                )
+                                                            {e2.button.type == "switch" ? <SwitchButton isCheck={e2.button.isCheck} onClick={e2.button.active} /> : (
+                                                                <button className="appsetting-li-button" onClick={(e) => { e2.button.active(this) }}>
+                                                                    <ion-icon name={e2.button.iconName}></ion-icon>
+                                                                    <span>{e2.button.label}</span>
+                                                                </button>
+                                                            )
                                                             }
                                                         </div>
                                                     </div>
                                                 )
                                             })
                                         }
-                                    
+
                                     </React.Fragment>
                                 )
                             })
@@ -149,31 +149,31 @@ function AppSetting(props) {
                         <h2 className="animate__animated">
                             <span className="logoViet">Viet</span>
                             <span className="logoSchool">School</span>
-                            <p>{Setting['version']}</p>
+                            <p>{Setting[ 'version' ]}</p>
                         </h2>
                     </div>
                     <div className="setting-ver-update">
-                        <button className="appsetting-update-button" onClick={() => {App.checkUpdate()}}>
+                        <button className="appsetting-update-button" onClick={() => { App.checkUpdate() }}>
                             check update
                         </button>
                     </div>
                 </div>
                 <div className="appsetting-community">
-                    <div className="appsetting-community-li" onClick={() => {App.openLink('https://github.com/ngluky/Viet-School-x')}}>
+                    <div className="appsetting-community-li" onClick={() => { App.openLink('https://github.com/ngluky/Viet-School-x') }}>
                         <ion-icon name="logo-github"></ion-icon>
                         <div className="appsetting-community-li-body">
                             <p>GitHub</p>
                             <p>Source code</p>
                         </div>
                     </div>
-                    <div className="appsetting-community-li" onClick={() => {App.openLink('https://github.com/ngluky/Viet-School-x/releases')}}>
+                    <div className="appsetting-community-li" onClick={() => { App.openLink('https://github.com/ngluky/Viet-School-x/releases') }}>
                         <ion-icon name="newspaper"></ion-icon>
                         <div className="appsetting-community-li-body">
                             <p>What's new</p>
                             <p>Show release notes</p>
                         </div>
                     </div>
-                    <div className="appsetting-community-li" onClick={() => {App.openLink('https://discord.gg/YjmNwa3bM9')}}>
+                    <div className="appsetting-community-li" onClick={() => { App.openLink('https://discord.gg/YjmNwa3bM9') }}>
                         <ion-icon name="logo-discord"></ion-icon>
                         <div className="appsetting-community-li-body">
                             <p>Discord</p>
@@ -184,36 +184,37 @@ function AppSetting(props) {
             </div>
 
             <SettingUl data={temlaySeting}></SettingUl>
-
         </div>
 
     )
 }
 
-function ListTabSetting() {
-    return (
-        <div className="list-tab">
-            {temlaySeting.map((e , index) => {
-                return (
-                    <div className={index == 0 ? "list-tab-li on" : 'list-tab-li'} key={index}>
-                        <ion-icon name={e.iconName}></ion-icon>
-                        {e.name}
-                    </div>
-                )
-            })}
-        </div>
-    )
-}
 
 function MainSetting(props) {
     const data = props.data
+
+    const [tabIndex , SetTabIndex] = React.useState(0)
+
+
+
     return (
         <div className="setting-main">
             <div className="setting-list">
-                <ListTabSetting />
+                <div className="list-tab">
+                    {data.map((e, index) => {
+                        return (
+                            <div className={index == tabIndex ? "list-tab-li on" : 'list-tab-li'} key={index} onClick={() => {
+                                SetTabIndex(index)
+                            }}>
+                                <ion-icon name={e.iconName}></ion-icon>
+                                {e.name}
+                            </div>
+                        )
+                    })}
+                </div>
             </div>
             <div className="setting-content">
-                <AppSetting />
+                {data[tabIndex].render()}
             </div>
             <div className="setting-close-button" onClick={() => { classhscp.renderInit() }}>
                 <ion-icon name="close-circle-outline"></ion-icon>
@@ -221,3 +222,4 @@ function MainSetting(props) {
         </div>
     )
 }
+

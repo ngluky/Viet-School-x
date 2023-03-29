@@ -64,8 +64,6 @@ contextBridge.exposeInMainWorld("App", {
 
     checkUpdate: () => ipcRenderer.send('checkUpdate'),
 
-    dowloadUpdate: () => ipcRenderer.send('dowloadUpdate')
-
 })
 
 ipcRenderer.on("download progress", (event, {id, status}) => {
@@ -81,9 +79,12 @@ ipcRenderer.on("download progress", (event, {id, status}) => {
 ipcRenderer.on('updateApp' , (event , info) => {
     console.log(info)
     if (info.version)
-        document.querySelector('.appsetting-update-button').textContent = "install" + info.version
-        document.querySelector('.appsetting-update-button').onclick = () => {
-            App.dowloadUpdate()
+        var ele = document.querySelector('.appsetting-update-button')
+        if (ele) {
+            ele.textContent = "install " + info.version
+            ele.querySelector('.appsetting-update-button').onclick = () => {
+                ipcRenderer.send('dowloadUpdate')
+            }
         }
 
 })

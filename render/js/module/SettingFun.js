@@ -4,7 +4,9 @@ var temlaySeting = [
     {
         name: "Application",
         iconName: 'laptop',
-        render: () => {},
+        render: () => {
+            return React.createElement(AppSetting)
+        },
         data: [
             {
                 title: "Application setting",
