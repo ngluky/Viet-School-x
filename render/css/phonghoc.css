@@ -156,7 +156,7 @@ body {
     filter: none;
 }
 
-#noidungcauhoi > span {
+#noidungcauhoi span {
     color: var(--font-color) !important;
 }
 
@@ -231,6 +231,9 @@ div.cauhoi .stt {
     font-weight: 600;
 }
 
+.div-cauhoi .dapan .dp label .noidung span {
+    color: var(--font-color) !important;
+}
 .div-cauhoi .dapan .dp label .noidung {
     width: calc(100% - 70px);
     height: max-content;
