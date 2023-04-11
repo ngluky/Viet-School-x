@@ -42,7 +42,7 @@ function SideBarButton(props) {
 
         case "radio":
             var buttonSeleStyleTemplay = {
-                "border-left": "3px solid rgb(98, 0, 255)",
+                "border-left": "3px solid var(--color-check)",
             };
             var on = "";
             console.log(props.on())
@@ -397,7 +397,7 @@ function ChatSlideHeader({data = []}) {
         <React.Fragment>
             {data.map((e , index) => {
                 return (
-                    <div className="button-tab" onClick={() => {e.onClick()}} key={index} style={index == classhtt.slideBarTab ? {borderBottom: "2px solid #6200FF" , height: 'calc(100% - 2px)'} : {}}>
+                    <div className="button-tab" onClick={() => {e.onClick()}} key={index} style={index == classhtt.slideBarTab ? {borderBottom: "2px solid var(--color-check)" , height: 'calc(100% - 2px)'} : {}}>
                         <ion-icon name={e.iconName} style={index == classhtt.slideBarTab ? {color: "gray"} : {}}></ion-icon>
                     </div>
                 )
@@ -433,7 +433,7 @@ function ChatTab(props) {
     return (
         <React.Fragment>
             <div className="chat-top">
-                <ChatSlideHeader data={classhtt.slideBarTool}/>
+                <ChatSlideHeader data={classhtt.slideBarTabTemplay}/>
             </div>
 
             <div className="chat-content" id="slideBarContent">
@@ -527,7 +527,7 @@ function ViewFile(props) {
                     <ion-icon name="close-outline"></ion-icon>
                 </div>
                 <div className="div-file-dow">
-                    <ion-icon src="./img/svg/download-347.svg"></ion-icon>
+                    <ion-icon src="./svg/download-347.svg"></ion-icon>
                 </div>
             </div>
 

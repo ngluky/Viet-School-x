@@ -22,6 +22,8 @@ function HocSinhChonPhong() {
             return va;
         },
         remove : (e) => {
+            if (this.LoaiPhongSelected.length == 1) return
+
             if (this.LoaiPhongSelected.includes(e)) {
                 var va = this.LoaiPhongSelected.splice(this.LoaiPhongSelected.indexOf(e) , 1);
                 this.Get_DsPhongHocServer()
@@ -35,7 +37,17 @@ function HocSinhChonPhong() {
     }
 
     this.ListSubChange = function(id) {
+
         console.log(id)
+
+        if (this.handleChangePhongSel.contains(id)) {
+            if (this.LoaiPhongSelected.length == 1) return
+            this.handleChangePhongSel.remove(id)
+        }
+        else {
+            this.handleChangePhongSel.add(id)
+        }
+
         const ele = document.querySelectorAll('div.slide-bar-li-chill.on > li')[id]
         if (ele.classList.contains('on')) {
             ele.classList.remove('on')
@@ -44,12 +56,6 @@ function HocSinhChonPhong() {
             ele.classList.add('on')
         }
 
-        if (this.handleChangePhongSel.contains(id)) {
-            this.handleChangePhongSel.remove(id)
-        }
-        else {
-            this.handleChangePhongSel.add(id)
-        }
     }
 
     this.handlReSize = function(e) {
@@ -58,27 +64,29 @@ function HocSinhChonPhong() {
 
     this.handlslideBar = function() {
         const ele = document.getElementById('listPhongSlideBar');
+        const listSub = document.querySelector('.list-div-left')
         if (ele.classList.contains('on')) {
             ele.classList.remove('on')
             ele.style.width = "0px"
             ele.style.opacity = '0'
+            listSub.style.width = "calc(100%)"
             // display: none;
         }
         else {
             ele.classList.add('on')
             ele.style.width = "200px"
             ele.style.opacity = '1'
+            listSub.style.width = "calc(100% - 200px)"
         }
+
+
+
+
     }
 
-    this.handleFilter = (sub , event) => {
+    this.handleFilter = (sub) => {
         console.log(sub)
         var newArray = this.arrListPhongHoc.filter((e) => e.TenMon == sub)
-
-        const Target = event.target;
-        
-        document.querySelectorAll('.filter-button').forEach((e) => e.classList.remove('sel'))
-        Target.classList.add('sel')
 
         if (newArray.length == 0)
             newArray = this.arrListPhongHoc;
@@ -112,7 +120,7 @@ function HocSinhChonPhong() {
 
     this.Get_DsPhongHocServer = () => {
         this.arrListPhongHoc = []
-        this.LoaiPhongSelected.reverse()
+        var count = this.LoaiPhongSelected.length
         this.LoaiPhongSelected.forEach(e => {
             WSGet(function (result) {
                 var Data = result.Data.getTable("Data").toJson();
@@ -120,9 +128,15 @@ function HocSinhChonPhong() {
                 Data.forEach(e => {
                     this.arrListPhongHoc.push(e)
                 })
-                Root.render(React.createElement(ListSub , {
-                    Classhscp: this
-                }))
+
+                count -= 1
+
+                if (count == 0) {
+                    Root.render(React.createElement(ListSub , {
+                        Classhscp: this
+                    }))
+                }
+
             }.bind(this), this.DLL, "GetHSPhongHoc", e.toString());
         })
     }

@@ -388,6 +388,29 @@ function ThiTracNghiem() {
         }
     }
 
+    this.keyDowEvent = (event) => {
+        switch (event.code) {
+            case "ArrowRight":
+                this.nextSlide();
+                break;
+
+            case "ArrowLeft":
+                this.backSlide()
+                break;
+
+            case "ArrowDown":
+                this.nextSlide();
+                this.nextSlide();
+                break;
+
+            case "ArrowUp":
+                this.backSlide();
+                this.backSlide();
+                break;
+        }
+
+    }
+
     this.initTimer = function() {
 
         this.isBaiOnTap = classhtt.isOnTap;
@@ -493,7 +516,7 @@ function ThiTracNghiem() {
                                 classhtt.getBaiTap(() => {
                                     classttn.initTimer()
                                     classttn.readerCauhoi()
-                                    classhtt.slideBarTool.filter(e => e.title == "Câu hỏi")[0].onClick()
+                                    classhtt.slideBarTabTemplay.filter(e => e.title == "Câu hỏi")[0].onClick()
 
                                 })
                             });
@@ -522,7 +545,7 @@ function ThiTracNghiem() {
                                     classttn.initTimer()
                                     classttn.readerCauhoi()
                                     
-                                    classhtt.slideBarTool.filter(e => e.title == "Câu hỏi")[0].onClick()
+                                    classhtt.slideBarTabTemplay.filter(e => e.title == "Câu hỏi")[0].onClick()
 
                                 })
                             });
@@ -782,6 +805,18 @@ function ThiTracNghiem() {
 
 
         document.querySelector('div.cauhoi > span.stt').innerHTML = `Câu ${index + 1}: `
+        // var cauhoi = cau.cauhoi;
+        
+        // const minwWI = cauhoi.indexOf('min-width')
+        // const closeWI = cauhoi.indexOf(';' , minwWI) + 1
+
+        // cauhoi = cauhoi.replace(cauhoi.substring(minwWI , closeWI) , '')
+
+        // const minwHI = cauhoi.indexOf('min-width')
+        // const closeHI = cauhoi.indexOf(';' , minwWI)
+
+
+
         document.getElementById('noidungcauhoi').innerHTML = cau.cauhoi;
         document.getElementById('noidung-da-A').innerHTML = cau.dapan[0].noidung
         document.getElementById('noidung-da-B').innerHTML = cau.dapan[1].noidung

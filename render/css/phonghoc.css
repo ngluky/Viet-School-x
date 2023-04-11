@@ -47,7 +47,8 @@ body {
     padding: 5px 0px;
     width: 100%;
     text-align: center;
-    border-radius: 5px;
+    border-radius: var(--border-radius);
+
     box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.39);
     text-align: center;
 }
@@ -94,7 +95,8 @@ body {
 }
 
 .phonghoc-chat-conter .phonghoc-content {
-    border-radius: 5px;
+    border-radius: var(--border-radius);
+
     margin: 0px 6px 6px 0px;
     width: calc(100% - 6px);
     height: calc(100% - 6px);
@@ -104,7 +106,8 @@ body {
     width: 300px;
     height: calc(100% - 6px);
     /* background: var(--background-slide-bar); */
-    border-radius: 5px;
+    border-radius: var(--border-radius);
+
     margin: 0px 6px 6px 0px;
     transition: var(--time-animation);
 }
@@ -116,7 +119,7 @@ body {
     align-items: center;
     font-weight: bold;
     margin-bottom: 2px;
-    border-radius: 5px 5px 0px 0px;
+    border-radius: var(--border-radius) var(--border-radius) 0 0;
 }
 
 .phonghoc-content-top {
@@ -152,7 +155,8 @@ body {
 
 .phonghoc-content-bottom img.imgView {
     width: 50%;
-    border-radius: 5px;
+    border-radius: var(--border-radius);
+
     filter: none;
 }
 
@@ -176,7 +180,8 @@ body {
     padding: 5px;
     background-color: var(--background-content);
     height: calc(55% - 16px);
-    border-radius: 5px;
+    border-radius: var(--border-radius);
+
     margin-bottom: 6px;
     user-select: text;
 
@@ -196,7 +201,8 @@ div.cauhoi .stt {
 
 .div-cauhoi .dapan .dp {
     background-color: var(--background-content);
-    border-radius: 5px;
+    border-radius: var(--border-radius);
+
 }
 
 .div-cauhoi .dapan .dapan-A {
@@ -247,7 +253,8 @@ div.cauhoi .stt {
 
 .div-cauhoi .dapan .dp input[type="radio"]:checked~label {
     background-color: #00925d;
-    border-radius: 5px;
+    border-radius: var(--border-radius);
+
 }
 
 .div-cauhoi .dapan .dp input[type="radio"]:checked~label .hed {
@@ -260,7 +267,8 @@ div.cauhoi .stt {
 }
 
 .phonghoc-content-top.baitap {
-    border-radius: 5px;
+    border-radius: var(--border-radius);
+
     margin-bottom: 6px;
 }
 
@@ -268,7 +276,8 @@ div.cauhoi .stt {
     background-color: var(--background-content);
     height: 35px;
     margin: 6px 0 0 0;
-    border-radius: 5px;
+    border-radius: var(--border-radius);
+
 
     position: relative;
     display: flex;
@@ -304,7 +313,8 @@ div.cauhoi .stt {
 .bottom-key-contro-key .bottom-button {
     width: 40px;
     height: 100%;
-    border-radius: 5px;
+    border-radius: var(--border-radius);
+
     background: #d4d5d7;
     margin: 0px 5px;
 
@@ -342,7 +352,8 @@ div.cauhoi .stt {
 .list-menu-button {
     height: calc(100% - 26px);
     margin: 13px;
-    border-radius: 5px;
+    border-radius: var(--border-radius);
+
     aspect-ratio: 1/1;
     background: var(--background-main);
     cursor: pointer;
@@ -360,11 +371,13 @@ div.cauhoi .stt {
 
 .chat-top.baitap~.chat-content {
     height: calc(100% - 82px);
-    border-radius: 5px;
+    border-radius: var(--border-radius);
+
 }
 
 .chat-top.baitap {
-    border-radius: 5px;
+    border-radius: var(--border-radius);
+
     margin-bottom: 6px;
 }
 
@@ -377,7 +390,8 @@ div.cauhoi .stt {
     margin-top: 6px;
     background: var(--background-slide-bar);
     height: 35px;
-    border-radius: 5px;
+    border-radius: var(--border-radius);
+
     display: flex;
     justify-content: space-around;
     align-items: center;
@@ -387,7 +401,8 @@ div.cauhoi .stt {
     height: calc(100% - 8px);
     width: 100%;
     margin: 5px;
-    border-radius: 5px;
+    border-radius: var(--border-radius);
+
     background-color: #00925d;
     border: none;
     outline: none;
@@ -410,7 +425,8 @@ div.cauhoi .stt {
     opacity: 0;
     display: none;
     background: var(--background-main);
-    border-radius: 5px;
+    border-radius: var(--border-radius);
+
     box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.2);
     transition: var(--time-animation);
 }
@@ -432,7 +448,8 @@ div.cauhoi .stt {
 
 .chat-bottom-button.lamlai .chat-bottom-button-list>div:hover {
     filter: brightness(0.8);
-    border-radius: 5px;
+    border-radius: var(--border-radius);
+
 }
 
 .chat-bottom-button.lamlai ion-icon{
@@ -531,9 +548,25 @@ div.cauhoi .stt {
     flex-direction: column;
 }
 
+.filter-search {
+    height: 100%;
+}
+
+.filter-sele input {
+    height: 100%;
+    width: 300px;
+    background: transparent;
+    border: transparent;
+    border-bottom: 2px solid var(--font-color);
+    outline: transparent;
+}
+
 .chat-body {
+    display: flex;
     height: 100%;
     overflow-y: scroll;
+    flex-direction: column;
+    justify-content: flex-end;
 }
 
 .chat-input {
@@ -556,7 +589,8 @@ div.cauhoi .stt {
     background-color: var(--background-main);
     padding: 5px;
     padding-left: 5px;
-    border-radius: 5px;
+    border-radius: var(--border-radius);
+
 }
 
 .chat-input .chat-body-button svg {
@@ -566,9 +600,10 @@ div.cauhoi .stt {
 }
 .chat-body-button {
     display: flex;
-    background: var(--background-main);
+    background: var(--color-check);
     height: 100%;
-    border-radius: 5px;
+    border-radius: var(--border-radius);
+
     justify-content: center;
     align-items: center;
     margin-left: 5px;
@@ -596,7 +631,8 @@ div.cauhoi .stt {
     height: 45px;
     width: 270px;
     box-shadow: 0 0 4px 0 black;
-    border-radius: 5px;
+    border-radius: var(--border-radius);
+
     display: flex;
     align-items: center;
     margin-top: 10px;
@@ -661,7 +697,8 @@ div.cauhoi .stt {
 }
 
 .file-dow .file-button {
-    border-radius: 5px;
+    border-radius: var(--border-radius);
+
     height: 25px;
     width: 25px;
     display: flex;
@@ -676,7 +713,8 @@ div.cauhoi .stt {
 .div-file-view {
     height: calc(100%);;
     width: 100%;
-    border-radius: 5px;
+    border-radius: var(--border-radius);
+
     overflow: hidden;
 }
 
@@ -711,7 +749,8 @@ div.cauhoi .stt {
     padding: 6px 5px;
     background-color: var(--background-chat);
     box-shadow: 0 0 4px 0 var(--background-chat);
-    border-radius: 5px;
+    border-radius: var(--border-radius);
+
     margin-top: 3px;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
@@ -753,7 +792,7 @@ div.cauhoi .stt {
 
 .list-cauhoi .list-cauhoi-ele.on {
     transform: scale(1.1);
-    box-shadow: 0 0 4px 0 #00925d;
+    box-shadow: 0 0 4px 0 var(--color-check);
 }
 .list-cauhoi .list-cauhoi-ele {
     cursor: pointer;
@@ -761,7 +800,8 @@ div.cauhoi .stt {
     display: flex;
     height: 30px;
     margin-top: 5px;
-    border-radius: 5px;
+    border-radius: var(--border-radius);
+
     align-items: center;
     background: var(--background-main);
 }

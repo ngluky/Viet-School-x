@@ -85,13 +85,13 @@ function HocTrucTuyen() {
         },
     ]
 
-    this.slideBarTool = [
+    this.slideBarTabTemplay = [
         {
             title: 'Thành viên',
             iconName: 'people',
             onClick: () => {
                 this.slideBarTab = 0
-                this.updataRootChatTop(React.createElement(ChatSlideHeader , {data: classhtt.slideBarTool}))
+                this.updataRootChatTop(React.createElement(ChatSlideHeader , {data: classhtt.slideBarTabTemplay}))
                 
                 if (!this.isLoadThanhVien) {
                     this.slideBarShowLoading()
@@ -120,7 +120,7 @@ function HocTrucTuyen() {
             iconName: 'chatbox',
             onClick: () => {
                 this.slideBarTab = 1
-                this.updataRootChatTop(React.createElement(ChatSlideHeader , {data: classhtt.slideBarTool}))
+                this.updataRootChatTop(React.createElement(ChatSlideHeader , {data: classhtt.slideBarTabTemplay}))
                 if (!this.IsLoadChat) {
                     console.log('get thảo luận')
                     this.getThaoLuan(() => {
@@ -153,13 +153,15 @@ function HocTrucTuyen() {
             this.rootChat = null
             this.rootContent = null
             this.arr_Data = []
+
+            document.removeEventListener("keydown" , classttn.keyDowEvent)
             classttn.resetFieldTracNghiem()
             clearInterval(_Ttn_Timer);
 
-            var arrTitle = convertJson2Array(this.slideBarTool, 'title');
+            var arrTitle = convertJson2Array(this.slideBarTabTemplay, 'title');
             var index = arrTitle.indexOf('Câu hỏi')
             if (index != -1) {
-                this.slideBarTool.splice(index, 1)
+                this.slideBarTabTemplay.splice(index, 1)
                 this.slideBarTab = 0
             }
 
@@ -167,14 +169,15 @@ function HocTrucTuyen() {
         },
 
         baiHoc: () => {
-            var arrTitle = convertJson2Array(this.slideBarTool, 'title');
+            var arrTitle = convertJson2Array(this.slideBarTabTemplay, 'title');
             var index = arrTitle.indexOf('Câu hỏi')
             if (index != -1) {
-                this.slideBarTool.splice(index, 1)
+                this.slideBarTabTemplay.splice(index, 1)
                 document.querySelector('#side-bar > div.chat-top > div:nth-child(1)').click()
             }
-            this.updataRootChatTop(React.createElement(ChatSlideHeader , {data: classhtt.slideBarTool}))
+            this.updataRootChatTop(React.createElement(ChatSlideHeader , {data: classhtt.slideBarTabTemplay}))
             document.querySelector('div.phonghoc-chat-conter > div.phonghoc-content > div.phonghoc-content-top > div').style.display = 'none'
+            document.removeEventListener("keydown" , classttn.keyDowEvent)
             clearInterval(_Ttn_Timer);
             document.querySelector(".phonghoc-content-top").classList.remove('baitap')
             document.querySelector('#side-bar div.chat-top').classList.remove('baitap')
@@ -188,37 +191,42 @@ function HocTrucTuyen() {
         },
 
         baiTap: () => {
-            var index = this.slideBarTool.push(
-                {
-                    title: 'Câu hỏi',
-                    iconName: 'checkbox',
-                    onClick: () => {
-                        this.slideBarTab = 2
-                        this.updataRootChatTop(React.createElement(ChatSlideHeader , {data: classhtt.slideBarTool}))
-                        var templayArrBaiLam = classttn.arr_Data.map((e , index) => {
-                            var cau = classttn.arr_Bailam.filter(j => j.cau == index + 1)
-                            var dapAn = null
-                            var xemLai = 0
-                            if (cau.length == 1) {
-                                dapAn = cau[0].dapan
-                                xemLai = cau[0].xemlai
-                            }
-                            var item = {
-                                "cau": index + 1,
-                                "dapan": dapAn,
-                                "xemlai": xemLai,
-                            }
-                            return item
-                        })
-                        this.updateRootChat(React.createElement(ListViewCauHoi , {data: templayArrBaiLam}))
+            var index = this.slideBarTabTemplay.length
+            if (this.tabActive != 2)
+
+                index = this.slideBarTabTemplay.push(
+                    {
+                        title: 'Câu hỏi',
+                        iconName: 'checkbox',
+                        onClick: () => {
+                            this.slideBarTab = 2
+                            this.updataRootChatTop(React.createElement(ChatSlideHeader , {data: classhtt.slideBarTabTemplay}))
+                            var templayArrBaiLam = classttn.arr_Data.map((e , index) => {
+                                var cau = classttn.arr_Bailam.filter(j => j.cau == index + 1)
+                                var dapAn = null
+                                var xemLai = 0
+                                if (cau.length == 1) {
+                                    dapAn = cau[0].dapan
+                                    xemLai = cau[0].xemlai
+                                }
+                                var item = {
+                                    "cau": index + 1,
+                                    "dapan": dapAn,
+                                    "xemlai": xemLai,
+                                }
+                                return item
+                            })
+                            this.updateRootChat(React.createElement(ListViewCauHoi , {data: templayArrBaiLam}))
+                        }
                     }
-                }
-            )
-            this.slideBarTool[index - 1].onClick()
-            this.updataRootChatTop(React.createElement(ChatSlideHeader , {data: this.slideBarTool}))
+                )
+            this.slideBarTabTemplay[index - 1].onClick()
+            this.updataRootChatTop(React.createElement(ChatSlideHeader , {data: this.slideBarTabTemplay}))
             this.updateRootContent(React.createElement(BaiTap, {
                 classttn: classttn
             }))
+
+            document.addEventListener("keydown" , classttn.keyDowEvent)
 
             document.querySelector('div.phonghoc-chat-conter > div.phonghoc-content > div.phonghoc-content-top > div').style.display = 'block'
             // classttn.readerCauhoi()
@@ -520,7 +528,7 @@ function HocTrucTuyen() {
                 // console.log('make view file' , type)
 
                 const id = e.href.substring(e.href.lastIndexOf('/') + 1 , e.href.length)
-
+                
 
                 var divFileView = document.createElement('div')
                 divFileView.className = `file-view file${id}`
@@ -545,7 +553,7 @@ function HocTrucTuyen() {
                 
                 <div class="file-dow">
                         <button class="file-button" title="Download">
-                            <ion-icon src="./img/svg/download-347.svg"></ion-icon>
+                            <ion-icon src="./svg/download-347.svg"></ion-icon>
                         </button>
                 </div>
 
@@ -653,7 +661,7 @@ function HocTrucTuyen() {
                     classhtt.renderFileView(url, iconSrc ,name )
                 }
             }
-
+        
             this.tabFileData.push(item)
             this.sliderBarView.push(tabFile)
             this.updateRootSideBar(React.createElement(SideBar , {data: this.sliderBarView}))
@@ -868,7 +876,7 @@ function HocTrucTuyen() {
                 if (count == 0)
                     df_HideLoading()
                     this.updateRootSideBar(React.createElement(SideBar , {data: this.sliderBarView}))
-                this.slideBarTool[this.slideBarTab].onClick()
+                this.slideBarTabTemplay[this.slideBarTab].onClick()
             })
 
             this.getBaiTap((data) => {
@@ -888,8 +896,8 @@ function HocTrucTuyen() {
                             nameIcon:"create-outline",
                             title:"Bài tập",
                             onClick: function() {
-                                classhtt.tabActive = 2; 
                                 classhtt.handlSideBar.baiTap()
+                                classhtt.tabActive = 2; 
                             }
                         })
                     classttn.initTimer()

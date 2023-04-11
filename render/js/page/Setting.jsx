@@ -91,48 +91,42 @@ function ThemeSetting() {
     )
 }
 
-function SettingUl({ data = [] }) {
+function SettingUl({eleTemplay = []}) {
     return (
         <React.Fragment>
-            {data.map((e, index) => {
-                return (
-                    <React.Fragment key={index}>
-                        {
-                            e.data.map((e1, index) => {
-                                return (
-                                    <React.Fragment key={index}>
+            {
+                eleTemplay.map((e1, index) => {
+                    return (
+                        <React.Fragment key={index}>
 
-                                        <h2>{e1.title}</h2>
+                            <h2>{e1.title}</h2>
 
-                                        {
-                                            e1.children.map((e2, index) => {
-                                                return (
-                                                    <div className="appsetting-li" key={index}>
-                                                        <div className="appsetting-li-left">
-                                                            <p>{e2.title}</p>
-                                                            {e2.description ? <p>{e2.description}</p> : <React.Fragment></React.Fragment>}
-                                                        </div>
-                                                        <div className="appsetting-li-right">
-                                                            {e2.button.type == "switch" ? <SwitchButton isCheck={e2.button.isCheck} onClick={e2.button.active} /> : (
-                                                                <button className="appsetting-li-button" onClick={(e) => { e2.button.active(this) }}>
-                                                                    <ion-icon name={e2.button.iconName}></ion-icon>
-                                                                    <span>{e2.button.label}</span>
-                                                                </button>
-                                                            )
-                                                            }
-                                                        </div>
-                                                    </div>
+                            {
+                                e1.children.map((e2, index) => {
+                                    return (
+                                        <div className="appsetting-li" key={index}>
+                                            <div className="appsetting-li-left">
+                                                <p>{e2.title}</p>
+                                                {e2.description ? <p>{e2.description}</p> : <React.Fragment></React.Fragment>}
+                                            </div>
+                                            <div className="appsetting-li-right">
+                                                {e2.button.type == "switch" ? <SwitchButton isCheck={e2.button.isCheck} onClick={e2.button.active} /> : (
+                                                    <button className="appsetting-li-button" onClick={(e) => { e2.button.active(this) }}>
+                                                        <ion-icon name={e2.button.iconName}></ion-icon>
+                                                        <span>{e2.button.label}</span>
+                                                    </button>
                                                 )
-                                            })
-                                        }
+                                                }
+                                            </div>
+                                        </div>
+                                    )
+                                })
+                            }
 
-                                    </React.Fragment>
-                                )
-                            })
-                        }
-                    </React.Fragment>
-                )
-            })}
+                        </React.Fragment>
+                    )
+                })
+            }
         </React.Fragment>
     )
 }
@@ -140,6 +134,7 @@ function SettingUl({ data = [] }) {
 
 
 function AppSetting(props) {
+    
     return (
         <div className="appsetting">
             <div className="appsetting-header">
@@ -183,7 +178,7 @@ function AppSetting(props) {
                 </div>
             </div>
 
-            <SettingUl data={temlaySeting}></SettingUl>
+            <SettingUl {...props}></SettingUl>
         </div>
 
     )
@@ -192,10 +187,8 @@ function AppSetting(props) {
 
 function MainSetting(props) {
     const data = props.data
-
-    const [tabIndex , SetTabIndex] = React.useState(0)
-
-
+    
+    const [ tabIndex, SetTabIndex ] = React.useState(0)
 
     return (
         <div className="setting-main">
@@ -214,7 +207,7 @@ function MainSetting(props) {
                 </div>
             </div>
             <div className="setting-content">
-                {data[tabIndex].render()}
+                {data[ tabIndex ].render(data[ tabIndex ].data)}
             </div>
             <div className="setting-close-button" onClick={() => { classhscp.renderInit() }}>
                 <ion-icon name="close-circle-outline"></ion-icon>

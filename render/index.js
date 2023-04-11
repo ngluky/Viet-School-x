@@ -240,11 +240,6 @@ function updateMessage(event, html) {
     console.log(html)
     document.querySelector('.appsetting-update-button').innerHTML = html
     if (html.indexOf('install') >= 0) {
-        // document.querySelector('.appsetting-update-button').removeEventListener()
-        // document.querySelector('.appsetting-update-button').onclick = () => {
-        //     App.downloadUpdate()
-        // }
-
         var old_element = document.querySelector('.appsetting-update-button');
         var new_element = old_element.cloneNode(true);
         new_element.onclick = () => {

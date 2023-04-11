@@ -14,29 +14,88 @@ const name2url = {
     "Ngoại ngữ": "./img/TienAnh.jpg",
     "Tin học": "./img/TinHoc.jpg",
 };
+// function Filter(props) {
+//     const data = Array.from(new Set(props.data));
+//     const onClick = props.onClick;
+
+//     const [index, setIndex] = React.useState(0)
+
+//     return (
+//         <div className="filter">
+//             <div className="filter-list-button">
+//                 <div
+//                     className={index == 0 ? "filter-button sel" : "filter-button"}
+//                     onClick={(event) => {
+//                         setIndex(0)
+//                         onClick("All");
+//                     }}
+//                 >
+//                     All
+//                 </div>
+//                 {data.map((e, i) => (
+//                     <div
+//                         key={i}
+//                         onClick={(event) => {
+//                             onClick(e)
+//                             setIndex(i + 1)
+//                         }}
+//                         className={index == (i + 1) ? "filter-button sel" : "filter-button"}
+//                     >
+//                         <span>
+//                             {e}
+//                         </span>
+//                     </div>
+//                 ))}
+//             </div>
+
+//             <div
+//                 className="slide-bar-button"
+//                 onClick={() => {
+//                     props.slideBar();
+//                 }}
+//             >
+//                 <ion-icon name="menu-outline"></ion-icon>
+//             </div>
+//         </div>
+//     );
+// }
+
 function Filter(props) {
-    const data = Array.from(new Set(props.data));
+    const arr = Array.from(new Set(props.data));
+    const [index , setIndex] = React.useState(0)
+
     const onClick = props.onClick;
+
     return (
         <div className="filter">
-            <div className="filter-list-button">
-                <div
-                    className="filter-button sel"
-                    onClick={(event) => {
-                        onClick("All", event);
-                    }}
-                >
-                    All
-                </div>
-                {data.map((e, i) => (
+            <div className="filter-search">
+                <div className="filter-list-button">
+                    <div
+                        className={index == 0 ? "filter-button sel" : "filter-button"}
+                        onClick={(event) => {
+                            setIndex(0)
+                            onClick("All");
+                        }}
+                    >
+                        <span>
+                        All
+                        </span>
+                    </div>
+                    {arr.map((e, i) => (
                     <div
                         key={i}
-                        onClick={(event) => onClick(e, event)}
-                        className="filter-button"
+                        onClick={(event) => {
+                            onClick(e)
+                            setIndex(i + 1)
+                        }}
+                        className={index == (i + 1) ? "filter-button sel" : "filter-button"}
                     >
-                        {e}
+                        <span>
+                            {e}
+                        </span>
                     </div>
                 ))}
+                </div>
             </div>
 
             <div
@@ -48,7 +107,94 @@ function Filter(props) {
                 <ion-icon name="menu-outline"></ion-icon>
             </div>
         </div>
-    );
+    )
+}
+
+function ListButton(props) {
+
+    const [onActive , setOnActive] = React.useState(false)
+    const turnOff = () => {
+        setTimeout(() => {
+            document.removeEventListener("click", turnOff)
+        }, 100)
+        setOnActive(false)
+    }
+
+    const turnOn = props.onClick || function() {
+
+        if (onActive) return
+        setTimeout(() => {
+            document.addEventListener("click", turnOff)
+        }, 100)
+        setOnActive(true)
+    }
+
+    return (
+        <div className="filter-button">
+            <div className="filter-title" onClick={turnOn}>
+                <ion-icon name={props.Icon}></ion-icon>
+                <span>{props.Text}</span>
+            </div>
+
+            {onActive && props.children ? (
+                <div className="templay">
+                    <div className="filter-conten">
+                        {props.children}
+                    </div> 
+                </div>
+            ) : ''}
+            
+
+
+        </div>
+    )
+}
+
+function Filter(props) {
+    const arrMonHoc = Array.from(new Set(props.data.map(e => e.TenMon)));
+    
+    return (
+        <div className="filter">
+
+            <div className="type-filter">
+                <ListButton Icon="book" Text="Môn">
+                    <div className="mon-view-sel">
+                        {arrMonHoc.map(e => {
+                            return <div className="mon-ops" onClick={() => {
+                                classhscp.handleFilter(e)
+                            }}>
+                                {e}
+                            </div>
+                        })}
+                    </div>
+                </ListButton>
+                <ListButton Icon="timer" Text="Thời gian">
+
+                </ListButton>
+                <ListButton Icon="list" Text="Loại phòng">
+
+                </ListButton>
+
+                <ListButton Icon="close" Text="Clear" onClick={() => {
+                    classhscp.handleFilter("All")
+                }}>
+
+                </ListButton>
+
+                <ListButton Icon="refresh" Text="refresh" onClick={() => {console.log('hello')}}>
+
+                </ListButton>
+            </div>
+            <div
+                className="slide-bar-button"
+                onClick={() => {
+                    props.slideBar();
+                }}
+            >
+                <ion-icon name="menu-outline"></ion-icon>
+            </div>
+        </div>
+    )
 }
 
 function Sub(props) {
@@ -98,7 +244,6 @@ function SlideBar(props) {
             else {
                 ele_1.classList.add('on')
             }
-
         }
         catch (e) {
             console.log(e)
@@ -209,21 +354,25 @@ function ListSub(props) {
     return (
         <React.Fragment>
             <div className="list-sub">
-                <Filter
-                    onClick={Classhscp.handleFilter}
-                    slideBar={Classhscp.handlslideBar}
-                    data={children.map((e) => e.TenMon)}
-                />
-                <div className="lis-sub-bottom">
-                    <div className="sub-view" onResize={(e) => {console.log(e);}}>
-                        {children.map((e, index) => ( <Sub key={index} data={e} onClick={Classhscp.JoinRoom} /> ))}
-                    </div>
+                <div className="list-div-left">
 
-                    <div className="slide-bar" id="listPhongSlideBar">
-                        <SlideBar />
+                    <Filter
+                        onClick={Classhscp.handleFilter}
+                        slideBar={Classhscp.handlslideBar}
+                        data={children}
+                        />
+                    <div className="lis-sub-bottom">
+                        <div className="sub-view" onResize={(e) => {console.log(e);}}>
+                            {children.map((e, index) => ( <Sub key={index} data={e} onClick={Classhscp.JoinRoom} /> ))}
+                        </div>
                     </div>
                 </div>
+                <div className="slide-bar" id="listPhongSlideBar">
+                    <SlideBar />
+                </div>
             </div>
+
+
         </React.Fragment>
     );
 }

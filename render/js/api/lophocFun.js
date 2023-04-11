@@ -11,15 +11,15 @@ const fileTypes = [
     'mp3',
 ]
 const iconFile = [
-    'img/svg/docx-8.svg',
-    'img/svg/jpg-44.svg',
-    'img/svg/zip-72.svg',
-    'img/svg/xls-19.svg',
-    'img/svg/txt-1-2.svg',
-    'img/svg/ppt-65.svg',
-    'img/svg/pdf-94.svg',
-    'img/svg/mp4-22.svg',
-    'img/svg/mp3-43.svg'
+    'svg/docx-8.svg',
+    'svg/jpg-44.svg',
+    'svg/zip-72.svg',
+    'svg/xls-19.svg',
+    'svg/txt-1-2.svg',
+    'svg/ppt-65.svg',
+    'svg/pdf-94.svg',
+    'svg/mp4-22.svg',
+    'svg/mp3-43.svg'
 ]
 
 var df_arrCauHinhPDF = {};
