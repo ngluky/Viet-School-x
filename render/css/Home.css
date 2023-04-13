@@ -450,6 +450,7 @@ body {
     transform-origin: top left;
     animation: tabShow;
     animation-duration: var(--time-animation);
+    transition: all var(--time-animation);
 }
 .mon-view-sel {
     padding: 0px 4px;
@@ -459,12 +460,26 @@ body {
     margin-top: 3px;
 }
 .mon-ops {
-    width: calc(100% - 8px);
+    width: calc(100% - 10px);
     min-width: max-content;
     border-radius: var(--border-radius);
     padding: 2px 5px;
     background: rgba(0, 0, 0, 0.2);
     border: 1px solid rgba(128, 128, 128, 0.2);
+}
+
+.sort-view-sele ion-icon {
+    font-size: 20px;
+    margin-right: 6px;
+}
+.sort-view-sele {
+    width: max-content;
+}
+
+.sort-ops {
+    display: flex;
+    align-items: center;
+    padding: 3px 5px;
 }
 
 @keyframes tabShow {

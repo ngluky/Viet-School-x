@@ -111,17 +111,26 @@ function Filter(props) {
 }
 
 function ListButton(props) {
-
+    const id = React.useId()
     const [onActive , setOnActive] = React.useState(false)
-    const turnOff = () => {
+    const turnOff = (event) => {
+        var target = $(event.target);   
+        // kiểm tra xem có phải là con của "div.filter-conten"
+        if (target.parents('div.filter-conten').length) return
+        
+        var ele = document.getElementById(id)
+        if (ele) ele.style.transform = 'scaleY(0)'
+
         setTimeout(() => {
             document.removeEventListener("click", turnOff)
         }, 100)
-        setOnActive(false)
+
+        setTimeout(() => {
+            setOnActive(false)
+        }, (parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--time-animation').replace('s' , '')) + 0.1) * 1000) 
     }
 
-    const turnOn = props.onClick || function() {
-
+    const turnOn = props.onClick || function(event) {
         if (onActive) return
         setTimeout(() => {
             document.addEventListener("click", turnOff)
@@ -138,7 +147,7 @@ function ListButton(props) {
 
             {onActive && props.children ? (
                 <div className="templay">
-                    <div className="filter-conten">
+                    <div className="filter-conten" id={id}>
                         {props.children}
                     </div> 
                 </div>
@@ -151,28 +160,44 @@ function ListButton(props) {
 }
 
 function Filter(props) {
-    const arrMonHoc = Array.from(new Set(props.data.map(e => e.TenMon)));
-    
+    const arrMonHoc = Array.from(new Set(props.data.arrListPhongHoc.map(e => e.TenMon)));
+    console.log(props.data.arrListFilterMon)
     return (
         <div className="filter">
-
             <div className="type-filter">
                 <ListButton Icon="book" Text="Môn">
                     <div className="mon-view-sel">
-                        {arrMonHoc.map(e => {
-                            return <div className="mon-ops" onClick={() => {
-                                classhscp.handleFilter(e)
+                        {arrMonHoc.map((e , index) => {
+
+                            const [onActive , setOnActive] = React.useState(props.data.arrListFilterMon.includes(e))
+
+                            return <div className="mon-ops" key={index} style={onActive ? {filter: 'brightness(1.5)', 'borderWidth': '2px'} : {}} onClick={() => {
+                                setOnActive(!onActive)
+                                classhscp.changeFilterMon(e)
                             }}>
                                 {e}
                             </div>
                         })}
                     </div>
                 </ListButton>
-                <ListButton Icon="timer" Text="Thời gian">
-
-                </ListButton>
                 <ListButton Icon="list" Text="Loại phòng">
 
+                </ListButton>
+                <ListButton Icon="funnel" Text="Sort">
+                    <div className="sort-view-sele">
+                        <div className="sort-ops">
+                            <ion-icon name="calendar-number"></ion-icon>
+                            <span>
+                                Thời gian tải lên
+                            </span>
+                        </div>
+                        <div className="sort-ops">  
+                            <ion-icon src="svg/sort-alpha-down-svgrepo-com.svg"></ion-icon>
+                            <span>
+                                Bảng chữ cái
+                            </span>
+                        </div>
+                    </div>
                 </ListButton>
 
                 <ListButton Icon="close" Text="Clear" onClick={() => {
@@ -199,7 +224,6 @@ function Filter(props) {
 
 function Sub(props) {
     const backgrounds = ["yellowgreen", "orange", "tomato"];
-
     var data = props.data;
     // console.log(data)
     var onJoinRoom = props.onClick;
@@ -350,7 +374,6 @@ function SlideBar(props) {
 
 function ListSub(props) {
     const Classhscp = props.Classhscp;
-    var children = Classhscp.arrListPhongHoc;
     return (
         <React.Fragment>
             <div className="list-sub">
@@ -359,11 +382,11 @@ function ListSub(props) {
                     <Filter
                         onClick={Classhscp.handleFilter}
                         slideBar={Classhscp.handlslideBar}
-                        data={children}
+                        data={Classhscp}
                         />
                     <div className="lis-sub-bottom">
                         <div className="sub-view" onResize={(e) => {console.log(e);}}>
-                            {children.map((e, index) => ( <Sub key={index} data={e} onClick={Classhscp.JoinRoom} /> ))}
+                            {Classhscp.arrListPhongHocView.map((e, index) => ( <Sub key={index} data={e} onClick={Classhscp.JoinRoom} /> ))}
                         </div>
                     </div>
                 </div>

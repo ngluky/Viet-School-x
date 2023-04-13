@@ -18,8 +18,8 @@ const colorTheme = {
         '--font-color': '#D2D3D7',
         '--color-button': '#5865F2',
         '--color-check': '#23A55A',
-        '--filter-thumbnail': 'grayscale(1)',
-        '--filter-img-dapan': 'invert(1)',
+        '--filter-thumbnail': 'grayscale(0)',
+        '--filter-img-dapan': 'invert(0)',
         '--background-chat': '#262524'
     },
 
@@ -81,26 +81,21 @@ function handleLogin(user, pass, remender) {
                             CookieIpc.setAll(Cookie)
                         }
                         df_ShowLoading('đăng nhập thành công, đang lấy dữ liệu từ server')
-                        connect(() => {
-                            WSGet(function (result) {
-                                df_HideLoading()
-                                var jsonResult = JSON.parse(result.Data);
+                        WSGet(function (result) {
+                            df_HideLoading()
+                            var jsonResult = JSON.parse(result.Data);
 
-                                if (jsonResult) {
-                                    User = jsonResult
-                                    classhscp = new HocSinhChonPhong();
-                                    classhscp.init();
+                            if (jsonResult) {
+                                User = jsonResult
+                                classhscp = new HocSinhChonPhong();
+                                classhscp.init();
 
-                                    classhtt = new HocTrucTuyen();
-                                    classttn = new ThiTracNghiem();
-                                }
-
-
-                            }, "Elearning.Core.Login", "CheckLogged");
-
-                        })
+                                classhtt = new HocTrucTuyen();
+                                classttn = new ThiTracNghiem();
+                            }
 
 
+                        }, "Elearning.Core.Login", "CheckLogged");
                     })
                 }
                 else if (data.get('Error') != undefined) {

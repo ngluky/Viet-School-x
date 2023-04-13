@@ -12,13 +12,32 @@ function HocSinhChonPhong() {
     this.arrCauHinhPDF = [];
     this.BaiHocs = null;
     this.root = null;
-    this.arrListPhongHoc = []
+    this.arrListPhongHoc = [];
 
+    this.arrListPhongHocView = [];
+    this.arrListFilterMon = [];
     this.handleChangePhongSel = {
         add : (e) => {
             if (this.LoaiPhongSelected.includes(e)) return this.LoaiPhongSelected.length
             var va = this.LoaiPhongSelected.push(e);
-            this.Get_DsPhongHocServer()
+            this.Get_DsPhongHocServer(() => {
+                var arrChildren = [];
+                this.arrListPhongHocView.forEach(e => {
+                    arrChildren.push(React.createElement(Sub , {
+                        data: e,
+                        onClick: this.JoinRoom
+                    }))
+                })
+
+                const newListSub = React.createElement(React.Fragment , null , ...arrChildren)
+                    
+                if (!this.root)
+                {
+                    const subContainer = document.querySelector(".sub-view")
+                    this.root = ReactDOM.createRoot(subContainer)
+                }
+                this.root.render(newListSub)
+            })
             return va;
         },
         remove : (e) => {
@@ -26,7 +45,24 @@ function HocSinhChonPhong() {
 
             if (this.LoaiPhongSelected.includes(e)) {
                 var va = this.LoaiPhongSelected.splice(this.LoaiPhongSelected.indexOf(e) , 1);
-                this.Get_DsPhongHocServer()
+                this.Get_DsPhongHocServer(() => {
+                    var arrChildren = [];
+                    this.arrListPhongHocView.forEach(e => {
+                        arrChildren.push(React.createElement(Sub , {
+                            data: e,
+                            onClick: this.JoinRoom
+                        }))
+                    })
+    
+                    const newListSub = React.createElement(React.Fragment , null , ...arrChildren)
+                        
+                    if (!this.root)
+                    {
+                        const subContainer = document.querySelector(".sub-view")
+                        this.root = ReactDOM.createRoot(subContainer)
+                    }
+                    this.root.render(newListSub)
+                })
                 return va;
             }
         },
@@ -55,7 +91,6 @@ function HocSinhChonPhong() {
         else {
             ele.classList.add('on')
         }
-
     }
 
     this.handlReSize = function(e) {
@@ -78,10 +113,6 @@ function HocSinhChonPhong() {
             ele.style.opacity = '1'
             listSub.style.width = "calc(100% - 200px)"
         }
-
-
-
-
     }
 
     this.handleFilter = (sub) => {
@@ -109,6 +140,48 @@ function HocSinhChonPhong() {
         this.root.render(newListSub)
     }
 
+    this.changeFilterMon = function (mon) {
+
+        if (this.arrListFilterMon.includes(mon)) {
+            var index = this.arrListFilterMon.indexOf(mon);
+            this.arrListFilterMon.splice(index, 1)
+        }
+        else {
+            this.arrListFilterMon.push(mon)
+        }
+
+        var copyarr = []
+        if (this.arrListFilterMon.length == 0) {
+            copyarr = this.arrListPhongHoc
+            this.arrListPhongHocView = copyarr
+        }
+        else {
+            this.arrListPhongHoc.forEach(e => {
+                if (this.arrListFilterMon.includes(e.TenMon)) 
+                    copyarr.push(e)
+            })
+            this.arrListPhongHocView = copyarr
+        }
+
+        var arrChildren = [];
+        copyarr.forEach(e => {
+            arrChildren.push(React.createElement(Sub , {
+                data: e,
+                onClick: this.JoinRoom
+            }))
+        })
+
+        const newListSub = React.createElement(React.Fragment , null , ...arrChildren)
+            
+        if (!this.root)
+        {
+            const subContainer = document.querySelector(".sub-view")
+            this.root = ReactDOM.createRoot(subContainer)
+        }
+        this.root.render(newListSub)
+
+    }
+
     this.renderInit = () => {
         checkloggin(() => {
             this.root = null
@@ -118,7 +191,7 @@ function HocSinhChonPhong() {
         })
     }
 
-    this.Get_DsPhongHocServer = () => {
+    this.Get_DsPhongHocServer = (callBack) => {
         this.arrListPhongHoc = []
         var count = this.LoaiPhongSelected.length
         this.LoaiPhongSelected.forEach(e => {
@@ -132,9 +205,8 @@ function HocSinhChonPhong() {
                 count -= 1
 
                 if (count == 0) {
-                    Root.render(React.createElement(ListSub , {
-                        Classhscp: this
-                    }))
+                    this.arrListPhongHocView = [...this.arrListPhongHoc]
+                    if (callBack) callBack();
                 }
 
             }.bind(this), this.DLL, "GetHSPhongHoc", e.toString());
@@ -152,6 +224,10 @@ function HocSinhChonPhong() {
             className: "HocSinhChonPhong",
         }))
 
-        this.Get_DsPhongHocServer();
+        this.Get_DsPhongHocServer(() => {
+            Root.render(React.createElement(ListSub , {
+                Classhscp: this
+            }))
+        });
     }
 }
