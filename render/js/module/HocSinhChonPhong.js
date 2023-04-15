@@ -21,7 +21,9 @@ function HocSinhChonPhong() {
             if (this.LoaiPhongSelected.includes(e)) return this.LoaiPhongSelected.length
             var va = this.LoaiPhongSelected.push(e);
             this.Get_DsPhongHocServer(() => {
-                this.updateViewSub(this.arrListPhongHocView)
+                Root.render(React.createElement(ListSub , {
+                    Classhscp: this
+                }))
             })
             return va;
         },
@@ -31,7 +33,9 @@ function HocSinhChonPhong() {
             if (this.LoaiPhongSelected.includes(e)) {
                 var va = this.LoaiPhongSelected.splice(this.LoaiPhongSelected.indexOf(e) , 1);
                 this.Get_DsPhongHocServer(() => {
-                    this.updateViewSub(this.arrListPhongHocView)
+                    Root.render(React.createElement(ListSub , {
+                        Classhscp: this
+                    }))
                 })
                 return va;
             }

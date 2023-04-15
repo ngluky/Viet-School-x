@@ -60,59 +60,16 @@ const name2url = {
 //     );
 // }
 
-function Filter(props) {
-    const arr = Array.from(new Set(props.data));
-    const [index , setIndex] = React.useState(0)
-
-    const onClick = props.onClick;
-
-    return (
-        <div className="filter">
-            <div className="filter-search">
-                <div className="filter-list-button">
-                    <div
-                        className={index == 0 ? "filter-button sel" : "filter-button"}
-                        onClick={(event) => {
-                            setIndex(0)
-                            onClick("All");
-                        }}
-                    >
-                        <span>
-                        All
-                        </span>
-                    </div>
-                    {arr.map((e, i) => (
-                    <div
-                        key={i}
-                        onClick={(event) => {
-                            onClick(e)
-                            setIndex(i + 1)
-                        }}
-                        className={index == (i + 1) ? "filter-button sel" : "filter-button"}
-                    >
-                        <span>
-                            {e}
-                        </span>
-                    </div>
-                ))}
-                </div>
-            </div>
-
-            <div
-                className="slide-bar-button"
-                onClick={() => {
-                    props.slideBar();
-                }}
-            >
-                <ion-icon name="menu-outline"></ion-icon>
-            </div>
-        </div>
-    )
-}
-
 function ListButton(props) {
     const id = React.useId()
     const [onActive , setOnActive] = React.useState(false)
+
+    React.useEffect(() => {
+        return (() => {
+            document.removeEventListener("click", turnOff)
+        })
+    }, [])
+
     const turnOff = (event) => {
         var target = $(event.target);   
         // kiểm tra xem có phải là con của "div.filter-conten"
@@ -161,18 +118,26 @@ function ListButton(props) {
 
 function Filter(props) {
     const arrMonHoc = Array.from(new Set(props.data.arrListPhongHoc.map(e => e.TenMon)));
-    console.log(props.data.arrListFilterMon)
+    const [onMonSele , setMonSele] = React.useState(props.data.arrListFilterMon)
     return (
         <div className="filter">
             <div className="type-filter">
                 <ListButton Icon="book" Text="Môn">
                     <div className="mon-view-sel">
                         {arrMonHoc.map((e , index) => {
-
-                            const [onActive , setOnActive] = React.useState(props.data.arrListFilterMon.includes(e))
-
-                            return <div className="mon-ops" key={index} style={onActive ? {filter: 'brightness(1.5)', 'borderWidth': '2px'} : {}} onClick={() => {
-                                setOnActive(!onActive)
+                            // console.log([...onMonSele].includes(e) , e)
+                            return <div className="mon-ops" key={index} style={[...onMonSele].includes(e) ? {filter: 'brightness(1.5)', 'borderWidth': '2px'} : {}} onClick={() => {
+                                setMonSele(arr => {
+                                    var newArr = [...arr]
+                                    if (newArr.includes(e)) {
+                                        newArr.splice(newArr.indexOf(e) , 1)
+                                    }
+                                    else {
+                                        newArr.push(e)
+                                    }
+                                    console.log(newArr)
+                                    return newArr
+                                })
                                 classhscp.changeFilterMon(e)
                             }}>
                                 {e}
@@ -374,16 +339,16 @@ function SlideBar(props) {
 
 function ListSub(props) {
     const Classhscp = props.Classhscp;
+
     return (
         <React.Fragment>
             <div className="list-sub">
                 <div className="list-div-left">
-
                     <Filter
                         onClick={Classhscp.handleFilter}
                         slideBar={Classhscp.handlslideBar}
                         data={Classhscp}
-                        />
+                    />
                     <div className="lis-sub-bottom">
                         <div className="sub-view" onResize={(e) => {console.log(e);}}>
                             {Classhscp.arrListPhongHocView.map((e, index) => ( <Sub key={index} data={e} onClick={Classhscp.JoinRoom} /> ))}
@@ -391,7 +356,7 @@ function ListSub(props) {
                     </div>
                 </div>
                 <div className="slide-bar" id="listPhongSlideBar">
-                    <SlideBar />
+                    <SlideBar/>
                 </div>
             </div>
 
