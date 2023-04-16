@@ -119,6 +119,7 @@ function ListButton(props) {
 function Filter(props) {
     const arrMonHoc = Array.from(new Set(props.data.arrListPhongHoc.map(e => e.TenMon)));
     const [onMonSele , setMonSele] = React.useState(props.data.arrListFilterMon)
+    const [proSeleSort, setProSeleSort] = React.useState(props.data.lastSort)
     return (
         <div className="filter">
             <div className="type-filter">
@@ -150,16 +151,34 @@ function Filter(props) {
                 </ListButton>
                 <ListButton Icon="funnel" Text="Sort">
                     <div className="sort-view-sele">
-                        <div className="sort-ops">
+                        <div className="sort-ops" style={"GioDay" == proSeleSort ? {filter: 'brightness(1.5)'} : {}} onClick={() => {
+                            classhscp.handleSort(classhscp.arrListPhongHocView , "GioDay" , true)
+                            setProSeleSort((e) => {
+                                if (e == "GioDay")
+                                    return ''
+                                else {
+                                    return "GioDay"
+                                }
+                            })
+                        }}>
                             <ion-icon name="calendar-number"></ion-icon>
                             <span>
                                 Thời gian tải lên
                             </span>
                         </div>
-                        <div className="sort-ops">  
+                        <div className="sort-ops" style={"TenBaiHoc" == proSeleSort ? {filter: 'brightness(1.5)'} : {}} onClick={() => {
+                            classhscp.handleSort(classhscp.arrListPhongHocView , "TenBaiHoc" , true)
+                            setProSeleSort((e) => {
+                                if (e == "TenBaiHoc")
+                                    return ''
+                                else {
+                                    return "TenBaiHoc"
+                                }
+                            })
+                        }}>  
                             <ion-icon src="svg/sort-alpha-down-svgrepo-com.svg"></ion-icon>
                             <span>
-                                Bảng chữ cái
+                                Tên bài học
                             </span>
                         </div>
                     </div>
@@ -339,7 +358,7 @@ function SlideBar(props) {
 
 function ListSub(props) {
     const Classhscp = props.Classhscp;
-
+    const arrView = Classhscp.handleSort(Classhscp.arrListPhongHocView , null)
     return (
         <React.Fragment>
             <div className="list-sub">
@@ -351,7 +370,7 @@ function ListSub(props) {
                     />
                     <div className="lis-sub-bottom">
                         <div className="sub-view" onResize={(e) => {console.log(e);}}>
-                            {Classhscp.arrListPhongHocView.map((e, index) => ( <Sub key={index} data={e} onClick={Classhscp.JoinRoom} /> ))}
+                            {arrView.map((e, index) => ( <Sub key={index} data={e} onClick={Classhscp.JoinRoom} /> ))}
                         </div>
                     </div>
                 </div>

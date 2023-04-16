@@ -154,7 +154,6 @@ function HocTrucTuyen() {
             this.rootContent = null
             this.arr_Data = []
 
-            document.removeEventListener("keydown" , classttn.keyDowEvent)
             classttn.resetFieldTracNghiem()
             clearInterval(_Ttn_Timer);
 
@@ -177,7 +176,7 @@ function HocTrucTuyen() {
             }
             this.updataRootChatTop(React.createElement(ChatSlideHeader , {data: classhtt.slideBarTabTemplay}))
             document.querySelector('div.phonghoc-chat-conter > div.phonghoc-content > div.phonghoc-content-top > div').style.display = 'none'
-            document.removeEventListener("keydown" , classttn.keyDowEvent)
+            // document.removeEventListener("keydown" , classttn.keyDowEvent)
             clearInterval(_Ttn_Timer);
             document.querySelector(".phonghoc-content-top").classList.remove('baitap')
             document.querySelector('#side-bar div.chat-top').classList.remove('baitap')
@@ -226,7 +225,6 @@ function HocTrucTuyen() {
                 classttn: classttn
             }))
 
-            document.addEventListener("keydown" , classttn.keyDowEvent)
 
             document.querySelector('div.phonghoc-chat-conter > div.phonghoc-content > div.phonghoc-content-top > div').style.display = 'block'
             // classttn.readerCauhoi()

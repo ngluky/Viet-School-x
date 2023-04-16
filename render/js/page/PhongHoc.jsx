@@ -148,6 +148,14 @@ function SideBarButton(props) {
 }
 
 function BaiTap(props) {
+
+    React.useEffect(() => {
+        document.addEventListener("keydown" , classttn.keyDowEvent)
+        return () => {
+            document.removeEventListener("keydown" , classttn.keyDowEvent)
+        }
+    }, [])
+
     return (
         <React.Fragment>
             <div className="div-cauhoi">

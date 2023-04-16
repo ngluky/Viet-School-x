@@ -16,6 +16,7 @@ function HocSinhChonPhong() {
 
     this.arrListPhongHocView = [];
     this.arrListFilterMon = [];
+    this.lastSort = ""
     this.handleChangePhongSel = {
         add : (e) => {
             if (this.LoaiPhongSelected.includes(e)) return this.LoaiPhongSelected.length
@@ -100,15 +101,33 @@ function HocSinhChonPhong() {
         this.updateViewSub(newArray)
     }
 
-    this.handleSort = function(arr , pro) {
+    this.handleSort = function(arr , pro, autuUpdate = false) {
+        var copyArr = [...arr]
+        
 
-        arr.sort((a , b) => {
-            if (a[pro] < b[pro] ) return -1
-            else if (a[pro] > b[pro]) return 1
-            else return 0
-        } )
+        if (pro != this.lastSort) {
 
-        return arr
+            if (!pro) pro = this.lastSort;
+
+            copyArr.sort((a , b) => {
+                if (a[pro] < b[pro] ) return -1
+                else if (a[pro] > b[pro]) return 1
+                else return 0
+            } )
+
+            this.lastSort = pro
+        }
+        else {
+            this.lastSort = ""
+        }
+
+        if (!autuUpdate)
+            return copyArr
+        else {
+            console.log('ok')
+            this.updateViewSub(copyArr)
+        }
+        
     }
 
     this
