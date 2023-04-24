@@ -591,6 +591,10 @@ function HocTrucTuyen() {
             var newImg = document.createElement('img')
             newImg.src = url
             newImg.className = "imgView"
+            var Average = getAverageRGB(newImg)
+            if (Average < 10 ) {
+                newImg.style.transform = "invert(1)";
+            }
             var patder = e.parentElement
             e.remove()
             patder.appendChild(newImg)

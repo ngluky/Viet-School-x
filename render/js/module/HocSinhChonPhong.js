@@ -47,7 +47,7 @@ function HocSinhChonPhong() {
         }
     }
 
-    this.ListSubChange = function(id) {
+    this.ListSubChange = (id) => {
 
         console.log(id)
 
@@ -68,11 +68,11 @@ function HocSinhChonPhong() {
         }
     }
 
-    this.handlReSize = function(e) {
+    this.handlReSize = (e) => {
         console.log(e)
     }
 
-    this.handlslideBar = function() {
+    this.handlslideBar = () => {
         const ele = document.getElementById('listPhongSlideBar');
         const listSub = document.querySelector('.list-div-left')
         if (ele.classList.contains('on')) {
@@ -90,51 +90,43 @@ function HocSinhChonPhong() {
         }
     }
 
-    this.handleFilter = (sub) => {
-        console.log(sub)
-        var newArray = this.arrListPhongHoc.filter((e) => e.TenMon == sub)
-
-        if (newArray.length == 0)
-            newArray = this.arrListPhongHoc;
-
-
-        this.updateViewSub(newArray)
+    this.clearFilterSub = () => {
+        this.arrListFilterMon = []
+        this.updateViewSub(this.arrListPhongHoc)
     }
 
-    this.handleSort = function(arr , pro, autuUpdate = false) {
-        var copyArr = [...arr]
+    this.handleSort = (arr , pro, autuUpdate = false) => {
         
-
         if (pro != this.lastSort) {
-
-            if (!pro) pro = this.lastSort;
-
-            copyArr.sort((a , b) => {
-                if (a[pro] < b[pro] ) return -1
-                else if (a[pro] > b[pro]) return 1
-                else return 0
-            } )
-
-            this.lastSort = pro
         }
         else {
             this.lastSort = ""
         }
-
-        if (!autuUpdate)
+        if (!autuUpdate) {
+            var copyArr = [...arr]
+    
+                if (!pro) pro = this.lastSort;
+    
+                copyArr.sort((a , b) => {
+                    if (a[pro] < b[pro] ) return -1
+                    else if (a[pro] > b[pro]) return 1
+                    else return 0
+                } )
+            
             return copyArr
+        }
         else {
-            console.log('ok')
+            this.lastSort = pro
             this.updateViewSub(copyArr)
         }
         
     }
 
-    this
-
-    this.changeFilterMon = function(mon) {
-
-        if (this.arrListFilterMon.includes(mon)) {
+    this.changeFilterMon = (mon , autoUpdate = false) => {
+        if (!mon) {
+            
+        }
+        else if (this.arrListFilterMon.includes(mon)) {
             var index = this.arrListFilterMon.indexOf(mon);
             this.arrListFilterMon.splice(index, 1)
         }
@@ -142,25 +134,33 @@ function HocSinhChonPhong() {
             this.arrListFilterMon.push(mon)
         }
 
-        var copyarr = []
+        var copyArr = []
         if (this.arrListFilterMon.length == 0) {
-            copyarr = this.arrListPhongHoc
-            this.arrListPhongHocView = copyarr
+            copyArr = this.arrListPhongHoc
+            this.arrListPhongHocView = copyArr
         }
         else {
             this.arrListPhongHoc.forEach(e => {
                 if (this.arrListFilterMon.includes(e.TenMon)) 
-                    copyarr.push(e)
+                    copyArr.push(e)
             })
-            this.arrListPhongHocView = copyarr
+            this.arrListPhongHocView = copyArr
         }
 
-        this.updateViewSub(copyarr)
+        if (autoUpdate)
+            this.updateViewSub(copyArr)
+        else 
+            return copyArr
     }
 
-    this.updateViewSub = function(arr) {
+    this.updateViewSub = () => {
+
+        var copyArr = [...this.arrListPhongHoc]
+        copyArr = this.changeFilterMon(null)
+        copyArr = this.handleSort(copyArr , this.lastSort , false)
+
         var arrChildren = [];
-        arr.forEach(e => {
+        copyArr.forEach(e => {
             arrChildren.push(React.createElement(Sub , {
                 data: e,
                 onClick: this.JoinRoom
@@ -190,7 +190,7 @@ function HocSinhChonPhong() {
         this.arrListPhongHoc = []
         var count = this.LoaiPhongSelected.length
         this.LoaiPhongSelected.forEach(e => {
-            WSGet(function (result) {
+            WSGet( function(result) {
                 var Data = result.Data.getTable("Data").toJson();
                 console.log(Data)
                 Data.forEach(e => {

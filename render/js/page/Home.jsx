@@ -61,7 +61,8 @@ const name2url = {
 // }
 
 function ListButton(props) {
-    const id = React.useId()
+    const contenEle = React.useRef()
+
     const [onActive , setOnActive] = React.useState(false)
 
     React.useEffect(() => {
@@ -75,7 +76,8 @@ function ListButton(props) {
         // kiểm tra xem có phải là con của "div.filter-conten"
         if (target.parents('div.filter-conten').length) return
         
-        var ele = document.getElementById(id)
+        var ele = contenEle.current
+        console.log(contenEle.current)
         if (ele) ele.style.transform = 'scaleY(0)'
 
         setTimeout(() => {
@@ -104,7 +106,7 @@ function ListButton(props) {
 
             {onActive && props.children ? (
                 <div className="templay">
-                    <div className="filter-conten" id={id}>
+                    <div className="filter-conten" ref={contenEle}>
                         {props.children}
                     </div> 
                 </div>
@@ -117,41 +119,55 @@ function ListButton(props) {
 }
 
 function Filter(props) {
+
     const arrMonHoc = Array.from(new Set(props.data.arrListPhongHoc.map(e => e.TenMon)));
     const [onMonSele , setMonSele] = React.useState(props.data.arrListFilterMon)
     const [proSeleSort, setProSeleSort] = React.useState(props.data.lastSort)
+
     return (
         <div className="filter">
             <div className="type-filter">
                 <ListButton Icon="book" Text="Môn">
                     <div className="mon-view-sel">
                         {arrMonHoc.map((e , index) => {
-                            // console.log([...onMonSele].includes(e) , e)
-                            return <div className="mon-ops" key={index} style={[...onMonSele].includes(e) ? {filter: 'brightness(1.5)', 'borderWidth': '2px'} : {}} onClick={() => {
+                            return (
+
+                            <div className="mon-ops" key={index} style={[...onMonSele].includes(e) ? {filter: 'brightness(1.5)', 'borderWidth': '2px'} : {}} onClick={() => {
                                 setMonSele(arr => {
+
                                     var newArr = [...arr]
+
+
                                     if (newArr.includes(e)) {
                                         newArr.splice(newArr.indexOf(e) , 1)
                                     }
                                     else {
                                         newArr.push(e)
                                     }
+
                                     console.log(newArr)
                                     return newArr
                                 })
-                                classhscp.changeFilterMon(e)
+                                classhscp.changeFilterMon(e , true)
                             }}>
                                 {e}
                             </div>
+                            )
+
+
                         })}
                     </div>
                 </ListButton>
-                <ListButton Icon="list" Text="Loại phòng">
 
+                <ListButton Icon="list" Text="Loại phòng">
+                    //
                 </ListButton>
+
+
                 <ListButton Icon="funnel" Text="Sort">
                     <div className="sort-view-sele">
                         <div className="sort-ops" style={"GioDay" == proSeleSort ? {filter: 'brightness(1.5)'} : {}} onClick={() => {
+
                             classhscp.handleSort(classhscp.arrListPhongHocView , "GioDay" , true)
                             setProSeleSort((e) => {
                                 if (e == "GioDay")
@@ -160,6 +176,7 @@ function Filter(props) {
                                     return "GioDay"
                                 }
                             })
+
                         }}>
                             <ion-icon name="calendar-number"></ion-icon>
                             <span>
@@ -167,6 +184,7 @@ function Filter(props) {
                             </span>
                         </div>
                         <div className="sort-ops" style={"TenBaiHoc" == proSeleSort ? {filter: 'brightness(1.5)'} : {}} onClick={() => {
+
                             classhscp.handleSort(classhscp.arrListPhongHocView , "TenBaiHoc" , true)
                             setProSeleSort((e) => {
                                 if (e == "TenBaiHoc")
@@ -175,6 +193,7 @@ function Filter(props) {
                                     return "TenBaiHoc"
                                 }
                             })
+
                         }}>  
                             <ion-icon src="svg/sort-alpha-down-svgrepo-com.svg"></ion-icon>
                             <span>
@@ -184,10 +203,12 @@ function Filter(props) {
                     </div>
                 </ListButton>
 
-                <ListButton Icon="close" Text="Clear" onClick={() => {
-                    classhscp.handleFilter("All")
-                }}>
 
+                <ListButton Icon="close" Text="Clear" onClick={() => {
+                    setMonSele([])
+                    setProSeleSort('')
+                    classhscp.clearFilterSub()
+                }}>
                 </ListButton>
 
                 <ListButton Icon="refresh" Text="refresh" onClick={() => {console.log('hello')}}>
@@ -357,6 +378,10 @@ function SlideBar(props) {
 }
 
 function ListSub(props) {
+
+    const domDivTop = React.useRef();
+
+
     const Classhscp = props.Classhscp;
     const arrView = Classhscp.handleSort(Classhscp.arrListPhongHocView , null)
     return (
@@ -369,7 +394,16 @@ function ListSub(props) {
                         data={Classhscp}
                     />
                     <div className="lis-sub-bottom">
-                        <div className="sub-view" onResize={(e) => {console.log(e);}}>
+                        <div className="div_top" ref={domDivTop}></div>
+                        <div className="sub-view" onScroll={e => {
+                                
+                                if (e.target.scrollTop == 0) {
+                                    domDivTop.current.style.opacity = 0;
+                                }
+                                else {
+                                    domDivTop.current.style.opacity = 1;
+                                }
+                            }}>
                             {arrView.map((e, index) => ( <Sub key={index} data={e} onClick={Classhscp.JoinRoom} /> ))}
                         </div>
                     </div>

@@ -727,10 +727,11 @@ function showMsg(title, msg, labelyes = null, type = "error", callback = functio
     </div>`)
 
     console.log(ele)
-
-    ele.querySelector("div.toast-button > button").addEventListener('click' , () => {
-        console.log('hello')
-    })
+    if (labelyes) {
+        ele.querySelector("div.toast-button > button").addEventListener('click' , () => {
+            console.log('hello')
+        })
+    }
 
     ele.querySelector('div.toast-close > button').addEventListener('click', () => {
         ele.style.transform = "translateX(120%)"
@@ -836,8 +837,48 @@ function isNumeric(value) {
     return /^-?\d+$/.test(value);
 }
 
-function getCssRoot() {
-    var data = `--background-main: ${getComputedStyle(document.documentElement).getPropertyValue('--background-main')};--background-content: ${getComputedStyle(document.documentElement).getPropertyValue('--background-content')};--background-slide-bar: ${getComputedStyle(document.documentElement).getPropertyValue('--background-slide-bar')};--font-color: ${getComputedStyle(document.documentElement).getPropertyValue('--font-color')};--color-button: ${getComputedStyle(document.documentElement).getPropertyValue('--color-button')};--color-check: ${getComputedStyle(document.documentElement).getPropertyValue('--color-check')};--filter-thumbnail: ${getComputedStyle(document.documentElement).getPropertyValue('--filter-thumbnail')};--filter-img-dapan: ${getComputedStyle(document.documentElement).getPropertyValue('--filter-img-dapan')};--background-chat: ${getComputedStyle(document.documentElement).getPropertyValue('--background-chat')};`
-
-    return data;
+function getAverageRGB(imgEl) {
+    
+    var blockSize = 5, // only visit every 5 pixels
+        defaultRGB = {r:0,g:0,b:0}, // for non-supporting envs
+        canvas = document.createElement('canvas'),
+        context = canvas.getContext && canvas.getContext('2d'),
+        data, width, height,
+        i = -4,
+        length,
+        rgb = {r:0,g:0,b:0},
+        count = 0;
+        
+    if (!context) {
+        return defaultRGB;
+    }
+    
+    height = canvas.height = imgEl.naturalHeight || imgEl.offsetHeight || imgEl.height;
+    width = canvas.width = imgEl.naturalWidth || imgEl.offsetWidth || imgEl.width;
+    
+    context.drawImage(imgEl, 0, 0);
+    
+    try {
+        data = context.getImageData(0, 0, width, height);
+    } catch(e) {
+        /* security error, img on diff domain */alert('x');
+        return defaultRGB;
+    }
+    
+    length = data.data.length;
+    
+    while ( (i += blockSize * 4) < length ) {
+        ++count;
+        rgb.r += data.data[i];
+        rgb.g += data.data[i+1];
+        rgb.b += data.data[i+2];
+    }
+    
+    // ~~ used to floor values
+    rgb.r = ~~(rgb.r/count);
+    rgb.g = ~~(rgb.g/count);
+    rgb.b = ~~(rgb.b/count);
+    
+    return (rgb.r + rgb.g + rgb.b) / 3 ;
+    
 }

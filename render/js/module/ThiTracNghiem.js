@@ -805,23 +805,20 @@ function ThiTracNghiem() {
 
 
         document.querySelector('div.cauhoi > span.stt').innerHTML = `Câu ${index + 1}: `
-        // var cauhoi = cau.cauhoi;
-        
-        // const minwWI = cauhoi.indexOf('min-width')
-        // const closeWI = cauhoi.indexOf(';' , minwWI) + 1
-
-        // cauhoi = cauhoi.replace(cauhoi.substring(minwWI , closeWI) , '')
-
-        // const minwHI = cauhoi.indexOf('min-width')
-        // const closeHI = cauhoi.indexOf(';' , minwWI)
-
-
-
         document.getElementById('noidungcauhoi').innerHTML = cau.cauhoi;
         document.getElementById('noidung-da-A').innerHTML = cau.dapan[0].noidung
         document.getElementById('noidung-da-B').innerHTML = cau.dapan[1].noidung
         document.getElementById('noidung-da-C').innerHTML = cau.dapan[2].noidung
         document.getElementById('noidung-da-D').innerHTML = cau.dapan[3].noidung
+
+
+        document.querySelectorAll('.div-cauhoi img').forEach(e => {
+            var rgbArg = getAverageRGB(e);
+            if (rgbArg < 10) {
+                e.style.filter = "invert(1)"
+            }
+        })
+
     }
 
 

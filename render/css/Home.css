@@ -155,13 +155,27 @@ body {
     height: calc(100% - 36px);
     padding-bottom: 6px;
     overflow: hidden;
+    position: relative;
+    padding: 0 6px;
+}
+
+.list-sub .div_top {
+    opacity: 0;
+    transition: all var(--time-animation);
+    background: linear-gradient(var(--background-main),var(--background-main), transparent );
+    position: absolute;
+    width: 100%;
+    z-index: 10;
+    top: 0;
+    left: 0;
+    height: 10px;
 }
 
 .list-sub .sub-view {
     width: 100%;
     /* background-color: var(--background-content); */
     border-radius: var(--border-radius);
-
+    /* position: relative; */
     display: grid;
     overflow-y: auto;
     height: 100%;
@@ -175,10 +189,10 @@ body {
     position: relative;
     height: fit-content;
     padding-bottom: 5px;
-    background: var(--background-content);
-    border-radius: var(--border-radius);
-    box-shadow: var(--box-shadow);
-    margin: 6px;
+    /* background: var(--background-content); */
+    /* border-radius: var(--border-radius); */
+    /* box-shadow: var(--box-shadow); */
+    margin: 1px;
 }
 
 .sub .sub-sta {
@@ -266,15 +280,21 @@ body {
     height: calc(100% - 30px);
 }
 
+.slide-bar-connet .slide-bar-bottom {
+    background: var(--background-content);
+    border-radius: var(--border-radius);
+}
+
 .slide-bar-connet .slide-bar-bottom .slide-bar-li {
     cursor: pointer;
 }
 
 .slide-bar-connet {
+    font-family: Tahoma;
+    overflow: hidden;
     margin: 0px 0px 6px 0px;
     border-radius: var(--border-radius);
-
-    background: var(--background-slide-bar);
+    /* background: var(--background-slide-bar); */
     width: calc(100% - 6px);
     height: calc(100% - 6px);
 }
@@ -292,14 +312,14 @@ body {
     color: white;
 }
 
-
-.slide-bar-connet {
-    font-family: Tahoma;
-    overflow: hidden;
-}
-
 .slide-bar-li {
     transition: var(--time-animation);
+    background: var(--background-content);
+    border-radius: var(--border-radius);
+}
+
+.slide-bar-li + .slide-bar-li {
+    margin-top: 6px;
 }
 
 .slide-bar-li p {
@@ -336,9 +356,8 @@ body {
     height: 0px;
     opacity: 0;
     margin: 0px 3px 0px 3px;
+    padding-bottom: 3px;
     border-radius: var(--border-radius);
-
-    background: rgba(0, 0, 0, 0.1);
     overflow: hidden;
 }
 
