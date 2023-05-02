@@ -1,12 +1,13 @@
-const { app, BrowserWindow, ipcMain, dialog, shell } = require('electron')
+const { app, BrowserWindow, ipcMain, dialog, shell, Menu, Tray, session } = require('electron')
 const { autoUpdater, AppUpdater } = require("electron-updater");
 const { download } = require("electron-dl")
 
+const os = require('os')
 const path = require('path');
 const fs = require('fs');
 const url = require('url');
 const { start } = require('repl');
-const updater = require('update-electron-app');
+const { request } = require('http');
 
 const pathAppLocal = path.join(app.getPath('home'), "AppData/Local/LopHocApp");
 
@@ -21,7 +22,8 @@ var Setting = {
     "path": null,
     "version": null,
     "lastVersion": null,
-    "autoUpdate": false
+    "autoUpdate": false,
+    "runBackground": false
 }
 
 // get setting and cooke
@@ -81,51 +83,6 @@ const createWindow = () => {
         },
     })
 
-    // window_ipc ============================
-    ipcMain.on("closeApp", () => {
-
-        if (Cookie.Remenber) {
-            const strCooke = JSON.stringify(Cookie);
-            fs.writeFileSync(pathAppLocal + '/cookie.json', strCooke);
-        }
-        else {
-            const strCooke = JSON.stringify({});
-            fs.writeFileSync(pathAppLocal + '/cookie.json', strCooke);
-        }
-
-        fs.writeFileSync(pathAppLocal + '/setting.json', JSON.stringify(Setting))
-
-        win.close()
-        app.exit()
-    })
-
-    ipcMain.on("minimizeApp", () => {
-        win.minimize()
-    })
-
-    // dow handl ===============================
-    // infor 
-    // {
-    //     url: "URL is here",
-    //     properties: {directory: "Directory is here"}
-    // }
-    ipcMain.on("download", (event, { id, info }) => {
-        console.log(id, info)
-        info.properties.onProgress = status => {
-            win.webContents.send("download progress", {
-                id: id,
-                status: status
-            })
-        };
-        download(BrowserWindow.getFocusedWindow(), info.url, info.properties)
-            .then(dl => {
-                win.webContents.send("download complete", id)
-            });
-
-    })
-
-    ipcInit()
-
     // win.loadFile('./render/index.html')
     win.loadURL(url.format({
         pathname: path.join(__dirname, './render/index.html'),
@@ -133,35 +90,31 @@ const createWindow = () => {
         slashes: true
     }))
 
-    const ws = win.webContents
-
-    ipcMain.handle("export", async (sender, path) => {
-        // console.log(path)
-        await ws.capturePage().then(image => {
-            fs.writeFileSync(path, image.toPNG(), (err) => { if (err) return false })
-        })
-
-        return true
-    })
-
-    ipcMain.handle("showOpenDialog", async (sender) => {
-        const { canceled, filePaths } = await dialog.showOpenDialog(win, {
-            properties: [ 'openDirectory' ]
-        })
-
-        if (canceled) {
-            return
-        } else {
-            return filePaths[ 0 ]
-        }
-    })
-
-
 }
 
+let tray = null
 app.whenReady().then(() => {
+    tray = new Tray(path.join(__dirname, './build/icon.png'))
+    const contextMenu = Menu.buildFromTemplate([
+        {label: "check Update" , type:"normal" , click: () => {
 
+        }},
+        {label:"Exit" , click: () => {
+            app.quit()
+        }}
+    ])
+
+
+    tray.on('click' , (e) => {
+        if (!BrowserWindow.getAllWindows().length) {
+            createWindow()
+        }
+    })
+    tray.setToolTip('This is my application.')
+    tray.setContextMenu(contextMenu)
     createWindow()
+
+    ipcInit()
 
     app.on('activate', () => {
         if (BrowserWindow.getAllWindows().length === 0) createWindow()
@@ -193,10 +146,80 @@ autoUpdater.on("error", (info) => {
 //================================================================
 
 app.on('window-all-closed', () => {
-    if (process.platform !== 'darwin') app.quit()
+    console.log('all window closed')
 })
 
 function ipcInit() {
+
+    const ws = win.webContents
+    
+    ipcMain.handle("export", async (sender, path) => {
+        // console.log(path)
+        await ws.capturePage().then(image => {
+            fs.writeFileSync(path, image.toPNG(), (err) => { if (err) return false })
+        })
+
+        return true
+    })
+
+    ipcMain.handle("showOpenDialog", async (sender) => {
+        const { canceled, filePaths } = await dialog.showOpenDialog(win, {
+            properties: [ 'openDirectory' ]
+        })
+
+        if (canceled) {
+            return
+        } else {
+            return filePaths[ 0 ]
+        }
+    })
+
+
+    // window_ipc ============================
+    ipcMain.on("closeApp", () => {
+
+        if (Cookie.Remenber) {
+            const strCooke = JSON.stringify(Cookie);
+            fs.writeFileSync(pathAppLocal + '/cookie.json', strCooke);
+        }
+        else {
+            const strCooke = JSON.stringify({});
+            fs.writeFileSync(pathAppLocal + '/cookie.json', strCooke);
+        }
+
+        fs.writeFileSync(pathAppLocal + '/setting.json', JSON.stringify(Setting))
+        win.close()
+        console.log(Setting.runBackground)
+        if (!Setting.runBackground) {
+            app.quit()
+        }
+
+    })
+
+    ipcMain.on("minimizeApp", () => {
+        win.minimize()
+    })
+
+    // dow handl ===============================
+    // infor 
+    // {
+    //     url: "URL is here",
+    //     properties: {directory: "Directory is here"}
+    // }
+    ipcMain.on("download", (event, { id, info }) => {
+        console.log(id, info)
+        info.properties.onProgress = status => {
+            win.webContents.send("download progress", {
+                id: id,
+                status: status
+            })
+        };
+        download(BrowserWindow.getFocusedWindow(), info.url, info.properties)
+            .then(dl => {
+                win.webContents.send("download complete", id)
+            });
+
+    })
 
     ipcMain.on('checkUpdate', (sender) => {
         win.webContents.send("updateMessage", '<div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>')

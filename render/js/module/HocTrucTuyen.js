@@ -182,9 +182,7 @@ function HocTrucTuyen() {
             document.querySelector('#side-bar div.chat-top').classList.remove('baitap')
             this.updateRootContent(React.createElement(BaiHoc))
             setTimeout(() => {
-                this.setContent(
-                    this.arr_Data_BaiHoc.NoiDungBaiHoc
-                )
+                this.setContent(this.arr_Data_BaiHoc.NoiDungBaiHoc)
             }, 10)
 
         },
@@ -583,6 +581,21 @@ function HocTrucTuyen() {
                 parent.removeChild(e)
                 parent.appendChild(divFileView)
             }
+
+            else {
+                var newTagA = document.createElement('div')
+                newTagA.className="div_tag_a"
+                newTagA.textContent = e.textContent
+                newTagA.onclick = () => {
+                    App.openLink(e.href)
+                }
+                const parent = $(e).closest( "p" )[0];
+                console.log(parent)
+                if (parent) {
+                    parent.innerHTML = ''
+                    parent.appendChild(newTagA)
+                }
+            }
         })
 
         var allImgEle = ele.querySelectorAll("img")
@@ -681,6 +694,8 @@ function HocTrucTuyen() {
     this.setContent = (data) => {
         var count = document.getElementById("noidungbaihoc").innerHTML = ''
         document.getElementById("noidungbaihoc").appendChild(data)
+        document.getElementById("noidungbaihoc")
+
     }
 
     this.send = function(str)  {

@@ -1,6 +1,5 @@
 
 var temlaySeting = [
-
     {
         name: "Application",
         iconName: 'laptop',
@@ -18,9 +17,10 @@ var temlaySeting = [
                             button: {
                                 type: 'switch',
                                 label: null,
-                                isCheck: true,
-                                active: (event) => {
-                                    console.log(event)
+                                isCheck: () => Setting.autoUpdate || false,
+                                active: (isCheck) => {
+                                    Setting.autoUpdate = isCheck
+                                    SettingIpc.set("autoUpdate" , isCheck)
                                 }
                             },
                         },
@@ -45,6 +45,20 @@ var temlaySeting = [
                                 isCheck: false,
                                 active: (event) => {
                                     console.log(event)
+                                }
+                            }
+                        },
+                        {
+                            title: "Run in background",
+                            description: "Kep app run where window close",
+                            button: {
+                                type: 'switch',
+                                label: null,
+                                isCheck: () => Setting.runBackground || false,
+                                active: (isCheck) => {
+                                    console.log(isCheck)
+                                    Setting.runBackground = isCheck
+                                    SettingIpc.set("runBackground" , isCheck)
                                 }
                             }
                         },

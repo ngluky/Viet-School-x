@@ -2,7 +2,6 @@ function HocSinhChonPhong() {
     this.DLL = "Elearning.Core.Learning";
     this._Counter = 0;
     this._ButtonCooldownInterval;
-    this.LoaiPhongSelected = [0];//1: Chưa bắt đầu, 2: Da ket thuc, 0 đang diễn ra, 3: phòng cũ
     this.LopID_Selected;
     this.fgDsPhong = null;
     this.cookieDSPH = [0, 0, 0, 0];
@@ -13,38 +12,13 @@ function HocSinhChonPhong() {
     this.BaiHocs = null;
     this.root = null;
     this.arrListPhongHoc = [];
-
+    
+    this.LoaiPhongSelected = [0];//1: Chưa bắt đầu, 2: Da ket thuc, 0 đang diễn ra, 3: phòng cũ
     this.arrListPhongHocView = [];
-    this.arrListFilterMon = [];
-    this.lastSort = ""
-    this.handleChangePhongSel = {
-        add : (e) => {
-            if (this.LoaiPhongSelected.includes(e)) return this.LoaiPhongSelected.length
-            var va = this.LoaiPhongSelected.push(e);
-            this.Get_DsPhongHocServer(() => {
-                Root.render(React.createElement(ListSub , {
-                    Classhscp: this
-                }))
-            })
-            return va;
-        },
-        remove : (e) => {
-            if (this.LoaiPhongSelected.length == 1) return
-
-            if (this.LoaiPhongSelected.includes(e)) {
-                var va = this.LoaiPhongSelected.splice(this.LoaiPhongSelected.indexOf(e) , 1);
-                this.Get_DsPhongHocServer(() => {
-                    Root.render(React.createElement(ListSub , {
-                        Classhscp: this
-                    }))
-                })
-                return va;
-            }
-        },
-
-        contains : (e) => {
-            return this.LoaiPhongSelected.includes(e);
-        }
+    this.arrFilterMonS = [];
+    this.cursorSort = ""
+    this.setLoaiPhongSelected = (data) => {
+        this.LoaiPhongSelected = data
     }
 
     this.ListSubChange = (id) => {
@@ -90,74 +64,57 @@ function HocSinhChonPhong() {
         }
     }
 
-    this.clearFilterSub = () => {
-        this.arrListFilterMon = []
-        this.updateViewSub(this.arrListPhongHoc)
+    this.clearFilter = () => {
+
+    }  
+
+    this.setCursorSort = (mon) => {
+        console.log(mon)
+        this.cursorSort = mon
     }
 
-    this.handleSort = (arr , pro, autuUpdate = false) => {
-        
-        if (pro != this.lastSort) {
+    this.handleSort = () => {
+        console.log('update')
+        var copyListPhongHoc = []
+        if (this.arrFilterMonS.length == 0) {
+            copyListPhongHoc = [...this.arrListPhongHoc]
         }
         else {
-            this.lastSort = ""
+            this.arrListPhongHoc.forEach((e) => {
+                if (this.arrFilterMonS.includes(e.TenMon)) {
+                    copyListPhongHoc.push(e)
+                }
+            })
         }
-        if (!autuUpdate) {
-            var copyArr = [...arr]
-    
-                if (!pro) pro = this.lastSort;
-    
-                copyArr.sort((a , b) => {
-                    if (a[pro] < b[pro] ) return -1
-                    else if (a[pro] > b[pro]) return 1
-                    else return 0
-                } )
-            
-            return copyArr
+        if (this.cursorSort != '') {
+            copyListPhongHoc.sort((a , b) => {
+                if (a[this.cursorSort] < b[this.cursorSort] ) return -1
+                else if (a[this.cursorSort] > b[this.cursorSort]) return 1
+                else return 0
+            } )
         }
-        else {
-            this.lastSort = pro
-            this.updateViewSub(copyArr)
-        }
-        
+
+        return copyListPhongHoc
     }
 
-    this.changeFilterMon = (mon , autoUpdate = false) => {
+    this.changeFilterMon = (mon) => {
         if (!mon) {
             
         }
-        else if (this.arrListFilterMon.includes(mon)) {
-            var index = this.arrListFilterMon.indexOf(mon);
-            this.arrListFilterMon.splice(index, 1)
+        else if (this.arrFilterMonS.includes(mon)) {
+            var index = this.arrFilterMonS.indexOf(mon);
+            this.arrFilterMonS.splice(index, 1)
         }
         else {
-            this.arrListFilterMon.push(mon)
+            this.arrFilterMonS.push(mon)
         }
-
-        var copyArr = []
-        if (this.arrListFilterMon.length == 0) {
-            copyArr = this.arrListPhongHoc
-            this.arrListPhongHocView = copyArr
-        }
-        else {
-            this.arrListPhongHoc.forEach(e => {
-                if (this.arrListFilterMon.includes(e.TenMon)) 
-                    copyArr.push(e)
-            })
-            this.arrListPhongHocView = copyArr
-        }
-
-        if (autoUpdate)
-            this.updateViewSub(copyArr)
-        else 
-            return copyArr
     }
 
     this.updateViewSub = () => {
 
         var copyArr = [...this.arrListPhongHoc]
         copyArr = this.changeFilterMon(null)
-        copyArr = this.handleSort(copyArr , this.lastSort , false)
+        copyArr = this.handleSort(copyArr , this.cursorSort , false)
 
         var arrChildren = [];
         copyArr.forEach(e => {
@@ -188,20 +145,19 @@ function HocSinhChonPhong() {
 
     this.Get_DsPhongHocServer = (callBack) => {
         this.arrListPhongHoc = []
+        var dataReq = []
         var count = this.LoaiPhongSelected.length
         this.LoaiPhongSelected.forEach(e => {
             WSGet( function(result) {
                 var Data = result.Data.getTable("Data").toJson();
-                console.log(Data)
-                Data.forEach(e => {
-                    this.arrListPhongHoc.push(e)
-                })
+
+                dataReq = [...dataReq , ...Data]
 
                 count -= 1
 
                 if (count == 0) {
-                    this.arrListPhongHocView = [...this.arrListPhongHoc]
-                    if (callBack) callBack();
+                    this.arrListPhongHoc = dataReq
+                    if (callBack) callBack(dataReq);
                 }
 
             }.bind(this), this.DLL, "GetHSPhongHoc", e.toString());
@@ -215,14 +171,8 @@ function HocSinhChonPhong() {
     }
 
     this.init = () => {
-        Root.render(React.createElement('div' , {
-            className: "HocSinhChonPhong",
+        Root.render(React.createElement(ListSub , {
+            Classhscp: this
         }))
-
-        this.Get_DsPhongHocServer(() => {
-            Root.render(React.createElement(ListSub , {
-                Classhscp: this
-            }))
-        });
     }
 }

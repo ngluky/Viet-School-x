@@ -90,7 +90,10 @@ body {
     transition: all var(--time-animation);
     background: transparent;
     border-radius: var(--border-radius);
+}
 
+.list-sub .sub:hover .sub-save {
+    display: block;
 }
 
 .sub-save:hover > ion-icon { 
@@ -101,6 +104,7 @@ body {
 
 }
 .sub-save {
+    display: none;
     height: 20px;
     width: 20px;
     font-size: 20px;
@@ -141,6 +145,14 @@ body {
     display: flex;
 }
 
+.Loading-screen {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 .list-div-left {
     /* margin: 0px 6px 6px; */
     transition: var(--time-animation);
@@ -176,8 +188,9 @@ body {
     /* background-color: var(--background-content); */
     border-radius: var(--border-radius);
     /* position: relative; */
+    padding: 3px 3px 0 3px;
     display: grid;
-    overflow-y: auto;
+    overflow-y: overlay;
     height: 100%;
     grid-template-columns: 1fr 1fr 1fr 1fr;
     flex-wrap: wrap;
@@ -342,8 +355,11 @@ body {
     background: yellowgreen;
 }
 
+.slide-bar-li li:hover p {
+    color: #000;
+}
 .slide-bar-li li:hover {
-    background: rgb(132, 175, 45);
+    background: yellowgreen;
 }
 
 .slide-bar-li > .slide-bar-li-title > ion-icon {
@@ -359,11 +375,16 @@ body {
     padding-bottom: 3px;
     border-radius: var(--border-radius);
     overflow: hidden;
+    transition: all var(--time-animation);
+}
+
+.slide-bar-li-chill li.on p {
+    color: #000;
 }
 
 .slide-bar-li > .slide-bar-li-chill.on {
-    height: fit-content;
     opacity: 1;
+    transition: all var(--time-animation);
 }
 
 .slide-bar-li > .slide-bar-li-title {
@@ -428,23 +449,35 @@ body {
 .filter-button ion-icon {
     font-size: 17px;
 }
+
+
 .filter-button {
-    height: calc(100% - 5px);
+    height: calc(100% - 6px);
     width: max-content;
+    min-width: 80px;
     margin-left: 5px;
     border-radius: var(--border-radius);
     display: flex;
     justify-content: center;
-    background: var(--background-slide-bar);
-    box-shadow: var(--box-shadow);
+    background: rgba(0, 0, 0, 0.5);
     position: relative;
 }
+
+.filter-title:hover {
+    background: yellowgreen;
+}
+
+.filter-title:hover span,.filter-title:hover ion-icon {
+    color: #000;
+}
+
 
 .filter-button .filter-title span {
     margin-left: 5px;
 }
 .filter-button .filter-title {
-    padding: 0px 8px;
+    border-radius: var(--border-radius);
+    padding: 0px 5px;
     height: 100%;
     width: 100%;
     display: flex;
@@ -463,7 +496,7 @@ body {
 .filter-conten {
     display: flex;
     background: var(--background-slide-bar);
-    box-shadow: var(--box-shadow);
+    /* box-shadow: var(--box-shadow); */
     padding: 5px;
     border-radius: var(--border-radius);
     transform-origin: top left;
@@ -472,17 +505,24 @@ body {
     transition: all var(--time-animation);
 }
 .mon-view-sel {
-    padding: 0px 4px;
+    padding: 0 0 3px 0;
+
 }
 
 .mon-ops + .mon-ops {
     margin-top: 3px;
 }
+
 .mon-ops {
     width: calc(100% - 10px);
     min-width: max-content;
     border-radius: var(--border-radius);
     padding: 2px 5px;
+}
+
+.mon-ops:hover {
+    background: yellowgreen;
+    color: #000;
 }
 
 .sort-view-sele ion-icon {
@@ -493,10 +533,31 @@ body {
     width: max-content;
 }
 
+.sort-ops:hover p,.sort-ops:hover ion-icon {
+    color: #000;
+}
+
+.sort-ops:hover {
+    background: yellowgreen;
+}
+
+.sort-ops.on p,.sort-ops.on ion-icon {
+    color: #000;
+}
+
+.sort-ops.on {
+    background: yellowgreen;
+}
+
 .sort-ops {
     display: flex;
+    border-radius: var(--border-radius);
     align-items: center;
     padding: 3px 5px;
+}
+
+.sort-ops + .sort-ops {
+    margin-top: 3px;
 }
 
 @keyframes tabShow {

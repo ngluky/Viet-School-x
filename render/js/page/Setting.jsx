@@ -1,52 +1,30 @@
 
-class SwitchButton extends React.Component {
-
-    componentDidMount() {
-        var ele = document.getElementById(this.id)
-        ele.checked = this.props.isCheck
+function SwitchButton({
+    labelOn = '',
+    labelOff = '',
+    label = '',
+    onClick = () => { },
+    isCheck = false
+}) {
+    if (isFunction(isCheck)) {
+        isCheck = isCheck()
     }
+    const [check, setCheck] = React.useState(isCheck)
+    
+    const id = React.useId()
 
-    render() {
-
-        var {
-            labelOn = '',
-            labelOff = '',
-            label = '',
-            onClick = () => { },
-            isCheck = false
-        } = this.props;
-
-        this.id = makeid(10);
-        return (
-            <div className="switchbutton" >
-                <input type="checkbox" className="switchbutton-input" id={this.id} onChange={onClick} />
-                <label htmlFor={this.id}>{label}</label>
-                <p>{labelOff}</p>
-                <p>{labelOn}</p>
-            </div>
-        )
-    }
+    return (
+        <div className="switchbutton" >
+            <input type="checkbox" id={id} className="switchbutton-input" checked={check} onChange={(e) => {
+                onClick(!check)
+                setCheck((j) => !j)
+            }} />
+            <label htmlFor={id}>{label}</label>
+            <p>{labelOff}</p>
+            <p>{labelOn}</p>
+        </div>
+    )
 }
-
-// function SwitchButton({
-//     labelOn = '',
-//     labelOff = '',
-//     label = '',
-//     onClick = () => { },
-//     isCheck = false
-// }) {
-
-//     const id = makeid(10);
-
-//     return (
-//         <div className="switchbutton" >
-//             <input type="checkbox" className="switchbutton-input" id={id} onChange={onClick} />
-//             <label htmlFor={id}>{label}</label>
-//             <p>{labelOff}</p>
-//             <p>{labelOn}</p>
-//         </div>
-//     )
-// }
 
 function ContentSetting(props) {
     return (

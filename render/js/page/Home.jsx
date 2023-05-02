@@ -77,7 +77,6 @@ function ListButton(props) {
         if (target.parents('div.filter-conten').length) return
         
         var ele = contenEle.current
-        console.log(contenEle.current)
         if (ele) ele.style.transform = 'scaleY(0)'
 
         setTimeout(() => {
@@ -121,7 +120,7 @@ function ListButton(props) {
 function Filter(props) {
 
     const arrMonHoc = Array.from(new Set(props.data.arrListPhongHoc.map(e => e.TenMon)));
-    const [onMonSele , setMonSele] = React.useState(props.data.arrListFilterMon)
+    const [onMonSele, setMonSele] = React.useState(props.data.arrFilterMonS)
     const [proSeleSort, setProSeleSort] = React.useState(props.data.lastSort)
 
     return (
@@ -129,29 +128,27 @@ function Filter(props) {
             <div className="type-filter">
                 <ListButton Icon="book" Text="Môn">
                     <div className="mon-view-sel">
-                        {arrMonHoc.map((e , index) => {
+                        {arrMonHoc.map((e, index) => {
                             return (
 
-                            <div className="mon-ops" key={index} style={[...onMonSele].includes(e) ? {filter: 'brightness(1.5)', 'borderWidth': '2px'} : {}} onClick={() => {
-                                setMonSele(arr => {
+                                <div className="mon-ops" key={index} style={[...onMonSele].includes(e) ? { background: 'yellowgreen', color: '#000' } : {}} onClick={() => {
+                                    setMonSele(arr => {
+                                        var newArr = [...arr]
+                                        if (newArr.includes(e)) {
+                                            newArr.splice(newArr.indexOf(e), 1)
+                                        }
+                                        else {
+                                            newArr.push(e)
+                                        }
 
-                                    var newArr = [...arr]
-
-
-                                    if (newArr.includes(e)) {
-                                        newArr.splice(newArr.indexOf(e) , 1)
-                                    }
-                                    else {
-                                        newArr.push(e)
-                                    }
-
-                                    console.log(newArr)
-                                    return newArr
-                                })
-                                classhscp.changeFilterMon(e , true)
-                            }}>
-                                {e}
-                            </div>
+                                        console.log(newArr)
+                                        return newArr
+                                    })
+                                    classhscp.changeFilterMon(e)
+                                    props.update()
+                                }}>
+                                    {e}
+                                </div>
                             )
 
 
@@ -166,39 +163,41 @@ function Filter(props) {
 
                 <ListButton Icon="funnel" Text="Sort">
                     <div className="sort-view-sele">
-                        <div className="sort-ops" style={"GioDay" == proSeleSort ? {filter: 'brightness(1.5)'} : {}} onClick={() => {
-
-                            classhscp.handleSort(classhscp.arrListPhongHocView , "GioDay" , true)
-                            setProSeleSort((e) => {
-                                if (e == "GioDay")
-                                    return ''
-                                else {
-                                    return "GioDay"
-                                }
-                            })
+                        <div className={"GioDay" == proSeleSort ? "sort-ops on" : "sort-ops"} onClick={() => {
+                            var current = ''
+                            if (proSeleSort == "GioDay"){
+                                current = ''
+                            }
+                            else {
+                                current = "GioDay"
+                            }
+                            classhscp.setCursorSort(current)
+                            props.update()
+                            setProSeleSort(current)
 
                         }}>
                             <ion-icon name="calendar-number"></ion-icon>
-                            <span>
+                            <p>
                                 Thời gian tải lên
-                            </span>
+                            </p>
                         </div>
-                        <div className="sort-ops" style={"TenBaiHoc" == proSeleSort ? {filter: 'brightness(1.5)'} : {}} onClick={() => {
-
-                            classhscp.handleSort(classhscp.arrListPhongHocView , "TenBaiHoc" , true)
-                            setProSeleSort((e) => {
-                                if (e == "TenBaiHoc")
-                                    return ''
-                                else {
-                                    return "TenBaiHoc"
-                                }
-                            })
-
-                        }}>  
+                        <div className={"TenBaiHoc" == proSeleSort ? "sort-ops on" : "sort-ops"} onClick={() => {
+                            var current = ''
+                            if (proSeleSort == "TenBaiHoc"){
+                                current = ''
+                            }
+                            else {
+                                current = "TenBaiHoc"
+                            }
+                            
+                            classhscp.setCursorSort(current)
+                            props.update()
+                            setProSeleSort(current)
+                        }}>
                             <ion-icon src="svg/sort-alpha-down-svgrepo-com.svg"></ion-icon>
-                            <span>
+                            <p>
                                 Tên bài học
-                            </span>
+                            </p>
                         </div>
                     </div>
                 </ListButton>
@@ -211,7 +210,7 @@ function Filter(props) {
                 }}>
                 </ListButton>
 
-                <ListButton Icon="refresh" Text="refresh" onClick={() => {console.log('hello')}}>
+                <ListButton Icon="refresh" Text="refresh" onClick={() => { console.log('hello') }}>
 
                 </ListButton>
             </div>
@@ -255,101 +254,96 @@ function Sub(props) {
     );
 }
 
+
+function TabSlideBar({title , iconName, iconScr, children}) {
+
+    const [active, SetActive] = React.useState(false);
+    // console.log(children)
+    return (
+        <div className="slide-bar-li">
+            <div className="slide-bar-li-title" onClick={() => {
+                SetActive((e) => !e);
+            }}>
+                <ion-icon {...(iconName ? {"name" : iconName}: {src: iconScr})}></ion-icon>
+                <p>{title}</p>
+                <div className="slide-bar-end">
+                    <ion-icon name="caret-down"></ion-icon>
+                </div>
+            </div>
+
+            <div className="slide-bar-li-chill" style={!active? {height: '0px', opacity: 0}: {height: `${children.length *  25 + 3}px`,opacity: 1 }}>
+                {children}
+            </div>
+        </div>
+    )
+}
+
 function SlideBar(props) {
 
-    const tabOnOff = (e) => {
-        const ele = e.target;
-        
-        var par = ele.parentElement;
-        try {
-            while (!par.classList.contains('slide-bar-li')) {
-                var par = par.parentElement;
-            }
+    const [theme, setThemeState] = React.useState(Setting.theme)
 
-            var ele_1 = par.querySelector(".slide-bar-li-chill")
-            if (ele_1.classList.contains('on')) {
-                ele_1.classList.remove('on')
-            }
-            else {
-                ele_1.classList.add('on')
-            }
+    // const []
+    var loaiPhongSele = props.loaiPhongSele
+    const setLoaiPhongSele = props.handelSetLoaiPhongSele
+    console.log(loaiPhongSele)
+    const handelSetLoaiPhongSele = (id) => {
+
+        var newData = [...loaiPhongSele]
+        if (newData.includes(id)) {
+            if (newData.length == 1) return newData
+            newData.splice(newData.indexOf(newData) , 1);
+            classhscp.setLoaiPhongSelected(newData)
+            setLoaiPhongSele(newData)
         }
-        catch (e) {
-            console.log(e)
+
+        else {
+            classhscp.setLoaiPhongSelected([...newData , id])
+            setLoaiPhongSele([...newData , id])
         }
     }
 
     return (
         <div className="slide-bar-connet">
             <div className="slide-bar-top">
-                <div className="slide-bar-li">
-                    <div className="slide-bar-li-title" onClick={tabOnOff}>
-                        <ion-icon name="home"></ion-icon>
-                        <p>Phòng học</p>
-                        <div className="slide-bar-end">
-                            <ion-icon name="caret-down"></ion-icon>
-                        </div>
-                    </div>
 
-                    <div className="slide-bar-li-chill">
-                        <li className={classhscp.handleChangePhongSel.contains(0) ? 'on' : ''} onClick={() => {
-                            classhscp.ListSubChange(0)
-                        }}>
-                            <p>Đang diễn ra</p>
-                        </li>
-                        <li className={classhscp.handleChangePhongSel.contains(1) ? 'on' : ''} onClick={() => {
-                            classhscp.ListSubChange(1)
-                        }}>
-                            <p>Chưa bắt đầu</p>
-                        </li>
-                        <li className={classhscp.handleChangePhongSel.contains(2) ? 'on' : ''} onClick={() => {
-                            classhscp.ListSubChange(2)
-                        }}>
-                            <p>Đã kết thúc</p>
-                        </li>
-                    </div>
-                </div>
+                <TabSlideBar title="Phòng học" iconName="home">
+                    <li className={loaiPhongSele.includes(0) ? 'on' : ''} onClick={() => {
+                        handelSetLoaiPhongSele(0)
+                    }}>
+                        <p>Đang diễn ra</p>
+                    </li>
+                    <li className={loaiPhongSele.includes(1) ? 'on' : ''} onClick={() => {
+                        handelSetLoaiPhongSele(1)
+                    }}>
+                        <p>Chưa bắt đầu</p>
+                    </li>
+                    <li className={loaiPhongSele.includes(2) ? 'on' : ''} onClick={() => {
+                        handelSetLoaiPhongSele(2)
+                    }}>
+                        <p>Đã kết thúc</p>
+                    </li>
+                </TabSlideBar>
+                
+                <TabSlideBar title="Điểm" iconName="bar-chart">
+                    <li>
+                        <p>Điểm lớp học</p>
+                    </li>
+                    <li>
+                        <p>Điểm trên trường</p>
+                    </li>
+                </TabSlideBar>
 
-                <div className="slide-bar-li">
-                    <div className="slide-bar-li-title" onClick={tabOnOff}>
-                        <ion-icon name="bar-chart"></ion-icon>
-                        <p>Điểm</p>
-                        <div className="slide-bar-end">
-                            <ion-icon name="caret-down"></ion-icon>
-                        </div>
-                    </div>
-
-                    <div className="slide-bar-li-chill">
-                        <li>
-                            <p>Điểm lớp học</p>
-                        </li>
-                        <li>
-                            <p>Điểm trên trường</p>
-                        </li>
-                    </div>
-                </div>
-
-                <div className="slide-bar-li">
-                    <div className="slide-bar-li-title" onClick={tabOnOff}>
-                        <ion-icon name="contrast"></ion-icon>
-                        <p>Theme</p>
-                        <div className="slide-bar-end">
-                            <ion-icon name="caret-down"></ion-icon>
-                        </div>
-                    </div>
-
-                    <div className="slide-bar-li-chill">
-                        <li onClick={() => {setTheme('light')}} className={Setting.theme == 'light' ? 'on' : ''}>
-                            <p>Light mod</p>
-                        </li>
-                        <li onClick={() => {setTheme('dark')}} className={Setting.theme == 'dark' ? 'on' : ''}>
-                            <p>Dark mod</p>
-                        </li>
-                        <li onClick={() => {setTheme('system')}} className={Setting.theme == 'system' ? 'on' : ''}>
-                            <p>System mod</p>
-                        </li>
-                    </div>
-                </div>
+                <TabSlideBar title="Theme" iconName="contrast">
+                    <li onClick={() => { setTheme('light');setThemeState('light') }} className={theme == 'light' ? 'on' : ''}>
+                        <p>Light mod</p>
+                    </li>
+                    <li onClick={() => { setTheme('dark');setThemeState('dark') }} className={theme == 'dark' ? 'on' : ''}>
+                        <p>Dark mod</p>
+                    </li>
+                    <li onClick={() => { setTheme('system');setThemeState('system') }} className={theme == 'system' ? 'on' : ''}>
+                        <p>System mod</p>
+                    </li>
+                </TabSlideBar>
 
                 <div className="slide-bar-li">
                     <div className="slide-bar-li-title">
@@ -380,36 +374,64 @@ function SlideBar(props) {
 function ListSub(props) {
 
     const domDivTop = React.useRef();
-
-
     const Classhscp = props.Classhscp;
-    const arrView = Classhscp.handleSort(Classhscp.arrListPhongHocView , null)
+
+    const [arrSub, setArrSub] = React.useState(Classhscp.handleSort())
+    const [loaiPhongSele, setLoaiPhongSele] = React.useState(Classhscp.LoaiPhongSelected)
+    const [isLoad , setIsLoad] = React.useState(true)
+
+    const update = () => {
+        setArrSub(Classhscp.handleSort())
+    }
+
+    React.useEffect(() => {
+        setIsLoad(true)
+        console.log('get Get_DsPhongHocServer')
+        Classhscp.Get_DsPhongHocServer((data) => {
+            console.log(data)
+            update()
+            setIsLoad(false)
+        })
+    }, [loaiPhongSele])
+
     return (
         <React.Fragment>
             <div className="list-sub">
                 <div className="list-div-left">
                     <Filter
+                        handelSetLoaiPhongSele={setLoaiPhongSele}
+                        update={update}
                         onClick={Classhscp.handleFilter}
                         slideBar={Classhscp.handlslideBar}
                         data={Classhscp}
                     />
                     <div className="lis-sub-bottom">
-                        <div className="div_top" ref={domDivTop}></div>
-                        <div className="sub-view" onScroll={e => {
-                                
-                                if (e.target.scrollTop == 0) {
-                                    domDivTop.current.style.opacity = 0;
-                                }
-                                else {
-                                    domDivTop.current.style.opacity = 1;
-                                }
-                            }}>
-                            {arrView.map((e, index) => ( <Sub key={index} data={e} onClick={Classhscp.JoinRoom} /> ))}
-                        </div>
+                        {
+                            isLoad ? (
+                                <div className="Loading-screen">
+                                    <div className="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
+                                </div>
+                            ):(
+                                <React.Fragment>
+                                    <div className="div_top" ref={domDivTop}></div>
+                                    <div className="sub-view" onScroll={e => {
+                                        if (e.target.scrollTop == 0) {
+                                            domDivTop.current.style.opacity = 0;
+                                        }
+                                        else {
+                                            domDivTop.current.style.opacity = 1;
+                                            }
+                                        }}>
+                                        {arrSub.map((e, index) => ( <Sub key={index} data={e} onClick={Classhscp.JoinRoom} /> ))}
+                                    </div>
+                                </React.Fragment>
+                            )
+                        }
+                        
                     </div>
                 </div>
                 <div className="slide-bar" id="listPhongSlideBar">
-                    <SlideBar/>
+                    <SlideBar handelSetLoaiPhongSele={setLoaiPhongSele} loaiPhongSele={loaiPhongSele}/>
                 </div>
             </div>
 

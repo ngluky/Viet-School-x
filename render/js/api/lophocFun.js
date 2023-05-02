@@ -729,7 +729,8 @@ function showMsg(title, msg, labelyes = null, type = "error", callback = functio
     console.log(ele)
     if (labelyes) {
         ele.querySelector("div.toast-button > button").addEventListener('click' , () => {
-            console.log('hello')
+            callback()
+            ele.remove()
         })
     }
 
@@ -881,4 +882,8 @@ function getAverageRGB(imgEl) {
     
     return (rgb.r + rgb.g + rgb.b) / 3 ;
     
+}
+
+function isFunction(functionToCheck) {
+    return functionToCheck && {}.toString.call(functionToCheck) === '[object Function]';
 }
