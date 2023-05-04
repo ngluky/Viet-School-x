@@ -12,8 +12,9 @@ function HocSinhChonPhong() {
     this.BaiHocs = null;
     this.root = null;
     this.arrListPhongHoc = [];
-    
+
     this.LoaiPhongSelected = [0];//1: Chưa bắt đầu, 2: Da ket thuc, 0 đang diễn ra, 3: phòng cũ
+    this.typySort = ''
     this.arrListPhongHocView = [];
     this.arrFilterMonS = [];
     this.cursorSort = ""
@@ -65,16 +66,19 @@ function HocSinhChonPhong() {
     }
 
     this.clearFilter = () => {
-
-    }  
+        this.cursorSort = ''
+        this.arrFilterMonS = []
+    }
 
     this.setCursorSort = (mon) => {
-        console.log(mon)
         this.cursorSort = mon
     }
 
+    this.setTypePhong = (type) => {
+        this.typySort = type
+    }
+
     this.handleSort = () => {
-        console.log('update')
         var copyListPhongHoc = []
         if (this.arrFilterMonS.length == 0) {
             copyListPhongHoc = [...this.arrListPhongHoc]
@@ -86,12 +90,17 @@ function HocSinhChonPhong() {
                 }
             })
         }
+
+        if (this.typySort != '') {
+            copyListPhongHoc = copyListPhongHoc.filter(e => e.VaoPhong == this.typySort)
+        }
+
         if (this.cursorSort != '') {
-            copyListPhongHoc.sort((a , b) => {
-                if (a[this.cursorSort] < b[this.cursorSort] ) return -1
+            copyListPhongHoc.sort((a, b) => {
+                if (a[this.cursorSort] < b[this.cursorSort]) return -1
                 else if (a[this.cursorSort] > b[this.cursorSort]) return 1
                 else return 0
-            } )
+            })
         }
 
         return copyListPhongHoc
@@ -99,7 +108,7 @@ function HocSinhChonPhong() {
 
     this.changeFilterMon = (mon) => {
         if (!mon) {
-            
+
         }
         else if (this.arrFilterMonS.includes(mon)) {
             var index = this.arrFilterMonS.indexOf(mon);
@@ -114,20 +123,19 @@ function HocSinhChonPhong() {
 
         var copyArr = [...this.arrListPhongHoc]
         copyArr = this.changeFilterMon(null)
-        copyArr = this.handleSort(copyArr , this.cursorSort , false)
+        copyArr = this.handleSort(copyArr, this.cursorSort, false)
 
         var arrChildren = [];
         copyArr.forEach(e => {
-            arrChildren.push(React.createElement(Sub , {
+            arrChildren.push(React.createElement(Sub, {
                 data: e,
                 onClick: this.JoinRoom
             }))
         })
 
-        const newListSub = React.createElement(React.Fragment , null , ...arrChildren)
-            
-        if (!this.root)
-        {
+        const newListSub = React.createElement(React.Fragment, null, ...arrChildren)
+
+        if (!this.root) {
             const subContainer = document.querySelector(".sub-view")
             this.root = ReactDOM.createRoot(subContainer)
         }
@@ -137,7 +145,7 @@ function HocSinhChonPhong() {
     this.renderInit = () => {
         checkloggin(() => {
             this.root = null
-            Root.render(React.createElement(ListSub , {
+            Root.render(React.createElement(ListSub, {
                 Classhscp: this
             }))
         })
@@ -148,10 +156,10 @@ function HocSinhChonPhong() {
         var dataReq = []
         var count = this.LoaiPhongSelected.length
         this.LoaiPhongSelected.forEach(e => {
-            WSGet( function(result) {
+            WSGet(function (result) {
                 var Data = result.Data.getTable("Data").toJson();
 
-                dataReq = [...dataReq , ...Data]
+                dataReq = [...dataReq, ...Data]
 
                 count -= 1
 
@@ -171,7 +179,7 @@ function HocSinhChonPhong() {
     }
 
     this.init = () => {
-        Root.render(React.createElement(ListSub , {
+        Root.render(React.createElement(ListSub, {
             Classhscp: this
         }))
     }

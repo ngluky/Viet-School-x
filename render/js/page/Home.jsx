@@ -14,56 +14,11 @@ const name2url = {
     "Ngoại ngữ": "./img/TienAnh.jpg",
     "Tin học": "./img/TinHoc.jpg",
 };
-// function Filter(props) {
-//     const data = Array.from(new Set(props.data));
-//     const onClick = props.onClick;
-
-//     const [index, setIndex] = React.useState(0)
-
-//     return (
-//         <div className="filter">
-//             <div className="filter-list-button">
-//                 <div
-//                     className={index == 0 ? "filter-button sel" : "filter-button"}
-//                     onClick={(event) => {
-//                         setIndex(0)
-//                         onClick("All");
-//                     }}
-//                 >
-//                     All
-//                 </div>
-//                 {data.map((e, i) => (
-//                     <div
-//                         key={i}
-//                         onClick={(event) => {
-//                             onClick(e)
-//                             setIndex(i + 1)
-//                         }}
-//                         className={index == (i + 1) ? "filter-button sel" : "filter-button"}
-//                     >
-//                         <span>
-//                             {e}
-//                         </span>
-//                     </div>
-//                 ))}
-//             </div>
-
-//             <div
-//                 className="slide-bar-button"
-//                 onClick={() => {
-//                     props.slideBar();
-//                 }}
-//             >
-//                 <ion-icon name="menu-outline"></ion-icon>
-//             </div>
-//         </div>
-//     );
-// }
 
 function ListButton(props) {
     const contenEle = React.useRef()
 
-    const [onActive , setOnActive] = React.useState(false)
+    const [onActive, setOnActive] = React.useState(false)
 
     React.useEffect(() => {
         return (() => {
@@ -72,10 +27,10 @@ function ListButton(props) {
     }, [])
 
     const turnOff = (event) => {
-        var target = $(event.target);   
+        var target = $(event.target);
         // kiểm tra xem có phải là con của "div.filter-conten"
         if (target.parents('div.filter-conten').length) return
-        
+
         var ele = contenEle.current
         if (ele) ele.style.transform = 'scaleY(0)'
 
@@ -85,10 +40,10 @@ function ListButton(props) {
 
         setTimeout(() => {
             setOnActive(false)
-        }, (parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--time-animation').replace('s' , '')) + 0.1) * 1000) 
+        }, (parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--time-animation').replace('s', '')) + 0.1) * 1000)
     }
 
-    const turnOn = props.onClick || function(event) {
+    const turnOn = props.onClick || function (event) {
         if (onActive) return
         setTimeout(() => {
             document.addEventListener("click", turnOff)
@@ -107,10 +62,10 @@ function ListButton(props) {
                 <div className="templay">
                     <div className="filter-conten" ref={contenEle}>
                         {props.children}
-                    </div> 
+                    </div>
                 </div>
             ) : ''}
-            
+
 
 
         </div>
@@ -119,7 +74,8 @@ function ListButton(props) {
 
 function Filter(props) {
 
-    const arrMonHoc = Array.from(new Set(props.data.arrListPhongHoc.map(e => e.TenMon)));
+    const arrMonHoc = Array.from(new Set(props.data.arrListPhongHoc.map(e => e.TenMon)))
+    const arrTypePhong = Array.from(new Set(props.data.arrListPhongHoc.map(e => e.VaoPhong)))
     const [onMonSele, setMonSele] = React.useState(props.data.arrFilterMonS)
     const [proSeleSort, setProSeleSort] = React.useState(props.data.lastSort)
 
@@ -141,7 +97,6 @@ function Filter(props) {
                                             newArr.push(e)
                                         }
 
-                                        console.log(newArr)
                                         return newArr
                                     })
                                     classhscp.changeFilterMon(e)
@@ -157,7 +112,21 @@ function Filter(props) {
                 </ListButton>
 
                 <ListButton Icon="list" Text="Loại phòng">
-                    //
+                    <div className="sort-view-sele">
+                        {arrTypePhong.map((e, index) => {
+                            return (
+                                <div className="mon-ops" key={index} style={classhscp.typySort == e ? { background: 'yellowgreen', color: '#000' } : {}} onClick={() => {
+                                    if (classhscp.typySort == e)
+                                        classhscp.setTypePhong('')
+                                    else
+                                        classhscp.setTypePhong(e)
+                                    props.update()
+                                }}>
+                                    {e}
+                                </div>
+                            )
+                        })}
+                    </div>
                 </ListButton>
 
 
@@ -165,7 +134,7 @@ function Filter(props) {
                     <div className="sort-view-sele">
                         <div className={"GioDay" == proSeleSort ? "sort-ops on" : "sort-ops"} onClick={() => {
                             var current = ''
-                            if (proSeleSort == "GioDay"){
+                            if (proSeleSort == "GioDay") {
                                 current = ''
                             }
                             else {
@@ -183,13 +152,13 @@ function Filter(props) {
                         </div>
                         <div className={"TenBaiHoc" == proSeleSort ? "sort-ops on" : "sort-ops"} onClick={() => {
                             var current = ''
-                            if (proSeleSort == "TenBaiHoc"){
+                            if (proSeleSort == "TenBaiHoc") {
                                 current = ''
                             }
                             else {
                                 current = "TenBaiHoc"
                             }
-                            
+
                             classhscp.setCursorSort(current)
                             props.update()
                             setProSeleSort(current)
@@ -206,7 +175,8 @@ function Filter(props) {
                 <ListButton Icon="close" Text="Clear" onClick={() => {
                     setMonSele([])
                     setProSeleSort('')
-                    classhscp.clearFilterSub()
+                    classhscp.clearFilter()
+                    props.update()
                 }}>
                 </ListButton>
 
@@ -232,9 +202,9 @@ function Sub(props) {
     // console.log(data)
     var onJoinRoom = props.onClick;
     return (
-        <div className="sub" onClick={() => {onJoinRoom(data);}}>
-            <div className="sub-sta" style={{background: backgrounds[data.TrangThaiID],}} >
-                {data.TrangThai}
+        <div className="sub" onClick={() => { onJoinRoom(data); }}>
+            <div className="sub-sta" style={{ background: backgrounds[data.TrangThaiID], }} >
+                {data.VaoPhong}
             </div>
 
             <div className="sub-save">
@@ -255,8 +225,7 @@ function Sub(props) {
 }
 
 
-function TabSlideBar({title , iconName, iconScr, children}) {
-
+function TabSlideBar({ title, iconName, iconScr, children }) {
     const [active, SetActive] = React.useState(false);
     // console.log(children)
     return (
@@ -264,14 +233,14 @@ function TabSlideBar({title , iconName, iconScr, children}) {
             <div className="slide-bar-li-title" onClick={() => {
                 SetActive((e) => !e);
             }}>
-                <ion-icon {...(iconName ? {"name" : iconName}: {src: iconScr})}></ion-icon>
+                <ion-icon {...(iconName ? { "name": iconName } : { src: iconScr })}></ion-icon>
                 <p>{title}</p>
                 <div className="slide-bar-end">
                     <ion-icon name="caret-down"></ion-icon>
                 </div>
             </div>
 
-            <div className="slide-bar-li-chill" style={!active? {height: '0px', opacity: 0}: {height: `${children.length *  25 + 3}px`,opacity: 1 }}>
+            <div className="slide-bar-li-chill" style={!active ? { height: '0px', opacity: 0 } : { height: `${children.length * 25 + 3}px`, opacity: 1 }}>
                 {children}
             </div>
         </div>
@@ -285,20 +254,19 @@ function SlideBar(props) {
     // const []
     var loaiPhongSele = props.loaiPhongSele
     const setLoaiPhongSele = props.handelSetLoaiPhongSele
-    console.log(loaiPhongSele)
     const handelSetLoaiPhongSele = (id) => {
 
         var newData = [...loaiPhongSele]
         if (newData.includes(id)) {
             if (newData.length == 1) return newData
-            newData.splice(newData.indexOf(newData) , 1);
+            newData.splice(newData.indexOf(newData), 1);
             classhscp.setLoaiPhongSelected(newData)
             setLoaiPhongSele(newData)
         }
 
         else {
-            classhscp.setLoaiPhongSelected([...newData , id])
-            setLoaiPhongSele([...newData , id])
+            classhscp.setLoaiPhongSelected([...newData, id])
+            setLoaiPhongSele([...newData, id])
         }
     }
 
@@ -323,7 +291,7 @@ function SlideBar(props) {
                         <p>Đã kết thúc</p>
                     </li>
                 </TabSlideBar>
-                
+
                 <TabSlideBar title="Điểm" iconName="bar-chart">
                     <li>
                         <p>Điểm lớp học</p>
@@ -334,13 +302,13 @@ function SlideBar(props) {
                 </TabSlideBar>
 
                 <TabSlideBar title="Theme" iconName="contrast">
-                    <li onClick={() => { setTheme('light');setThemeState('light') }} className={theme == 'light' ? 'on' : ''}>
+                    <li onClick={() => { setTheme('light'); setThemeState('light') }} className={theme == 'light' ? 'on' : ''}>
                         <p>Light mod</p>
                     </li>
-                    <li onClick={() => { setTheme('dark');setThemeState('dark') }} className={theme == 'dark' ? 'on' : ''}>
+                    <li onClick={() => { setTheme('dark'); setThemeState('dark') }} className={theme == 'dark' ? 'on' : ''}>
                         <p>Dark mod</p>
                     </li>
-                    <li onClick={() => { setTheme('system');setThemeState('system') }} className={theme == 'system' ? 'on' : ''}>
+                    <li onClick={() => { setTheme('system'); setThemeState('system') }} className={theme == 'system' ? 'on' : ''}>
                         <p>System mod</p>
                     </li>
                 </TabSlideBar>
@@ -356,11 +324,11 @@ function SlideBar(props) {
                 <div className="slide-bar-li">
                     <div className="slide-bar-li-title" >
                         {/* <ion-icon name="bar-chart"></ion-icon> */}
-                        <div className="slide-bar-tar" onClick={() => {logOut()}}>
+                        <div className="slide-bar-tar" onClick={() => { logOut() }}>
                             <ion-icon name="log-out-outline"></ion-icon>
                             <p>Đăng xuất</p>
                         </div>
-                        <div className="slide-bar-setting" onClick={() => {console.log('setting'); SettingInitRender()}}>
+                        <div className="slide-bar-setting" onClick={() => { console.log('setting'); SettingInitRender() }}>
                             <ion-icon name="settings-sharp"></ion-icon>
                         </div>
                     </div>
@@ -378,7 +346,7 @@ function ListSub(props) {
 
     const [arrSub, setArrSub] = React.useState(Classhscp.handleSort())
     const [loaiPhongSele, setLoaiPhongSele] = React.useState(Classhscp.LoaiPhongSelected)
-    const [isLoad , setIsLoad] = React.useState(true)
+    const [isLoad, setIsLoad] = React.useState(true)
 
     const update = () => {
         setArrSub(Classhscp.handleSort())
@@ -388,7 +356,6 @@ function ListSub(props) {
         setIsLoad(true)
         console.log('get Get_DsPhongHocServer')
         Classhscp.Get_DsPhongHocServer((data) => {
-            console.log(data)
             update()
             setIsLoad(false)
         })
@@ -411,7 +378,7 @@ function ListSub(props) {
                                 <div className="Loading-screen">
                                     <div className="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
                                 </div>
-                            ):(
+                            ) : (
                                 <React.Fragment>
                                     <div className="div_top" ref={domDivTop}></div>
                                     <div className="sub-view" onScroll={e => {
@@ -420,18 +387,18 @@ function ListSub(props) {
                                         }
                                         else {
                                             domDivTop.current.style.opacity = 1;
-                                            }
-                                        }}>
-                                        {arrSub.map((e, index) => ( <Sub key={index} data={e} onClick={Classhscp.JoinRoom} /> ))}
+                                        }
+                                    }}>
+                                        {arrSub.map((e, index) => (<Sub key={index} data={e} onClick={Classhscp.JoinRoom} />))}
                                     </div>
                                 </React.Fragment>
                             )
                         }
-                        
+
                     </div>
                 </div>
                 <div className="slide-bar" id="listPhongSlideBar">
-                    <SlideBar handelSetLoaiPhongSele={setLoaiPhongSele} loaiPhongSele={loaiPhongSele}/>
+                    <SlideBar handelSetLoaiPhongSele={setLoaiPhongSele} loaiPhongSele={loaiPhongSele} />
                 </div>
             </div>
 
